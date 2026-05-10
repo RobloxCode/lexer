@@ -5,7 +5,7 @@
 
 #define WORD_MAX_CAP 255
 
-char *KEYWORDS[] = {
+char *keywords[] = {
     // control flow
     "if", "else", "switch", "case", "default",
     "for", "while", "do", "break", "continue",
