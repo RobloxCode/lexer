@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-TokenArr *TokenArr_make(size_t init_capacity)
+TokenArr *TokenArr_init(size_t init_capacity)
 {
     if (init_capacity == 0)
         return NULL;
@@ -27,7 +27,7 @@ TokenArr *TokenArr_make(size_t init_capacity)
     return token_arr;
 }
 
-TokenArr_status TokenArr_free(TokenArr** token_arr)
+TokenArr_status TokenArr_deinit(TokenArr** token_arr)
 {
     if (!token_arr || !*token_arr)
         return TOKENARR_WRONG_PTR;

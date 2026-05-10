@@ -20,8 +20,8 @@ typedef struct TokenArr {
     size_t length;
 } TokenArr;
 
-TokenArr *TokenArr_make(size_t init_capacity);
-TokenArr_status TokenArr_free(TokenArr** token_arr);
+TokenArr *TokenArr_init(size_t init_capacity);
+TokenArr_status TokenArr_deinit(TokenArr** token_arr);
 TokenArr_status TokenArr_append(TokenArr* token_arr, Token item);
 TokenArr_status TokenArr_swap(TokenArr* token_arr,
                               size_t idx1,
