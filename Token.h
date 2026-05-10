@@ -7,5 +7,4 @@ typedef struct {
 } Token;
 
 void Token_print(Token t);
-
 #endif

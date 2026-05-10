@@ -19,9 +19,20 @@ char *KEYWORDS[] = {
     "struct", "union", "enum"
 };
 
+TokenArr *lexeme(char *code_sample);
+
 int main(void)
 {
     char *code_example = "int x =  10 + 5;";
 
     return 0;
 }
+
+TokenArr *lexeme(char *code_sample)
+{
+    if (!code_sample)
+        return NULL;
+
+
+}
+
