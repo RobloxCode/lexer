@@ -1,14 +1,5 @@
 #include <stdio.h>
-
-typedef struct {
-    char *type;
-    char *value;
-} Token;
-
-void Token_print(Token t)
-{
-    printf("%s(%s)\n", t.type, t.value);
-}
+#include "TokenArr.h"
 
 char *KEYWORDS[] = {
     // control flow
