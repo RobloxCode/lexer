@@ -52,35 +52,26 @@ TokenArr *lexeme(char *code_sample)
     char cur_word_buff[WORD_MAX_CAP] = {0};
     size_t cur_word_buff_pos = 0;
 
-    for (size_t i = 0; i < code_sample_len; ++i) {
-        char cur_char = code_sample[i];
+    size_t sample_code_pos = 0;
 
-        if (cur_char == ' ') {
-            cur_word_buff[cur_word_buff_pos] = '\0';
-
-            // have to figure out how to add the
-            // cur_word_buff char array to the new
-            // instance of the Token
-            Token new_token = {0};
-            new_token.type = "NULL";
-            char *cpy = memcpy(cpy, cur_word_buff, sizeof cur_word_buff);
-            new_token.value = cpy;
-
-            TokenArr_append(token_arr, new_token);
-
+    while (1) {
+        if (code_sample[sample_code_pos] == '\0') {
             puts(cur_word_buff);
-            cur_word_buff_pos = 0;
-            continue;
+            break;
         }
 
-        cur_word_buff[cur_word_buff_pos++] = cur_char;
+        if (code_sample[sample_code_pos] == ' ') {
+            cur_word_buff[cur_word_buff_pos] = '\0';
+            puts(cur_word_buff);
+            cur_word_buff_pos = 0;
+            sample_code_pos++;
+        }
+
+        cur_word_buff[cur_word_buff_pos++] = code_sample[sample_code_pos++];
     }
-    //
-    // if (cur_word_buff_pos > 0) {
-    //     cur_word_buff[cur_word_buff_pos] = '\0';
-    //     TokenArr_append(token_arr, (Token) {
-    //             .type = "NULL", .value = "NULL" });
-    // }
+
+    printf("len: %zu\n", token_arr->length);
+    TokenArr_println(token_arr);
 
     return token_arr;
 }
