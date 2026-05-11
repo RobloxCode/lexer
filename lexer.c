@@ -28,7 +28,7 @@ TokenArr *lexeme(char *code_sample);
 
 int main(void)
 {
-    char *code_example = "int x = 10 + 5; ";
+    char *code_example = "int x = 10 + 5;";
     TokenArr *token_arr = lexeme(code_example);
     if (!token_arr)
         return EXIT_FAILURE;
@@ -37,12 +37,6 @@ int main(void)
     TokenArr_deinit(&token_arr);
 
     return EXIT_SUCCESS;
-}
-
-void clear_buff(char *buff)
-{
-    for (size_t i = 0; buff[i] != '\0'; ++i)
-        buff[i] = 0;
 }
 
 TokenArr *lexeme(char *code_sample)
@@ -62,27 +56,30 @@ TokenArr *lexeme(char *code_sample)
         char cur_char = code_sample[i];
 
         if (cur_char == ' ') {
+            cur_word_buff[cur_word_buff_pos] = '\0';
+
+            // have to figure out how to add the
+            // cur_word_buff char array to the new
+            // instance of the Token
+            Token new_token = {0};
+            new_token.type = "NULL";
+            char *cpy = memcpy(cpy, cur_word_buff, sizeof cur_word_buff);
+            new_token.value = cpy;
+
+            TokenArr_append(token_arr, new_token);
+
             puts(cur_word_buff);
-            clear_buff(cur_word_buff);
             cur_word_buff_pos = 0;
             continue;
         }
 
         cur_word_buff[cur_word_buff_pos++] = cur_char;
     }
-
-    // size_t code_cur_pos = 0;
-    // while (code_sample[code_cur_pos] != '\0') {
-    //     if (code_sample[code_cur_pos] == ' ') {
-    //         puts(cur_word_buff);
     //
-    //         clear_buff(cur_word_buff);
-    //         cur_word_buff_pos = 0;
-    //         // code_cur_pos++;
-    //     }
-    //
-    //     char cur_char = code_sample[code_cur_pos++];
-    //     cur_word_buff[cur_word_buff_pos++] = cur_char;
+    // if (cur_word_buff_pos > 0) {
+    //     cur_word_buff[cur_word_buff_pos] = '\0';
+    //     TokenArr_append(token_arr, (Token) {
+    //             .type = "NULL", .value = "NULL" });
     // }
 
     return token_arr;
