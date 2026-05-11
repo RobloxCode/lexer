@@ -52,22 +52,26 @@ TokenArr *lexeme(char *code_sample)
     char cur_word_buff[WORD_MAX_CAP] = {0};
     size_t cur_word_buff_pos = 0;
 
-    size_t sample_code_pos = 0;
+    size_t code_sample_pos = 0;
 
     while (1) {
-        if (code_sample[sample_code_pos] == '\0') {
+        char cur_char = code_sample[code_sample_pos];
+
+        if (cur_char == '\0') {
             puts(cur_word_buff);
             break;
         }
 
-        if (code_sample[sample_code_pos] == ' ') {
+        if (cur_char == ' ') {
             cur_word_buff[cur_word_buff_pos] = '\0';
             puts(cur_word_buff);
+
             cur_word_buff_pos = 0;
-            sample_code_pos++;
+        } else {
+            cur_word_buff[cur_word_buff_pos++] = cur_char;
         }
 
-        cur_word_buff[cur_word_buff_pos++] = code_sample[sample_code_pos++];
+        code_sample_pos++;
     }
 
     printf("len: %zu\n", token_arr->length);
