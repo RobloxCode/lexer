@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "TokenArr.h"
+#include "utils/TokenArr.h"
 
 #define WORD_MAX_CAP 255
 
