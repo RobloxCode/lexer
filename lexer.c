@@ -34,6 +34,7 @@ int main(void)
         return EXIT_FAILURE;
 
     TokenArr_println(token_arr);
+
     TokenArr_deinit(&token_arr);
 
     return EXIT_SUCCESS;
@@ -55,6 +56,7 @@ TokenArr *lexeme(char *code_sample)
     size_t code_sample_pos = 0;
 
     while (1) {
+        Token new_token = {0};
         char cur_char = code_sample[code_sample_pos];
 
         if (cur_char == '\0') {
@@ -64,6 +66,7 @@ TokenArr *lexeme(char *code_sample)
 
         if (cur_char == ' ') {
             cur_word_buff[cur_word_buff_pos] = '\0';
+
             puts(cur_word_buff);
 
             cur_word_buff_pos = 0;
@@ -72,10 +75,11 @@ TokenArr *lexeme(char *code_sample)
         }
 
         code_sample_pos++;
+        // TokenArr_append(token_arr, new_token);
     }
 
     printf("len: %zu\n", token_arr->length);
-    TokenArr_println(token_arr);
+    // TokenArr_println(token_arr);
 
     return token_arr;
 }
