@@ -60,14 +60,16 @@ TokenArr *lexeme(char *code_sample)
         char cur_char = code_sample[code_sample_pos];
 
         if (cur_char == '\0') {
-            puts(cur_word_buff);
+            memcpy(new_token.type, "NULL", 4);
+            memcpy(new_token.value, cur_word_buff, sizeof cur_word_buff);
             break;
         }
 
         if (cur_char == ' ') {
             cur_word_buff[cur_word_buff_pos] = '\0';
 
-            puts(cur_word_buff);
+            memcpy(new_token.type, "NULL", 4);
+            memcpy(new_token.value, cur_word_buff, sizeof cur_word_buff);
 
             cur_word_buff_pos = 0;
         } else {
@@ -75,10 +77,10 @@ TokenArr *lexeme(char *code_sample)
         }
 
         code_sample_pos++;
-        // TokenArr_append(token_arr, new_token);
+        TokenArr_append(token_arr, new_token);
     }
 
-    printf("len: %zu\n", token_arr->length);
+    // printf("len: %zu\n", token_arr->length);
     // TokenArr_println(token_arr);
 
     return token_arr;
