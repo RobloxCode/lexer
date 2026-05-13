@@ -53,35 +53,61 @@ TokenArr *lexeme(char *code_sample)
     char cur_word_buff[WORD_MAX_CAP] = {0};
     size_t cur_word_buff_pos = 0;
 
-    size_t code_sample_pos = 0;
-
-    while (1) {
+    for (size_t i = 0; i < code_sample_len; ++i) {
         Token new_token = {0};
-        char cur_char = code_sample[code_sample_pos];
 
-        if (cur_char == '\0') {
-            memcpy(new_token.type, "NULL", 4);
+        if (code_sample[i + 1] == '\0') {
+            cur_word_buff[cur_word_buff_pos] = '\0';
+
+            memcpy(new_token.type, "NULL", sizeof "NULL");
             memcpy(new_token.value, cur_word_buff, sizeof cur_word_buff);
+            TokenArr_append(token_arr, new_token);
             break;
         }
 
-        if (cur_char == ' ') {
+        if (code_sample[i] == ' ') {
             cur_word_buff[cur_word_buff_pos] = '\0';
 
-            memcpy(new_token.type, "NULL", 4);
+            memcpy(new_token.type, "NULL", sizeof "NULL");
             memcpy(new_token.value, cur_word_buff, sizeof cur_word_buff);
+            TokenArr_append(token_arr, new_token);
 
             cur_word_buff_pos = 0;
-        } else {
-            cur_word_buff[cur_word_buff_pos++] = cur_char;
+            continue;
         }
 
-        code_sample_pos++;
-        TokenArr_append(token_arr, new_token);
+        cur_word_buff[cur_word_buff_pos++] = code_sample[i];
     }
 
-    // printf("len: %zu\n", token_arr->length);
-    // TokenArr_println(token_arr);
+    // size_t code_sample_pos = 0;
+    //
+    // while (1) {
+    //     Token new_token = {0};
+    //     char cur_char = code_sample[code_sample_pos];
+    //
+    //     if (cur_char == '\0') {
+    //         memcpy(new_token.type, "NULL", sizeof "NULL");
+    //         memcpy(new_token.value, cur_word_buff, sizeof cur_word_buff);
+    //         TokenArr_append(token_arr, new_token);
+    //         break;
+    //     }
+    //
+    //     if (cur_char == ' ') {
+    //         cur_word_buff[cur_word_buff_pos] = '\0';
+    //
+    //         memcpy(new_token.type, "NULL", sizeof "NULL");
+    //         memcpy(new_token.value, cur_word_buff, sizeof cur_word_buff);
+    //
+    //         cur_word_buff_pos = 0;
+    //     } else {
+    //         cur_word_buff[cur_word_buff_pos++] = cur_char;
+    //     }
+    //
+    //     code_sample_pos++;
+    //     TokenArr_append(token_arr, new_token);
+    // }
+
+    printf("len: %zu\n", token_arr->length);
 
     return token_arr;
 }
