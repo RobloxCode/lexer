@@ -56,20 +56,11 @@ TokenArr *lexeme(char *code_sample)
     for (size_t i = 0; i < code_sample_len; ++i) {
         Token new_token = {0};
 
-        if (code_sample[i + 1] == '\0') {
-            cur_word_buff[cur_word_buff_pos] = '\0';
-
-            memcpy(new_token.type, "NULL", sizeof "NULL");
-            memcpy(new_token.value, cur_word_buff, sizeof cur_word_buff);
-            TokenArr_append(token_arr, new_token);
-            break;
-        }
-
         if (code_sample[i] == ' ') {
             cur_word_buff[cur_word_buff_pos] = '\0';
 
-            memcpy(new_token.type, "NULL", sizeof "NULL");
-            memcpy(new_token.value, cur_word_buff, sizeof cur_word_buff);
+            strcpy(new_token.type, "NULL");
+            strcpy(new_token.value, cur_word_buff);
             TokenArr_append(token_arr, new_token);
 
             cur_word_buff_pos = 0;
@@ -77,35 +68,16 @@ TokenArr *lexeme(char *code_sample)
         }
 
         cur_word_buff[cur_word_buff_pos++] = code_sample[i];
-    }
 
-    // size_t code_sample_pos = 0;
-    //
-    // while (1) {
-    //     Token new_token = {0};
-    //     char cur_char = code_sample[code_sample_pos];
-    //
-    //     if (cur_char == '\0') {
-    //         memcpy(new_token.type, "NULL", sizeof "NULL");
-    //         memcpy(new_token.value, cur_word_buff, sizeof cur_word_buff);
-    //         TokenArr_append(token_arr, new_token);
-    //         break;
-    //     }
-    //
-    //     if (cur_char == ' ') {
-    //         cur_word_buff[cur_word_buff_pos] = '\0';
-    //
-    //         memcpy(new_token.type, "NULL", sizeof "NULL");
-    //         memcpy(new_token.value, cur_word_buff, sizeof cur_word_buff);
-    //
-    //         cur_word_buff_pos = 0;
-    //     } else {
-    //         cur_word_buff[cur_word_buff_pos++] = cur_char;
-    //     }
-    //
-    //     code_sample_pos++;
-    //     TokenArr_append(token_arr, new_token);
-    // }
+        if (code_sample[i + 1] == '\0') {
+            cur_word_buff[cur_word_buff_pos] = '\0';
+
+            strcpy(new_token.type, "NULL");
+            strcpy(new_token.value, cur_word_buff);
+            TokenArr_append(token_arr, new_token);
+            break;
+        }
+    }
 
     printf("len: %zu\n", token_arr->length);
 
