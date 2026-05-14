@@ -21,5 +21,15 @@ typedef struct {
     char value[TOKEN_VALUE_MAX_CAP];
 } Token;
 
+extern char *operators[];
+extern char delimeters[];
+extern char *keywords[];
+
 void Token_print(Token t);
+int is_keyword(const char *s);
+int is_operator(const char *s);
+int is_number(const char *s);
+int is_identifier(const char *s);
+int is_delimeter(const char *s);
+
 #endif
