@@ -5,21 +5,36 @@
 
 #define WORD_MAX_CAP 255
 
+typedef enum {
+    IDENTIFIER,
+    KEYWORD,
+    NUMBER,
+    OPERATOR,
+    DELIMETER,
+    STRING,
+    CHARACTER,
+    COMMENT,
+    ENDOFFILE,
+} TokenType;
+
+char *operators[] = {
+    "+", "-", "*", "/", "%",
+    "+=", "-=", "*=", "/=", "%=", "&=", "|=", "~=", "^=",
+    "<<", ">>", "&", "|", "~", "^",
+    "&&", "||", "!=", "==", "<", ">", "<=", ">=",
+    "++", "--",
+};
+
+char delimeters[] = "(){}[],;";
+
 char *keywords[] = {
-    // control flow
     "if", "else", "switch", "case", "default",
     "for", "while", "do", "break", "continue",
     "goto", "return",
-
-    // data types
     "int", "char", "float", "double", "void",
     "short", "long", "signed", "unsigned", "_Bool",
-
-    // storage/class modifiers
     "auto", "register", "static", "extern", "typedef",
     "const", "volatile", "restrict",
-
-    // user-defined types
     "struct", "union", "enum"
 };
 
@@ -78,8 +93,6 @@ TokenArr *lexeme(char *code_sample)
             break;
         }
     }
-
-    printf("len: %zu\n", token_arr->length);
 
     return token_arr;
 }
