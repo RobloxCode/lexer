@@ -1,21 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "utils/Token.h"
 #include "utils/TokenArr.h"
 
 #define WORD_MAX_CAP 255
-
-typedef enum {
-    IDENTIFIER,
-    KEYWORD,
-    NUMBER,
-    OPERATOR,
-    DELIMETER,
-    STRING,
-    CHARACTER,
-    COMMENT,
-    ENDOFFILE,
-} TokenType;
 
 char *operators[] = {
     "+", "-", "*", "/", "%",

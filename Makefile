@@ -3,7 +3,7 @@ CC = gcc
 CFLAGS = -std=c11 -Wall -Wextra -Wconversion -pedantic -g \
          -fsanitize=address -fno-omit-frame-pointer
 
-SRC = lexer.c utils/TokenArr.c
+SRC = lexer.c utils/TokenArr.c utils/Token.c
 OUT = out
 
 $(OUT): $(SRC)
