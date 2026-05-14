@@ -6,6 +6,7 @@
 
 #define WORD_MAX_CAP 255
 
+void Token_set_type(Token *t, const char *word);
 TokenArr *lexeme(char *code_sample);
 
 int main(void)
