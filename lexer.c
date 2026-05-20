@@ -5,21 +5,30 @@
 #include "utils/TokenArr.h"
 
 #define WORD_MAX_CAP 255
+#define SAMPLE_CODE_FILENAME "c_code.c"
 
 void Token_set_type(Token *t, const char *word);
 TokenArr *lexeme(char *code_sample);
+char *read_file(const char *filename);
 
 int main(void)
 {
-    char *code_example = "int some_var = 10 + ( num2 % 5); "
-                         "if (x == 8) return 1";
-    TokenArr *token_arr = lexeme(code_example);
+    char *file_content = read_file(SAMPLE_CODE_FILENAME);
+    if (!file_content)
+        goto cleanup;
+
+    TokenArr *token_arr = lexeme(file_content);
     if (!token_arr)
-        return EXIT_FAILURE;
+        goto cleanup;
 
     TokenArr_println(token_arr);
 
-    TokenArr_deinit(&token_arr);
+cleanup:
+    if (token_arr)
+        TokenArr_deinit(&token_arr);
+
+    if (file_content)
+        free(file_content);
 
     return EXIT_SUCCESS;
 }
@@ -95,3 +104,29 @@ TokenArr *lexeme(char *code_sample)
     return token_arr;
 }
 
+char *read_file(const char *filename)
+{
+    FILE *file = fopen(filename, "r");
+    if (!file)
+        return NULL;
+
+    fseek(file, 0, SEEK_END);
+
+    long size = ftell(file);
+
+    rewind(file);
+
+    char *buffer = malloc((size_t)size + 1);
+    if (!buffer) {
+        fclose(file);
+        return NULL;
+    }
+
+    fread(buffer, 1, (size_t)size, file);
+
+    buffer[size] = '\0';
+
+    fclose(file);
+
+    return buffer;
+}
