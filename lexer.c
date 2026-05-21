@@ -76,6 +76,9 @@ TokenArr *lexeme(char *code_sample)
     for (size_t i = 0; i < code_sample_len; ++i) {
         Token new_token = {0};
 
+        if (code_sample[i] == '\n')
+            continue;
+
         if (code_sample[i] == ' ') {
             cur_word_buff[cur_word_buff_pos] = '\0';
 
