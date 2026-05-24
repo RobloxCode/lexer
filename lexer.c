@@ -35,7 +35,11 @@ cleanup:
 
 void Token_set_type(Token *t, const char *word)
 {
-    if (is_keyword(word)) {
+    if (is_hash(word)) {
+        strcpy(t->type, "HASH");
+    }
+
+    else if (is_keyword(word)) {
         strcpy(t->type, "KEYWORD");
     }
 

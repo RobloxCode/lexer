@@ -28,6 +28,13 @@ void Token_print(Token t)
     printf("%s(%s)\n", t.type, t.value);
 }
 
+int is_hash(const char *s)
+{
+    if (strcmp(s, "#") == 0)
+        return 1;
+    return 0;
+}
+
 int is_keyword(const char *s)
 {
     for (size_t i = 0; i < sizeof keywords / sizeof keywords[0]; ++i)

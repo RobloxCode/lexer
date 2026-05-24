@@ -31,5 +31,6 @@ int is_operator(const char *s);
 int is_number(const char *s);
 int is_identifier(const char *s);
 int is_delimeter(const char *s);
+int is_hash(const char *s);
 
 #endif

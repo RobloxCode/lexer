@@ -116,8 +116,8 @@ TokenArr_status TokenArr_println(TokenArr* token_arr)
 }
 
 TokenArr_status TokenArr_get(TokenArr* token_arr,
-                                  size_t index,
-                                  Token* buff)
+                             size_t index,
+                             Token* buff)
 {
     if (!token_arr || !buff)
         return TOKENARR_WRONG_PTR;
