@@ -8,6 +8,8 @@
 #define SAMPLE_CODE_FILENAME "c_code.c"
 
 void Token_set_type(Token *t, const char *word);
+void Token_set_value(Token *t, const char *value);
+void Token_init(Token *t, const char *pattern);
 TokenArr *lexeme(char *code_sample);
 char *read_file(const char *filename);
 void clear_str(char *str);
@@ -37,6 +39,11 @@ cleanup:
     }
 
     return EXIT_SUCCESS;
+}
+
+void Token_set_value(Token *t, const char *value)
+{
+    strcpy(t->value, value);
 }
 
 void Token_set_type(Token *t, const char *word)
@@ -70,6 +77,12 @@ void Token_set_type(Token *t, const char *word)
     }
 }
 
+void Token_init(Token *t, const char *pattern)
+{
+    Token_set_type(t, pattern);
+    Token_set_value(t, pattern);
+}
+
 TokenArr *lexeme(char *code_sample)
 {
     if (!code_sample) {
@@ -96,51 +109,52 @@ TokenArr *lexeme(char *code_sample)
         Token new_token = {0};
         Token ahead_token = {0};
 
-        cur_word_buff[cur_word_buff_pos++] = code_sample[i];
-        ahead_word_buff[0] = code_sample[j];
+        if (code_sample[i] == ' ') {
+            continue;
+        }
 
         if (code_sample[i] == '\n') {
             continue;
         }
 
-        if (is_language_feature(ahead_word_buff)) {
-            Token_set_type(&new_token, cur_word_buff);
-            Token_set_type(&ahead_token, ahead_word_buff);
-
-            strcpy(new_token.value, cur_word_buff);
-            strcpy(ahead_token.value, ahead_word_buff);
-
-            clear_str(cur_word_buff);
-            clear_str(ahead_word_buff);
-
-            TokenArr_append(token_arr, new_token);
-            TokenArr_append(token_arr, ahead_token);
-
-            cur_word_buff_pos = 0;
-            continue;
-        }
-
-        if (code_sample[i] == ' ') {
-            Token_set_type(&new_token, cur_word_buff);
-            strcpy(new_token.value, cur_word_buff);
-
-            clear_str(cur_word_buff);
-
-            TokenArr_append(token_arr, new_token);
-
-            cur_word_buff_pos = 0;
-            continue;
-        }
+        cur_word_buff[cur_word_buff_pos++] = code_sample[i];
+        ahead_word_buff[0] = code_sample[j];
 
         if (is_language_feature(cur_word_buff)) {
-            Token_set_type(&new_token, cur_word_buff);
-            strcpy(new_token.value, cur_word_buff);
+            Token_init(&new_token, cur_word_buff);
 
             clear_str(cur_word_buff);
+            cur_word_buff_pos = 0;
 
             TokenArr_append(token_arr, new_token);
 
+            continue;
+        }
+
+        if (is_language_feature(ahead_word_buff)) {
+            // Token_set_type(&ahead_token, ahead_word_buff);
+            // strcpy(ahead_token.value, ahead_word_buff);
+
+            Token_init(&new_token, cur_word_buff);
+
+            clear_str(cur_word_buff);
+            // clear_str(ahead_word_buff);
             cur_word_buff_pos = 0;
+
+            TokenArr_append(token_arr, new_token);
+            // TokenArr_append(token_arr, ahead_token);
+
+            continue;
+        }
+
+        if (code_sample[j] == ' ') {
+            Token_init(&new_token, cur_word_buff);
+
+            clear_str(cur_word_buff);
+            cur_word_buff_pos = 0;
+
+            TokenArr_append(token_arr, new_token);
+
             continue;
         }
     }
