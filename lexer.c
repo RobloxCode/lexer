@@ -100,14 +100,10 @@ TokenArr *lexeme(char *code_sample)
 
     char ahead_word_buff[WORD_MAX_CAP] = {0};
 
-    TokenType cur_token_type;
-    TokenType ahead_token_type;
-
     size_t j = 0;
     for (size_t i = 0; i < code_sample_len; ++i) {
         j = i + 1;
         Token new_token = {0};
-        Token ahead_token = {0};
 
         if (code_sample[i] == ' ') {
             continue;
@@ -132,17 +128,13 @@ TokenArr *lexeme(char *code_sample)
         }
 
         if (is_language_feature(ahead_word_buff)) {
-            // Token_set_type(&ahead_token, ahead_word_buff);
-            // strcpy(ahead_token.value, ahead_word_buff);
 
             Token_init(&new_token, cur_word_buff);
 
             clear_str(cur_word_buff);
-            // clear_str(ahead_word_buff);
             cur_word_buff_pos = 0;
 
             TokenArr_append(token_arr, new_token);
-            // TokenArr_append(token_arr, ahead_token);
 
             continue;
         }
