@@ -1,5 +1,6 @@
 #include "utils/Token.h"
 #include "utils/TokenArr.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -15,8 +16,7 @@ char *read_file(const char *filename);
 void clear_str(char *str);
 int is_language_feature(const char *str);
 
-int main(void)
-{
+int main(void) {
     char *file_content = read_file(SAMPLE_CODE_FILENAME);
     if (!file_content) {
         goto cleanup;
@@ -41,13 +41,11 @@ cleanup:
     return EXIT_SUCCESS;
 }
 
-void Token_set_value(Token *t, const char *value)
-{
+void Token_set_value(Token *t, const char *value) {
     strcpy(t->value, value);
 }
 
-void Token_set_type(Token *t, const char *word)
-{
+void Token_set_type(Token *t, const char *word) {
     if (is_hash(word)) {
         strcpy(t->type, "HASH");
     }
@@ -77,14 +75,12 @@ void Token_set_type(Token *t, const char *word)
     }
 }
 
-void Token_init(Token *t, const char *pattern)
-{
+void Token_init(Token *t, const char *pattern) {
     Token_set_type(t, pattern);
     Token_set_value(t, pattern);
 }
 
-TokenArr *lexeme(char *code_sample)
-{
+TokenArr *lexeme(char *code_sample) {
     if (!code_sample) {
         return NULL;
     }
@@ -99,6 +95,9 @@ TokenArr *lexeme(char *code_sample)
     size_t cur_word_buff_pos = 0;
 
     char ahead_word_buff[WORD_MAX_CAP] = {0};
+
+    TokenType cur_token_type;
+    TokenType ahead_token_type;
 
     size_t j = 0;
     for (size_t i = 0; i < code_sample_len; ++i) {
@@ -128,7 +127,6 @@ TokenArr *lexeme(char *code_sample)
         }
 
         if (is_language_feature(ahead_word_buff)) {
-
             Token_init(&new_token, cur_word_buff);
 
             clear_str(cur_word_buff);
@@ -154,8 +152,7 @@ TokenArr *lexeme(char *code_sample)
     return token_arr;
 }
 
-char *read_file(const char *filename)
-{
+char *read_file(const char *filename) {
     FILE *file = fopen(filename, "r");
     if (!file) {
         return NULL;
@@ -182,17 +179,15 @@ char *read_file(const char *filename)
     return buffer;
 }
 
-void clear_str(char *str)
-{
+void clear_str(char *str) {
     for (size_t i = 0; str[i] != '\0'; ++i) {
         str[i] = 0;
     }
 }
 
-int is_language_feature(const char *str)
-{
-    if (is_hash(str) || is_keyword(str) || is_operator(str) || is_number(str) ||
-        is_delimeter(str)) {
+int is_language_feature(const char *str) {
+    if (is_hash(str) || is_keyword(str) || is_operator(str) || is_number(str)
+        || is_delimeter(str)) {
         return 1;
     }
 
