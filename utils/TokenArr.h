@@ -2,6 +2,7 @@
 #define TOKENARR_H
 
 #include "Token.h"
+
 #include <stddef.h>
 
 typedef enum {

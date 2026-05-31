@@ -1,4 +1,5 @@
 #include "Token.h"
+
 #include <stdio.h>
 #include <string.h>
 
@@ -18,13 +19,11 @@ char *keywords[] = {"if",       "else",    "switch", "case",     "default",
                     "extern",   "typedef", "const",  "volatile", "restrict",
                     "struct",   "union",   "enum"};
 
-void Token_print(Token t)
-{
+void Token_print(Token t) {
     printf("%s(%s)\n", t.type, t.value);
 }
 
-int is_hash(const char *s)
-{
+int is_hash(const char *s) {
     if (strcmp(s, "#") == 0) {
         return 1;
     }
@@ -32,8 +31,7 @@ int is_hash(const char *s)
     return 0;
 }
 
-int is_keyword(const char *s)
-{
+int is_keyword(const char *s) {
     for (size_t i = 0; i < sizeof keywords / sizeof keywords[0]; ++i) {
         if (strcmp(s, keywords[i]) == 0) {
             return 1;
@@ -43,8 +41,7 @@ int is_keyword(const char *s)
     return 0;
 }
 
-int is_operator(const char *s)
-{
+int is_operator(const char *s) {
     for (size_t i = 0; i < sizeof operators / sizeof operators[0]; ++i) {
         if (strcmp(s, operators[i]) == 0) {
             return 1;
@@ -54,8 +51,7 @@ int is_operator(const char *s)
     return 0;
 }
 
-static int _is_digit(const char c)
-{
+static int _is_digit(const char c) {
     if (c >= '0' && c <= '9') {
         return 1;
     }
@@ -63,8 +59,7 @@ static int _is_digit(const char c)
     return 0;
 }
 
-int is_number(const char *s)
-{
+int is_number(const char *s) {
     size_t i = 0;
     int dots_counter = 0;
 
@@ -90,8 +85,7 @@ int is_number(const char *s)
     return 1;
 }
 
-static int _is_letter(const char c)
-{
+static int _is_letter(const char c) {
     if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z')) {
         return 1;
     }
@@ -99,8 +93,7 @@ static int _is_letter(const char c)
     return 0;
 }
 
-int is_identifier(const char *s)
-{
+int is_identifier(const char *s) {
     if (_is_digit(s[0])) {
         return 0;
     }
@@ -122,8 +115,7 @@ int is_identifier(const char *s)
     return 1;
 }
 
-int is_delimeter(const char *s)
-{
+int is_delimeter(const char *s) {
     if (strcmp(s, "{") == 0) {
         return 1;
     }
