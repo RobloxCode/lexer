@@ -25,7 +25,11 @@ extern char *operators[];
 extern char delimeters[];
 extern char *keywords[];
 
+void Token_init(Token *t, const char *word);
+void Token_set_type(Token *t, const char *word);
+void Token_set_value(Token *t, const char *word);
 void Token_print(Token t);
+
 int is_keyword(const char *s);
 int is_operator(const char *s);
 int is_number(const char *s);

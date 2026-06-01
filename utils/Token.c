@@ -19,8 +19,47 @@ char *keywords[] = {"if",       "else",    "switch", "case",     "default",
                     "extern",   "typedef", "const",  "volatile", "restrict",
                     "struct",   "union",   "enum"};
 
+void Token_init(Token *t, const char *word) {
+    Token_set_type(t, word);
+    Token_set_value(t, word);
+}
+
 void Token_print(Token t) {
     printf("%s(%s)\n", t.type, t.value);
+}
+
+void Token_set_type(Token *t, const char *word) {
+    if (is_hash(word)) {
+        strcpy(t->type, "HASH");
+    }
+
+    else if (is_keyword(word)) {
+        strcpy(t->type, "KEYWORD");
+    }
+
+    else if (is_operator(word)) {
+        strcpy(t->type, "OPERATOR");
+    }
+
+    else if (is_number(word)) {
+        strcpy(t->type, "NUMBER");
+    }
+
+    else if (is_identifier(word)) {
+        strcpy(t->type, "IDENTIFIER");
+    }
+
+    else if (is_delimeter(word)) {
+        strcpy(t->type, "DELIMETER");
+    }
+
+    else {
+        strcpy(t->type, "INVALID");
+    }
+}
+
+void Token_set_value(Token *t, const char *word) {
+    strcpy(t->value, word);
 }
 
 int is_hash(const char *s) {

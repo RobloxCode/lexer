@@ -8,9 +8,6 @@
 #define WORD_MAX_CAP         255
 #define SAMPLE_CODE_FILENAME "c_code.c"
 
-void Token_set_type(Token *t, const char *word);
-void Token_set_value(Token *t, const char *value);
-void Token_init(Token *t, const char *pattern);
 TokenArr *lexeme(char *code_sample);
 char *read_file(const char *filename);
 void clear_str(char *str);
@@ -39,45 +36,6 @@ cleanup:
     }
 
     return EXIT_SUCCESS;
-}
-
-void Token_set_value(Token *t, const char *value) {
-    strcpy(t->value, value);
-}
-
-void Token_set_type(Token *t, const char *word) {
-    if (is_hash(word)) {
-        strcpy(t->type, "HASH");
-    }
-
-    else if (is_keyword(word)) {
-        strcpy(t->type, "KEYWORD");
-    }
-
-    else if (is_operator(word)) {
-        strcpy(t->type, "OPERATOR");
-    }
-
-    else if (is_number(word)) {
-        strcpy(t->type, "NUMBER");
-    }
-
-    else if (is_identifier(word)) {
-        strcpy(t->type, "IDENTIFIER");
-    }
-
-    else if (is_delimeter(word)) {
-        strcpy(t->type, "DELIMETER");
-    }
-
-    else {
-        strcpy(t->type, "INVALID");
-    }
-}
-
-void Token_init(Token *t, const char *pattern) {
-    Token_set_type(t, pattern);
-    Token_set_value(t, pattern);
 }
 
 TokenArr *lexeme(char *code_sample) {
@@ -125,6 +83,9 @@ TokenArr *lexeme(char *code_sample) {
 
             continue;
         }
+
+        // if (is_number(cur_word_buff) && is_number(ahead_word_buff)) {
+        // }
 
         if (is_language_feature(ahead_word_buff)) {
             Token_init(&new_token, cur_word_buff);
