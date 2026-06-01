@@ -84,9 +84,6 @@ TokenArr *lexeme(char *code_sample) {
             continue;
         }
 
-        // if (is_number(cur_word_buff) && is_number(ahead_word_buff)) {
-        // }
-
         if (is_language_feature(ahead_word_buff)) {
             Token_init(&new_token, cur_word_buff);
 
@@ -147,7 +144,7 @@ void clear_str(char *str) {
 }
 
 int is_language_feature(const char *str) {
-    if (is_hash(str) || is_keyword(str) || is_operator(str) || is_number(str)
+    if (is_hash(str) || is_keyword(str) || is_operator(str)
         || is_delimeter(str)) {
         return 1;
     }
