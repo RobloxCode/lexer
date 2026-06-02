@@ -54,28 +54,28 @@ TokenArr *lexeme(char *src_code) {
 
     char ahead_word_buff[WORD_MAX_CAP] = {0};
 
-    size_t j = 0;
-    for (size_t i = 0; i < src_code_len; ++i) {
-        j = i + 1;
+    size_t ahead = 0;
+    for (size_t cur = 0; cur < src_code_len; ++cur) {
+        ahead = cur + 1;
         Token new_token = {0};
 
-        if (src_code[i] == ' ') {
+        if (src_code[cur] == ' ') {
             continue;
         }
 
-        if (src_code[i] == '\n') {
+        if (src_code[cur] == '\n') {
             continue;
         }
 
-        cur_word_buff[cur_word_buff_pos++] = src_code[i];
-        ahead_word_buff[0] = src_code[j];
+        cur_word_buff[cur_word_buff_pos++] = src_code[cur];
+        ahead_word_buff[0] = src_code[ahead];
 
-        if (src_code[i] == '"') {
-            i++;
-            while (src_code[j] != '"') {
-                j = i + 1;
-                cur_word_buff[cur_word_buff_pos++] = src_code[i];
-                i++;
+        if (src_code[cur] == '"') {
+            cur++;
+            while (src_code[cur] != '"') {
+                ahead = cur + 1;
+                cur_word_buff[cur_word_buff_pos++] = src_code[cur];
+                cur++;
             }
             cur_word_buff[cur_word_buff_pos++] = '"';
 
@@ -112,7 +112,7 @@ TokenArr *lexeme(char *src_code) {
             continue;
         }
 
-        if (src_code[j] == ' ') {
+        if (src_code[ahead] == ' ') {
             Token_init(&new_token, cur_word_buff);
 
             clear_str(cur_word_buff);
