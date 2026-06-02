@@ -6,15 +6,15 @@
 #include <string.h>
 
 #define WORD_MAX_CAP         255
-#define SAMPLE_CODE_FILENAME "c_code.c"
+#define SOURCE_CODE_FILENAME "c_code.c"
 
-TokenArr *lexeme(char *code_sample);
+TokenArr *lexeme(char *src_code);
 char *read_file(const char *filename);
 void clear_str(char *str);
-int is_language_feature(const char *str);
+int is_language_feature(const char *word);
 
 int main(void) {
-    char *file_content = read_file(SAMPLE_CODE_FILENAME);
+    char *file_content = read_file(SOURCE_CODE_FILENAME);
     if (!file_content) {
         goto cleanup;
     }
@@ -38,13 +38,13 @@ cleanup:
     return EXIT_SUCCESS;
 }
 
-TokenArr *lexeme(char *code_sample) {
-    if (!code_sample) {
+TokenArr *lexeme(char *src_code) {
+    if (!src_code) {
         return NULL;
     }
 
-    size_t code_sample_len = strlen(code_sample);
-    TokenArr *token_arr = TokenArr_init(code_sample_len);
+    size_t src_code_len = strlen(src_code);
+    TokenArr *token_arr = TokenArr_init(src_code_len);
     if (!token_arr) {
         return NULL;
     }
@@ -54,24 +54,21 @@ TokenArr *lexeme(char *code_sample) {
 
     char ahead_word_buff[WORD_MAX_CAP] = {0};
 
-    TokenType cur_token_type;
-    TokenType ahead_token_type;
-
     size_t j = 0;
-    for (size_t i = 0; i < code_sample_len; ++i) {
+    for (size_t i = 0; i < src_code_len; ++i) {
         j = i + 1;
         Token new_token = {0};
 
-        if (code_sample[i] == ' ') {
+        if (src_code[i] == ' ') {
             continue;
         }
 
-        if (code_sample[i] == '\n') {
+        if (src_code[i] == '\n') {
             continue;
         }
 
-        cur_word_buff[cur_word_buff_pos++] = code_sample[i];
-        ahead_word_buff[0] = code_sample[j];
+        cur_word_buff[cur_word_buff_pos++] = src_code[i];
+        ahead_word_buff[0] = src_code[j];
 
         if (is_language_feature(cur_word_buff)) {
             Token_init(&new_token, cur_word_buff);
@@ -95,7 +92,7 @@ TokenArr *lexeme(char *code_sample) {
             continue;
         }
 
-        if (code_sample[j] == ' ') {
+        if (src_code[j] == ' ') {
             Token_init(&new_token, cur_word_buff);
 
             clear_str(cur_word_buff);
@@ -143,9 +140,9 @@ void clear_str(char *str) {
     }
 }
 
-int is_language_feature(const char *str) {
-    if (is_hash(str) || is_keyword(str) || is_operator(str)
-        || is_delimeter(str)) {
+int is_language_feature(const char *word) {
+    if (is_hash(word) || is_keyword(word) || is_operator(word)
+        || is_delimeter(word)) {
         return 1;
     }
 
