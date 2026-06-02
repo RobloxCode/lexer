@@ -30,12 +30,6 @@ void Token_set_type(Token *t, const char *word);
 void Token_set_value(Token *t, const char *word);
 void Token_print(Token t);
 
-int is_keyword(const char *s);
-int is_operator(const char *s);
-int is_number(const char *s);
-int is_identifier(const char *s);
-int is_delimeter(const char *s);
-int is_hash(const char *s);
 int is_language_feature(const char *word);
 
 #endif

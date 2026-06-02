@@ -37,6 +37,32 @@ cleanup:
     return EXIT_SUCCESS;
 }
 
+void emit_token(TokenArr *token_arr, Token *token, char *cur_word_buff,
+                size_t *cur_word_buff_pos) {
+    clear_str(cur_word_buff);
+    *cur_word_buff_pos = 0;
+    TokenArr_append(token_arr, *token);
+}
+
+void handle_str(TokenArr *token_arr, size_t *cur, char *src_code,
+                char *cur_word_buff, size_t *cur_word_buff_pos) {
+    (*cur)++;
+
+    while (src_code[*cur] != '"') {
+        cur_word_buff[(*cur_word_buff_pos)++] = src_code[*cur];
+        (*cur)++;
+    }
+
+    cur_word_buff[(*cur_word_buff_pos)++] = '"';
+
+    Token token = {0};
+
+    strcpy(token.type, "STRING");
+    strcpy(token.value, cur_word_buff);
+
+    emit_token(token_arr, &token, cur_word_buff, cur_word_buff_pos);
+}
+
 TokenArr *lexeme(char *src_code) {
     if (!src_code) {
         return NULL;
@@ -56,7 +82,6 @@ TokenArr *lexeme(char *src_code) {
     size_t ahead = 0;
     for (size_t cur = 0; cur < src_code_len; ++cur) {
         ahead = cur + 1;
-        Token new_token = {0};
 
         if (src_code[cur] == ' ') {
             continue;
@@ -70,55 +95,29 @@ TokenArr *lexeme(char *src_code) {
         ahead_word_buff[0] = src_code[ahead];
 
         if (src_code[cur] == '"') {
-            cur++;
-            while (src_code[cur] != '"') {
-                ahead = cur + 1;
-                cur_word_buff[cur_word_buff_pos++] = src_code[cur];
-                cur++;
-            }
-            cur_word_buff[cur_word_buff_pos++] = '"';
-
-            strcpy(new_token.type, "STRING");
-            Token_set_value(&new_token, cur_word_buff);
-
-            clear_str(cur_word_buff);
-            cur_word_buff_pos = 0;
-
-            TokenArr_append(token_arr, new_token);
-
+            handle_str(token_arr, &cur, src_code, cur_word_buff,
+                       &cur_word_buff_pos);
             continue;
         }
 
         if (is_language_feature(cur_word_buff)) {
-            Token_init(&new_token, cur_word_buff);
-
-            clear_str(cur_word_buff);
-            cur_word_buff_pos = 0;
-
-            TokenArr_append(token_arr, new_token);
-
+            Token token;
+            Token_init(&token, cur_word_buff);
+            emit_token(token_arr, &token, cur_word_buff, &cur_word_buff_pos);
             continue;
         }
 
         if (is_language_feature(ahead_word_buff)) {
-            Token_init(&new_token, cur_word_buff);
-
-            clear_str(cur_word_buff);
-            cur_word_buff_pos = 0;
-
-            TokenArr_append(token_arr, new_token);
-
+            Token token;
+            Token_init(&token, cur_word_buff);
+            emit_token(token_arr, &token, cur_word_buff, &cur_word_buff_pos);
             continue;
         }
 
         if (src_code[ahead] == ' ') {
-            Token_init(&new_token, cur_word_buff);
-
-            clear_str(cur_word_buff);
-            cur_word_buff_pos = 0;
-
-            TokenArr_append(token_arr, new_token);
-
+            Token token;
+            Token_init(&token, cur_word_buff);
+            emit_token(token_arr, &token, cur_word_buff, &cur_word_buff_pos);
             continue;
         }
     }
