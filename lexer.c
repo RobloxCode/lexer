@@ -70,6 +70,26 @@ TokenArr *lexeme(char *src_code) {
         cur_word_buff[cur_word_buff_pos++] = src_code[i];
         ahead_word_buff[0] = src_code[j];
 
+        if (src_code[i] == '"') {
+            i++;
+            while (src_code[j] != '"') {
+                j = i + 1;
+                cur_word_buff[cur_word_buff_pos++] = src_code[i];
+                i++;
+            }
+            cur_word_buff[cur_word_buff_pos++] = '"';
+
+            strcpy(new_token.type, "STRING");
+            Token_set_value(&new_token, cur_word_buff);
+
+            clear_str(cur_word_buff);
+            cur_word_buff_pos = 0;
+
+            TokenArr_append(token_arr, new_token);
+
+            continue;
+        }
+
         if (is_language_feature(cur_word_buff)) {
             Token_init(&new_token, cur_word_buff);
 
