@@ -22,7 +22,7 @@ typedef struct {
 } Token;
 
 extern char *operators[];
-extern char delimeters[];
+extern char *delimeters[];
 extern char *keywords[];
 
 void Token_init(Token *t, const char *word);
@@ -36,5 +36,6 @@ int is_number(const char *s);
 int is_identifier(const char *s);
 int is_delimeter(const char *s);
 int is_hash(const char *s);
+int is_language_feature(const char *word);
 
 #endif

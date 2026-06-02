@@ -11,7 +11,6 @@
 TokenArr *lexeme(char *src_code);
 char *read_file(const char *filename);
 void clear_str(char *str);
-int is_language_feature(const char *word);
 
 int main(void) {
     char *file_content = read_file(SOURCE_CODE_FILENAME);
@@ -158,13 +157,4 @@ void clear_str(char *str) {
     for (size_t i = 0; str[i] != '\0'; ++i) {
         str[i] = 0;
     }
-}
-
-int is_language_feature(const char *word) {
-    if (is_hash(word) || is_keyword(word) || is_operator(word)
-        || is_delimeter(word)) {
-        return 1;
-    }
-
-    return 0;
 }

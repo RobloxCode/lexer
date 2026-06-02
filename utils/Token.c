@@ -9,7 +9,7 @@ char *operators[] = {
     "||", "!=", "==", "<",  ">",  "<=", ">=", "++", "--",
 };
 
-char delimeters[] = "(){}[],;";
+char *delimeters[] = {"(", ")", "{", "}", ",", ".", ";", ":"};
 
 char *keywords[] = {"if",       "else",    "switch", "case",     "default",
                     "for",      "while",   "do",     "break",    "continue",
@@ -41,16 +41,16 @@ void Token_set_type(Token *t, const char *word) {
         strcpy(t->type, "OPERATOR");
     }
 
-    else if (is_number(word)) {
-        strcpy(t->type, "NUMBER");
-    }
-
     else if (is_identifier(word)) {
         strcpy(t->type, "IDENTIFIER");
     }
 
     else if (is_delimeter(word)) {
         strcpy(t->type, "DELIMETER");
+    }
+
+    else if (is_number(word)) {
+        strcpy(t->type, "NUMBER");
     }
 
     else {
@@ -83,6 +83,16 @@ int is_keyword(const char *s) {
 int is_operator(const char *s) {
     for (size_t i = 0; i < sizeof operators / sizeof operators[0]; ++i) {
         if (strcmp(s, operators[i]) == 0) {
+            return 1;
+        }
+    }
+
+    return 0;
+}
+
+int is_delimeter(const char *s) {
+    for (size_t i = 0; i < sizeof delimeters / sizeof delimeters[0]; ++i) {
+        if (strcmp(s, delimeters[i]) == 0) {
             return 1;
         }
     }
@@ -154,44 +164,9 @@ int is_identifier(const char *s) {
     return 1;
 }
 
-int is_delimeter(const char *s) {
-    if (strcmp(s, "{") == 0) {
-        return 1;
-    }
-
-    if (strcmp(s, "}") == 0) {
-        return 1;
-    }
-
-    if (strcmp(s, "(") == 0) {
-        return 1;
-    }
-
-    if (strcmp(s, ")") == 0) {
-        return 1;
-    }
-
-    if (strcmp(s, "[") == 0) {
-        return 1;
-    }
-
-    if (strcmp(s, "]") == 0) {
-        return 1;
-    }
-
-    if (strcmp(s, ",") == 0) {
-        return 1;
-    }
-
-    if (strcmp(s, ".") == 0) {
-        return 1;
-    }
-
-    if (strcmp(s, ";") == 0) {
-        return 1;
-    }
-
-    if (strcmp(s, ":") == 0) {
+int is_language_feature(const char *word) {
+    if (is_hash(word) || is_keyword(word) || is_operator(word)
+        || is_delimeter(word)) {
         return 1;
     }
 
