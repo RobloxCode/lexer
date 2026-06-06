@@ -30,6 +30,8 @@ void Token_set_type(Token *t, const char *word);
 void Token_set_value(Token *t, const char *word);
 void Token_print(Token t);
 
+int is_number(const char *s);
+int is_digit(const char c);
 int is_language_feature(const char *word);
 
 #endif

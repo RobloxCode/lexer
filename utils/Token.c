@@ -61,7 +61,7 @@ static int _is_delimeter(const char *s) {
     return 0;
 }
 
-static int _is_digit(const char c) {
+int is_digit(const char c) {
     if (c >= '0' && c <= '9') {
         return 1;
     }
@@ -69,13 +69,17 @@ static int _is_digit(const char c) {
     return 0;
 }
 
-static int _is_number(const char *s) {
+int is_number(const char *s) {
     size_t i = 0;
     int dots_counter = 0;
 
-    if (s[0] == '+' || s[0] == '-') {
-        i = 1;
+    if (!strlen(s)) {
+        return 0;
     }
+
+    // if (s[0] == '+' || s[0] == '-') {
+    //     i = 1;
+    // }
 
     for (; s[i] != '\0'; ++i) {
         if (s[i] == '.') {
@@ -83,7 +87,7 @@ static int _is_number(const char *s) {
             continue;
         }
 
-        if (!_is_digit(s[i])) {
+        if (!is_digit(s[i])) {
             return 0;
         }
     }
@@ -104,7 +108,7 @@ static int _is_letter(const char c) {
 }
 
 static int _is_identifier(const char *s) {
-    if (_is_digit(s[0])) {
+    if (is_digit(s[0])) {
         return 0;
     }
 
@@ -113,7 +117,7 @@ static int _is_identifier(const char *s) {
             continue;
         }
 
-        if (_is_digit(s[i])) {
+        if (is_digit(s[i])) {
             continue;
         }
 
@@ -151,10 +155,10 @@ void Token_init(Token *t, const char *word) {
         strcpy(t->value, word);
     }
 
-    else if (_is_number(word)) {
-        strcpy(t->type, "NUMBER");
-        strcpy(t->value, word);
-    }
+    // else if (is_number(word)) {
+    //     strcpy(t->type, "NUMBER");
+    //     strcpy(t->value, word);
+    // }
 
     else {
         strcpy(t->type, "INVALID");
