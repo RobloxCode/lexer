@@ -44,8 +44,8 @@ void emit_token(TokenArr *token_arr, Token *token, char *cur_word_buff,
     TokenArr_append(token_arr, *token);
 }
 
-void handle_str(TokenArr *token_arr, size_t *cur, char *src_code,
-                char *cur_word_buff, size_t *cur_word_buff_pos) {
+void handle_str(size_t *cur, char *src_code, char *cur_word_buff,
+                size_t *cur_word_buff_pos) {
     (*cur)++;
 
     while (src_code[*cur] != '"') {
@@ -54,17 +54,10 @@ void handle_str(TokenArr *token_arr, size_t *cur, char *src_code,
     }
 
     cur_word_buff[(*cur_word_buff_pos)++] = '"';
-
-    Token token = {0};
-
-    strcpy(token.type, "STRING");
-    strcpy(token.value, cur_word_buff);
-
-    emit_token(token_arr, &token, cur_word_buff, cur_word_buff_pos);
 }
 
-void hande_number(TokenArr *token_arr, size_t *cur, char *src_code,
-                  char *cur_word_buff, size_t *cur_word_buff_pos) {
+void hande_number(size_t *cur, char *src_code, char *cur_word_buff,
+                  size_t *cur_word_buff_pos) {
     (*cur)++;
     while (is_digit(src_code[*cur]) || src_code[*cur] == '.') {
         if (src_code[*cur] == '.') {
@@ -76,11 +69,6 @@ void hande_number(TokenArr *token_arr, size_t *cur, char *src_code,
         cur_word_buff[(*cur_word_buff_pos)++] = src_code[*cur];
         (*cur)++;
     }
-
-    Token token;
-    strcpy(token.type, "NUMBER");
-    strcpy(token.value, cur_word_buff);
-    emit_token(token_arr, &token, cur_word_buff, cur_word_buff_pos);
 
     // i dont know why we go pass one when its not number
     (*cur)--;
@@ -104,6 +92,7 @@ TokenArr *lexeme(char *src_code) {
 
     size_t ahead = 0;
     for (size_t cur = 0; cur < src_code_len; ++cur) {
+        Token token;
         ahead = cur + 1;
 
         if (src_code[cur] == ' ') {
@@ -118,33 +107,34 @@ TokenArr *lexeme(char *src_code) {
         ahead_word_buff[0] = src_code[ahead];
 
         if (src_code[cur] == '"') {
-            handle_str(token_arr, &cur, src_code, cur_word_buff,
-                       &cur_word_buff_pos);
+            handle_str(&cur, src_code, cur_word_buff, &cur_word_buff_pos);
+            strcpy(token.type, "STRING");
+            strcpy(token.value, cur_word_buff);
+            emit_token(token_arr, &token, cur_word_buff, &cur_word_buff_pos);
             continue;
         }
 
         if (is_digit(src_code[cur])) {
-            hande_number(token_arr, &cur, src_code, cur_word_buff,
-                         &cur_word_buff_pos);
+            hande_number(&cur, src_code, cur_word_buff, &cur_word_buff_pos);
+            strcpy(token.type, "NUMBER");
+            strcpy(token.value, cur_word_buff);
+            emit_token(token_arr, &token, cur_word_buff, &cur_word_buff_pos);
             continue;
         }
 
         if (is_language_feature(cur_word_buff)) {
-            Token token;
             Token_init(&token, cur_word_buff);
             emit_token(token_arr, &token, cur_word_buff, &cur_word_buff_pos);
             continue;
         }
 
         if (is_language_feature(ahead_word_buff)) {
-            Token token;
             Token_init(&token, cur_word_buff);
             emit_token(token_arr, &token, cur_word_buff, &cur_word_buff_pos);
             continue;
         }
 
         if (src_code[ahead] == ' ') {
-            Token token;
             Token_init(&token, cur_word_buff);
             emit_token(token_arr, &token, cur_word_buff, &cur_word_buff_pos);
             continue;
