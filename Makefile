@@ -1,15 +1,18 @@
 CC = gcc
-
 CFLAGS = -std=c11 -Wall -Wextra -Wconversion -pedantic -g \
          -fsanitize=address -fno-omit-frame-pointer
 
-SRC = lexer.c utils/TokenArr.c utils/Token.c
-OUT = out
+SRC = src/main.c src/lexer.c utils/TokenArr.c utils/Token.c
+OUT = bin/out
 
 $(OUT): $(SRC)
+	mkdir -p bin
 	$(CC) $(CFLAGS) $^ -o $@
 
-clean:
-	rm -f $(OUT)
+run: $(OUT)
+	./$(OUT)
 
-.PHONY: clean
+clean:
+	rm -rf bin/
+
+.PHONY: clean run
