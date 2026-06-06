@@ -1,6 +1,9 @@
 #include "../../utils/Token.h"
 
 #include <stdio.h>
+#include <stdlib.h>
+
+static int fail;
 
 void test_is_number(const char *s);
 
@@ -15,7 +18,8 @@ int main(void) {
     test_is_number("12345;");
     test_is_number("");
     test_is_number(" ");
-    return 0;
+
+    return fail ? EXIT_FAILURE : EXIT_SUCCESS;
 }
 
 void test_is_number(const char *s) {
@@ -23,5 +27,6 @@ void test_is_number(const char *s) {
         printf("%s is a number\n", s);
     } else {
         printf("%s is not a number\n", s);
+        fail = 1;
     }
 }

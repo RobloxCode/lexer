@@ -1,41 +1,16 @@
-#include "utils/Token.h"
-#include "utils/TokenArr.h"
+#include "../utils/Token.h"
+#include "../utils/TokenArr.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 #define WORD_MAX_CAP         255
-#define SOURCE_CODE_FILENAME "c_code.c"
+#define SOURCE_CODE_FILENAME "source.c"
 
 TokenArr *lexeme(char *src_code);
 char *read_file(const char *filename);
 void clear_str(char *str);
-
-int main(void) {
-    char *file_content = read_file(SOURCE_CODE_FILENAME);
-    if (!file_content) {
-        goto cleanup;
-    }
-
-    TokenArr *token_arr = lexeme(file_content);
-    if (!token_arr) {
-        goto cleanup;
-    }
-
-    TokenArr_println(token_arr);
-
-cleanup:
-    if (token_arr) {
-        TokenArr_deinit(&token_arr);
-    }
-
-    if (file_content) {
-        free(file_content);
-    }
-
-    return EXIT_SUCCESS;
-}
 
 void emit_token(TokenArr *token_arr, Token *token, char *cur_word_buff,
                 size_t *cur_word_buff_pos) {
