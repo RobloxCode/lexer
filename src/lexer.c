@@ -1,3 +1,5 @@
+#include "lexer.h"
+
 #include "../utils/Token.h"
 #include "../utils/TokenArr.h"
 
@@ -7,10 +9,6 @@
 
 #define WORD_MAX_CAP         255
 #define SOURCE_CODE_FILENAME "source.c"
-
-TokenArr *lexeme(char *src_code);
-char *read_file(const char *filename);
-void clear_str(char *str);
 
 void emit_token(TokenArr *token_arr, Token *token, char *cur_word_buff,
                 size_t *cur_word_buff_pos) {
