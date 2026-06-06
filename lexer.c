@@ -63,6 +63,29 @@ void handle_str(TokenArr *token_arr, size_t *cur, char *src_code,
     emit_token(token_arr, &token, cur_word_buff, cur_word_buff_pos);
 }
 
+void hande_number(TokenArr *token_arr, size_t *cur, char *src_code,
+                  char *cur_word_buff, size_t *cur_word_buff_pos) {
+    (*cur)++;
+    while (is_digit(src_code[*cur]) || src_code[*cur] == '.') {
+        if (src_code[*cur] == '.') {
+            cur_word_buff[(*cur_word_buff_pos)++] = src_code[*cur];
+            (*cur)++;
+            continue;
+        }
+
+        cur_word_buff[(*cur_word_buff_pos)++] = src_code[*cur];
+        (*cur)++;
+    }
+
+    Token token;
+    strcpy(token.type, "NUMBER");
+    strcpy(token.value, cur_word_buff);
+    emit_token(token_arr, &token, cur_word_buff, cur_word_buff_pos);
+
+    // i dont know why we go pass one when its not number
+    (*cur)--;
+}
+
 TokenArr *lexeme(char *src_code) {
     if (!src_code) {
         return NULL;
@@ -97,6 +120,12 @@ TokenArr *lexeme(char *src_code) {
         if (src_code[cur] == '"') {
             handle_str(token_arr, &cur, src_code, cur_word_buff,
                        &cur_word_buff_pos);
+            continue;
+        }
+
+        if (is_digit(src_code[cur])) {
+            hande_number(token_arr, &cur, src_code, cur_word_buff,
+                         &cur_word_buff_pos);
             continue;
         }
 
