@@ -77,9 +77,9 @@ int is_number(const char *s) {
         return 0;
     }
 
-    // if (s[0] == '+' || s[0] == '-') {
-    //     i = 1;
-    // }
+    if (s[0] == '+' || s[0] == '-') {
+        i = 1;
+    }
 
     for (; s[i] != '\0'; ++i) {
         if (s[i] == '.') {
@@ -154,11 +154,6 @@ void Token_init(Token *t, const char *word) {
         strcpy(t->type, "DELIMETER");
         strcpy(t->value, word);
     }
-
-    // else if (is_number(word)) {
-    //     strcpy(t->type, "NUMBER");
-    //     strcpy(t->value, word);
-    // }
 
     else {
         strcpy(t->type, "INVALID");
