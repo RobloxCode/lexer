@@ -124,9 +124,7 @@ char *read_file(const char *filename) {
     }
 
     fseek(file, 0, SEEK_END);
-
     long size = ftell(file);
-
     rewind(file);
 
     char *buffer = malloc((size_t)size + 1);
@@ -136,9 +134,7 @@ char *read_file(const char *filename) {
     }
 
     fread(buffer, 1, (size_t)size, file);
-
     buffer[size] = '\0';
-
     fclose(file);
 
     return buffer;
