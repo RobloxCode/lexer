@@ -9,7 +9,7 @@ char *operators[] = {
     "||", "!=", "==", "<",  ">",  "<=", ">=", "++", "--",
 };
 
-char *delimeters[] = {"(", ")", "{", "}", ",", ".", ";", ":"};
+char *delimeters[] = {"(", ")", "{", "}", "[", "]", ",", ".", ";", ":"};
 
 char *keywords[] = {"if",       "else",    "switch", "case",     "default",
                     "for",      "while",   "do",     "break",    "continue",
