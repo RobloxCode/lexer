@@ -33,17 +33,10 @@ void hande_number(size_t *cur, char *src_code, char *cur_word_buff,
                   size_t *cur_word_buff_pos) {
     (*cur)++;
     while (is_digit(src_code[*cur]) || src_code[*cur] == '.') {
-        if (src_code[*cur] == '.') {
-            cur_word_buff[(*cur_word_buff_pos)++] = src_code[*cur];
-            (*cur)++;
-            continue;
-        }
-
         cur_word_buff[(*cur_word_buff_pos)++] = src_code[*cur];
         (*cur)++;
     }
 
-    // i dont know why we go pass one when its not number
     (*cur)--;
 }
 
