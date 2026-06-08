@@ -1,14 +1,14 @@
-#include "TokenArr.h"
+#include "token_arr.h"
 
-#include "Token.h"
+#include "token.h"
 
 #include <inttypes.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-TokenArr *TokenArr_init(size_t init_capacity) {
-    if (init_capacity == 0) {
+TokenArr *token_arr_init(size_t cap) {
+    if (cap == 0) {
         return NULL;
     }
 
@@ -17,20 +17,20 @@ TokenArr *TokenArr_init(size_t init_capacity) {
         return NULL;
     }
 
-    Token *items = calloc(init_capacity, sizeof *items);
+    Token *items = calloc(cap, sizeof *items);
     if (!items) {
         free(token_arr);
         return NULL;
     }
 
     token_arr->items = items;
-    token_arr->capacity = init_capacity;
+    token_arr->capacity = cap;
     token_arr->length = 0;
 
     return token_arr;
 }
 
-TokenArr_status TokenArr_deinit(TokenArr **token_arr) {
+TokenArr_status token_arr_deinit(TokenArr **token_arr) {
     if (!token_arr || !*token_arr) {
         return TOKENARR_WRONG_PTR;
     }
@@ -42,7 +42,7 @@ TokenArr_status TokenArr_deinit(TokenArr **token_arr) {
     return TOKENARR_OK;
 }
 
-TokenArr_status TokenArr_append(TokenArr *token_arr, Token item) {
+TokenArr_status token_arr_append(TokenArr *token_arr, Token item) {
     if (!token_arr) {
         return TOKENARR_WRONG_PTR;
     }
@@ -71,8 +71,8 @@ TokenArr_status TokenArr_append(TokenArr *token_arr, Token item) {
     return TOKENARR_OK;
 }
 
-TokenArr_status TokenArr_swap(TokenArr *token_arr, size_t index1,
-                              size_t index2) {
+TokenArr_status token_arr_swap(TokenArr *token_arr, size_t index1,
+                               size_t index2) {
     if (!token_arr) {
         return TOKENARR_WRONG_PTR;
     }
@@ -88,7 +88,7 @@ TokenArr_status TokenArr_swap(TokenArr *token_arr, size_t index1,
     return TOKENARR_OK;
 }
 
-TokenArr_status TokenArr_remove(TokenArr *token_arr, size_t index) {
+TokenArr_status token_arr_remove(TokenArr *token_arr, size_t index) {
     if (!token_arr) {
         return TOKENARR_WRONG_PTR;
     }
@@ -99,7 +99,7 @@ TokenArr_status TokenArr_remove(TokenArr *token_arr, size_t index) {
 
     TokenArr_status status = TOKENARR_OK;
     for (size_t i = index; i < token_arr->length - 1; ++i) {
-        status = TokenArr_swap(token_arr, i, i + 1);
+        status = token_arr_swap(token_arr, i, i + 1);
         if (status != TOKENARR_OK) {
             return status;
         }
@@ -110,7 +110,7 @@ TokenArr_status TokenArr_remove(TokenArr *token_arr, size_t index) {
     return TOKENARR_OK;
 }
 
-TokenArr_status TokenArr_println(TokenArr *token_arr) {
+TokenArr_status token_arr_println(TokenArr *token_arr) {
     if (!token_arr) {
         return TOKENARR_WRONG_PTR;
     }
@@ -123,7 +123,7 @@ TokenArr_status TokenArr_println(TokenArr *token_arr) {
     return TOKENARR_OK;
 }
 
-TokenArr_status TokenArr_get(TokenArr *token_arr, size_t index, Token *buff) {
+TokenArr_status token_arr_get(TokenArr *token_arr, size_t index, Token *buff) {
     if (!token_arr || !buff) {
         return TOKENARR_WRONG_PTR;
     }

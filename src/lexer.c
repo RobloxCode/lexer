@@ -1,24 +1,29 @@
 #include "lexer.h"
 
-#include "../utils/Token.h"
-#include "../utils/TokenArr.h"
+#include "../utils/token.h"
+#include "../utils/token_arr.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-#define WORD_MAX_CAP         255
-#define SOURCE_CODE_FILENAME "source.c"
+#define WORD_MAX_CAP 255
 
-void emit_token(TokenArr *token_arr, Token *token, char *cur_word_buff,
-                size_t *cur_word_buff_pos) {
-    clear_str(cur_word_buff);
-    *cur_word_buff_pos = 0;
-    TokenArr_append(token_arr, *token);
+static void clear_str(char *str) {
+    for (size_t i = 0; str[i] != '\0'; ++i) {
+        str[i] = 0;
+    }
 }
 
-void handle_str(size_t *cur, char *src_code, char *cur_word_buff,
-                size_t *cur_word_buff_pos) {
+static void emit_token(TokenArr *token_arr, Token *token, char *cur_word_buff,
+                       size_t *cur_word_buff_pos) {
+    clear_str(cur_word_buff);
+    *cur_word_buff_pos = 0;
+    token_arr_append(token_arr, *token);
+}
+
+static void handle_str(size_t *cur, char *src_code, char *cur_word_buff,
+                       size_t *cur_word_buff_pos) {
     (*cur)++;
 
     while (src_code[*cur] != '"') {
@@ -29,9 +34,10 @@ void handle_str(size_t *cur, char *src_code, char *cur_word_buff,
     cur_word_buff[(*cur_word_buff_pos)++] = '"';
 }
 
-void hande_number(size_t *cur, char *src_code, char *cur_word_buff,
-                  size_t *cur_word_buff_pos) {
+static void hande_number(size_t *cur, char *src_code, char *cur_word_buff,
+                         size_t *cur_word_buff_pos) {
     (*cur)++;
+
     while (is_digit(src_code[*cur]) || src_code[*cur] == '.') {
         cur_word_buff[(*cur_word_buff_pos)++] = src_code[*cur];
         (*cur)++;
@@ -46,7 +52,7 @@ TokenArr *lexeme(char *src_code) {
     }
 
     size_t src_code_len = strlen(src_code);
-    TokenArr *token_arr = TokenArr_init(src_code_len);
+    TokenArr *token_arr = token_arr_init(src_code_len);
     if (!token_arr) {
         return NULL;
     }
@@ -89,52 +95,23 @@ TokenArr *lexeme(char *src_code) {
         }
 
         if (is_language_feature(cur_word_buff)) {
-            Token_init(&token, cur_word_buff);
+            token_init(&token, cur_word_buff);
             emit_token(token_arr, &token, cur_word_buff, &cur_word_buff_pos);
             continue;
         }
 
         if (is_language_feature(ahead_word_buff)) {
-            Token_init(&token, cur_word_buff);
+            token_init(&token, cur_word_buff);
             emit_token(token_arr, &token, cur_word_buff, &cur_word_buff_pos);
             continue;
         }
 
         if (src_code[ahead] == ' ') {
-            Token_init(&token, cur_word_buff);
+            token_init(&token, cur_word_buff);
             emit_token(token_arr, &token, cur_word_buff, &cur_word_buff_pos);
             continue;
         }
     }
 
     return token_arr;
-}
-
-char *read_file(const char *filename) {
-    FILE *file = fopen(filename, "r");
-    if (!file) {
-        return NULL;
-    }
-
-    fseek(file, 0, SEEK_END);
-    long size = ftell(file);
-    rewind(file);
-
-    char *buffer = malloc((size_t)size + 1);
-    if (!buffer) {
-        fclose(file);
-        return NULL;
-    }
-
-    fread(buffer, 1, (size_t)size, file);
-    buffer[size] = '\0';
-    fclose(file);
-
-    return buffer;
-}
-
-void clear_str(char *str) {
-    for (size_t i = 0; str[i] != '\0'; ++i) {
-        str[i] = 0;
-    }
 }
