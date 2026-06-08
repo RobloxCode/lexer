@@ -5,6 +5,29 @@
 
 #define SOURCE_CODE_FILENAME "src/source.c"
 
+char *read_file(const char *filename) {
+    FILE *file = fopen(filename, "r");
+    if (!file) {
+        return NULL;
+    }
+
+    fseek(file, 0, SEEK_END);
+    long size = ftell(file);
+    rewind(file);
+
+    char *buffer = malloc((size_t)size + 1);
+    if (!buffer) {
+        fclose(file);
+        return NULL;
+    }
+
+    fread(buffer, 1, (size_t)size, file);
+    buffer[size] = '\0';
+    fclose(file);
+
+    return buffer;
+}
+
 int main(void) {
     char *file_content = NULL;
     TokenArr *token_arr = NULL;
@@ -20,11 +43,11 @@ int main(void) {
         goto cleanup;
     }
 
-    TokenArr_println(token_arr);
+    token_arr_println(token_arr);
 
 cleanup:
     if (token_arr) {
-        TokenArr_deinit(&token_arr);
+        token_arr_deinit(&token_arr);
     }
 
     if (file_content) {
