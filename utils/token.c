@@ -1,23 +1,9 @@
 #include "token.h"
 
+#include "exp.h"
+
 #include <stdio.h>
 #include <string.h>
-
-char *operators[] = {
-    "+",  "-",  "*",  "/",  "%",  "=",  "+=", "-=", "*=", "/=", "%=",
-    "&=", "|=", "~=", "^=", "<<", ">>", "&",  "|",  "~",  "^",  "&&",
-    "||", "!=", "==", "<",  ">",  "<=", ">=", "++", "--",
-};
-
-char *delimeters[] = {"(", ")", "{", "}", "[", "]", ",", ".", ";", ":"};
-
-char *keywords[] = {"if",       "else",    "switch", "case",     "default",
-                    "for",      "while",   "do",     "break",    "continue",
-                    "goto",     "return",  "int",    "char",     "float",
-                    "double",   "void",    "short",  "long",     "signed",
-                    "unsigned", "_Bool",   "auto",   "register", "static",
-                    "extern",   "typedef", "const",  "volatile", "restrict",
-                    "struct",   "union",   "enum"};
 
 void token_print(Token t) {
     printf("%s(%s)\n", t.type, t.value);
@@ -32,8 +18,8 @@ static int _is_hash(const char *s) {
 }
 
 static int _is_keyword(const char *s) {
-    for (size_t i = 0; i < sizeof keywords / sizeof keywords[0]; ++i) {
-        if (strcmp(s, keywords[i]) == 0) {
+    for (size_t i = 0; i < exp_keywords_len; ++i) {
+        if (strcmp(s, exp_keywords[i].val) == 0) {
             return 1;
         }
     }
@@ -42,8 +28,8 @@ static int _is_keyword(const char *s) {
 }
 
 static int _is_operator(const char *s) {
-    for (size_t i = 0; i < sizeof operators / sizeof operators[0]; ++i) {
-        if (strcmp(s, operators[i]) == 0) {
+    for (size_t i = 0; i < exp_operators_len; ++i) {
+        if (strcmp(s, exp_operators[i].val) == 0) {
             return 1;
         }
     }
@@ -52,8 +38,8 @@ static int _is_operator(const char *s) {
 }
 
 static int _is_delimeter(const char *s) {
-    for (size_t i = 0; i < sizeof delimeters / sizeof delimeters[0]; ++i) {
-        if (strcmp(s, delimeters[i]) == 0) {
+    for (size_t i = 0; i < exp_delimeters_len; ++i) {
+        if (strcmp(s, exp_delimeters[i].val) == 0) {
             return 1;
         }
     }
@@ -136,12 +122,22 @@ void token_init(Token *t, const char *word) {
     }
 
     else if (_is_keyword(word)) {
-        strcpy(t->type, "KEYWORD");
+        for (size_t i = 0; i < exp_keywords_len; ++i) {
+            if (strcmp(word, exp_keywords[i].val) == 0) {
+                strcpy(t->type, exp_keywords[i].tok_type_str);
+                break;
+            }
+        }
         strcpy(t->value, word);
     }
 
     else if (_is_operator(word)) {
-        strcpy(t->type, "OPERATOR");
+        for (size_t i = 0; i < exp_operators_len; ++i) {
+            if (strcmp(word, exp_operators[i].val) == 0) {
+                strcpy(t->type, exp_operators[i].tok_type_str);
+                break;
+            }
+        }
         strcpy(t->value, word);
     }
 
@@ -151,7 +147,12 @@ void token_init(Token *t, const char *word) {
     }
 
     else if (_is_delimeter(word)) {
-        strcpy(t->type, "DELIMETER");
+        for (size_t i = 0; i < exp_delimeters_len; ++i) {
+            if (strcmp(word, exp_delimeters[i].val) == 0) {
+                strcpy(t->type, exp_delimeters[i].tok_type_str);
+                break;
+            }
+        }
         strcpy(t->value, word);
     }
 

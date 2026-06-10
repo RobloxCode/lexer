@@ -116,7 +116,7 @@ TokenArr_status token_arr_println(TokenArr *token_arr) {
     }
 
     for (size_t i = 0; i < token_arr->length; ++i) {
-        printf("%s(%s)\n", token_arr->items[i].type, token_arr->items[i].value);
+        token_print(token_arr->items[i]);
     }
 
     printf("\n");
