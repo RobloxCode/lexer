@@ -1,0 +1,97 @@
+#include "exp.h"
+
+#include <stddef.h>
+
+Exp exp_operators[] = {
+    {"+", "PLUS", TOK_PLUS},
+    {"-", "MINUS", TOK_MINUS},
+    {"*", "STAR", TOK_STAR},
+    {"/", "SLASH", TOK_SLASH},
+    {"%", "MODULO", TOK_MODULO},
+    {"=", "ASSIGN", TOK_ASSIGN},
+    {"+=", "ADD ASSIGN", TOK_ADD_ASSIGN},
+    {"-=", "SUB ASSIGN", TOK_SUB_ASSIGN},
+    {"*=", "MUL ASSIGN", TOK_MUL_ASSIGN},
+    {"/=", "DIV ASSIGN", TOK_DIV_ASSIGN},
+    {"%=", "MOD ASSIGN", TOK_MOD_ASSIGN},
+    {"&=", "AND ASSIGN", TOK_BIT_AND_ASSIGN},
+    {"|=", "OR ASSIGNM", TOK_BIT_OR_ASSIGN},
+    {"^=", "XOR ASSIGNMENT", TOK_BIT_XOR_ASSIGN},
+    {"<<", "LBITSHIFT", TOK_LSHIFT},
+    {">>", "RBITSHIFT", TOK_RSHIFT},
+    {"&", "BIT AND", TOK_BIT_AND},
+    {"|", "BIT OR", TOK_BIT_OR},
+    {"~", "BIT NOT", TOK_BIT_NOT},
+    {"^", "BIT XOR", TOK_BIT_XOR},
+    {"&&", "AND", TOK_AND},
+    {"||", "OR", TOK_OR},
+    {"!=", "NOT EQUAL", TOK_NOT_EQ},
+    {"==", "EQUAL", TOK_EQ},
+    {"<", "LESS", TOK_LESS},
+    {">", "GREATER", TOK_GREATER},
+    {"<=", "LESS_EQ", TOK_LESS_EQ},
+    {">=", "GREATER_EQ", TOK_GREATER_EQ},
+    {"++", "INCREMENT", TOK_INCREMENT},
+    {"--", "DECREMENT", TOK_DECREMENT},
+};
+
+Exp exp_delimeters[] = {
+    {"(", "LPAR", TOK_LPAREN},    {")", "RPAR", TOK_RPAREN},
+    {"{", "LCURL", TOK_LBRACE},   {"}", "RCURL", TOK_RBRACE},
+    {"[", "LBRAC", TOK_LBRACKET}, {"]", "RBRAC", TOK_RBRACKET},
+    {",", "COMMA", TOK_COMMA},    {".", "DOT", TOK_DOT},
+    {":", "COLON", TOK_COLON},    {";", "SEMICOLON", TOK_SEMICOLON},
+};
+
+Exp exp_keywords[] = {
+    {"auto", "AUTO", TOK_KW_AUTO},
+    {"break", "BREAK", TOK_KW_BREAK},
+    {"case", "CASE", TOK_KW_CASE},
+    {"char", "CHAR", TOK_KW_CHAR},
+    {"const", "CONST", TOK_KW_CONST},
+    {"continue", "CONTINUE", TOK_KW_CONTINUE},
+    {"default", "DEFAULT", TOK_KW_DEFAULT},
+    {"do", "DO", TOK_KW_DO},
+    {"double", "DOUBLE", TOK_KW_DOUBLE},
+    {"else", "ELSE", TOK_KW_ELSE},
+    {"enum", "ENUM", TOK_KW_ENUM},
+    {"extern", "EXTERN", TOK_KW_EXTERN},
+    {"float", "FLOAT", TOK_KW_FLOAT},
+    {"for", "FOR", TOK_KW_FOR},
+    {"goto", "GOTO", TOK_KW_GOTO},
+    {"if", "IF", TOK_KW_IF},
+    {"inline", "INLINE", TOK_KW_INLINE},
+    {"int", "INT", TOK_KW_INT},
+    {"long", "LONG", TOK_KW_LONG},
+    {"register", "REGISTER", TOK_KW_REGISTER},
+    {"restrict", "RESTRICT", TOK_KW_RESTRICT},
+    {"return", "RETURN", TOK_KW_RETURN},
+    {"short", "SHORT", TOK_KW_SHORT},
+    {"signed", "SIGNED", TOK_KW_SIGNED},
+    {"sizeof", "SIZEOF", TOK_KW_SIZEOF},
+    {"static", "STATIC", TOK_KW_STATIC},
+    {"struct", "STRUCT", TOK_KW_STRUCT},
+    {"switch", "SWITCH", TOK_KW_SWITCH},
+    {"typedef", "TYPEDEF", TOK_KW_TYPEDEF},
+    {"union", "UNION", TOK_KW_UNION},
+    {"unsigned", "UNSIGNED", TOK_KW_UNSIGNED},
+    {"void", "VOID", TOK_KW_VOID},
+    {"volatile", "VOLATILE", TOK_KW_VOLATILE},
+    {"while", "WHILE", TOK_KW_WHILE},
+
+    // C99/C11 keywords
+    {"_Bool", "BOOL", TOK_KW_BOOL},
+    {"_Complex", "COMPLEX", TOK_KW_COMPLEX},
+    {"_Imaginary", "IMAGINARY", TOK_KW_IMAGINARY},
+    {"_Alignas", "ALIGNAS", TOK_KW_ALIGNAS},
+    {"_Alignof", "ALIGNOF", TOK_KW_ALIGNOF},
+    {"_Atomic", "ATOMIC", TOK_KW_ATOMIC},
+    {"_Generic", "GENERIC", TOK_KW_GENERIC},
+    {"_Noreturn", "NORETURN", TOK_KW_NORETURN},
+    {"_Static_assert", "STATIC_ASSERT", TOK_KW_STATIC_ASSERT},
+    {"_Thread_local", "THREAD_LOCAL", TOK_KW_THREAD_LOCAL},
+};
+
+size_t exp_operators_len = sizeof exp_operators / sizeof exp_operators[0];
+size_t exp_delimeters_len = sizeof exp_delimeters / sizeof exp_delimeters[0];
+size_t exp_keywords_len = sizeof exp_keywords / sizeof exp_keywords[0];
