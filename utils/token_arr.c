@@ -116,7 +116,7 @@ TokenArr_status token_arr_println(TokenArr *token_arr) {
     }
 
     for (size_t i = 0; i < token_arr->length; ++i) {
-        token_print(token_arr->items[i]);
+        token_println(token_arr->items[i]);
     }
 
     printf("\n");
