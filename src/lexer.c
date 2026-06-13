@@ -75,11 +75,11 @@ TokenArr *lexeme(char *filename) {
         ahead = fgetc(file);
         ungetc(ahead, file);
 
+        col++;
+
         if (c == ' ') {
             continue;
         }
-
-        col++;
 
         if (c == '\n') {
             line++;
@@ -121,8 +121,6 @@ TokenArr *lexeme(char *filename) {
             emit_token(token_arr, &token, cur_word_buff, &cur_word_buff_pos);
             continue;
         }
-
-        col++;
     }
 
     fclose(file);
