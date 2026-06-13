@@ -124,9 +124,12 @@ typedef enum {
 typedef struct {
     char type[TOKEN_TYPE_MAX_CAP];
     char value[TOKEN_VALUE_MAX_CAP];
+    int line;
+    int col;
 } Token;
 
-void token_init(Token *t, const char *word);
+void token_init(Token *t, const char *word, int line, int col);
+void token_init_type(Token *t, char *type, char *word, int line, int col);
 void token_print(Token t);
 
 int is_number(const char *s);

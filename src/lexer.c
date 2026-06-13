@@ -67,6 +67,8 @@ TokenArr *lexeme(char *filename) {
 
     int c;
     int ahead;
+    int line = 1;
+    int col = 0;
     while (c != EOF) {
         Token token;
         c = fgetc(file);
@@ -77,7 +79,11 @@ TokenArr *lexeme(char *filename) {
             continue;
         }
 
+        col++;
+
         if (c == '\n') {
+            line++;
+            col = 1;
             continue;
         }
 
@@ -86,37 +92,37 @@ TokenArr *lexeme(char *filename) {
 
         if (c == '"') {
             handle_str(file, &c, cur_word_buff, &cur_word_buff_pos);
-            strcpy(token.type, "STRING");
-            strcpy(token.value, cur_word_buff);
+            token_init_type(&token, "STRING", cur_word_buff, line, col);
             emit_token(token_arr, &token, cur_word_buff, &cur_word_buff_pos);
             continue;
         }
 
         if (is_digit((char)c)) {
             hande_number(file, &c, cur_word_buff, &cur_word_buff_pos);
-            strcpy(token.type, "NUMBER");
-            strcpy(token.value, cur_word_buff);
+            token_init_type(&token, "NUMBER", cur_word_buff, line, col);
             emit_token(token_arr, &token, cur_word_buff, &cur_word_buff_pos);
             continue;
         }
 
         if (is_language_feature(cur_word_buff)) {
-            token_init(&token, cur_word_buff);
+            token_init(&token, cur_word_buff, line, col);
             emit_token(token_arr, &token, cur_word_buff, &cur_word_buff_pos);
             continue;
         }
 
         if (is_language_feature(ahead_word_buff)) {
-            token_init(&token, cur_word_buff);
+            token_init(&token, cur_word_buff, line, col);
             emit_token(token_arr, &token, cur_word_buff, &cur_word_buff_pos);
             continue;
         }
 
         if (ahead == ' ') {
-            token_init(&token, cur_word_buff);
+            token_init(&token, cur_word_buff, line, col);
             emit_token(token_arr, &token, cur_word_buff, &cur_word_buff_pos);
             continue;
         }
+
+        col++;
     }
 
     return token_arr;
