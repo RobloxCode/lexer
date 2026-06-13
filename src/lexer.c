@@ -9,6 +9,29 @@
 
 #define WORD_MAX_CAP 255
 
+static char *read_file(const char *filename) {
+    FILE *file = fopen(filename, "r");
+    if (!file) {
+        return NULL;
+    }
+
+    fseek(file, 0, SEEK_END);
+    long size = ftell(file);
+    rewind(file);
+
+    char *buffer = malloc((size_t)size + 1);
+    if (!buffer) {
+        fclose(file);
+        return NULL;
+    }
+
+    fread(buffer, 1, (size_t)size, file);
+    buffer[size] = '\0';
+    fclose(file);
+
+    return buffer;
+}
+
 static void clear_str(char *str) {
     for (size_t i = 0; str[i] != '\0'; ++i) {
         str[i] = 0;
@@ -46,8 +69,16 @@ static void hande_number(size_t *cur, char *src_code, char *cur_word_buff,
     (*cur)--;
 }
 
-TokenArr *lexeme(char *src_code) {
+TokenArr *lexeme(char *filename) {
+    if (!filename) {
+        return NULL;
+    }
+
+    char *src_code;
+
+    src_code = read_file(filename);
     if (!src_code) {
+        fprintf(stderr, "failed to open %s\n", filename);
         return NULL;
     }
 
@@ -111,6 +142,11 @@ TokenArr *lexeme(char *src_code) {
             emit_token(token_arr, &token, cur_word_buff, &cur_word_buff_pos);
             continue;
         }
+    }
+
+    if (src_code) {
+        free(src_code);
+        src_code = NULL;
     }
 
     return token_arr;
