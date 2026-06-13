@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <string.h>
 
-void token_print(Token t) {
+void token_println(Token t) {
     printf("[ %d:%d ]    %s(%s)\n", t.line, t.col, t.type, t.value);
 }
 

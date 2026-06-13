@@ -130,7 +130,7 @@ typedef struct {
 
 void token_init(Token *t, const char *word, int line, int col);
 void token_init_type(Token *t, char *type, char *word, int line, int col);
-void token_print(Token t);
+void token_println(Token t);
 
 int is_number(const char *s);
 int is_digit(const char c);
