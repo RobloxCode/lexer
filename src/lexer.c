@@ -125,5 +125,6 @@ TokenArr *lexeme(char *filename) {
         col++;
     }
 
+    fclose(file);
     return token_arr;
 }
