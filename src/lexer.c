@@ -8,29 +8,7 @@
 #include <string.h>
 
 #define WORD_MAX_CAP 255
-
-static char *read_file(const char *filename) {
-    FILE *file = fopen(filename, "r");
-    if (!file) {
-        return NULL;
-    }
-
-    fseek(file, 0, SEEK_END);
-    long size = ftell(file);
-    rewind(file);
-
-    char *buffer = malloc((size_t)size + 1);
-    if (!buffer) {
-        fclose(file);
-        return NULL;
-    }
-
-    fread(buffer, 1, (size_t)size, file);
-    buffer[size] = '\0';
-    fclose(file);
-
-    return buffer;
-}
+#define MIN_FILE_LEN 30
 
 static void clear_str(char *str) {
     for (size_t i = 0; str[i] != '\0'; ++i) {
@@ -45,28 +23,26 @@ static void emit_token(TokenArr *token_arr, Token *token, char *cur_word_buff,
     token_arr_append(token_arr, *token);
 }
 
-static void handle_str(size_t *cur, char *src_code, char *cur_word_buff,
+static void handle_str(FILE *f, int *c, char *cur_word_buff,
                        size_t *cur_word_buff_pos) {
-    (*cur)++;
+    *c = fgetc(f);
 
-    while (src_code[*cur] != '"') {
-        cur_word_buff[(*cur_word_buff_pos)++] = src_code[*cur];
-        (*cur)++;
+    while (*c != '"') {
+        cur_word_buff[(*cur_word_buff_pos)++] = (char)*c;
+        *c = fgetc(f);
     }
 
     cur_word_buff[(*cur_word_buff_pos)++] = '"';
 }
 
-static void hande_number(size_t *cur, char *src_code, char *cur_word_buff,
+static void hande_number(FILE *f, int *c, char *cur_word_buff,
                          size_t *cur_word_buff_pos) {
-    (*cur)++;
+    *c = fgetc(f);
 
-    while (is_digit(src_code[*cur]) || src_code[*cur] == '.') {
-        cur_word_buff[(*cur_word_buff_pos)++] = src_code[*cur];
-        (*cur)++;
+    while (is_digit((char)*c) || *c == '.') {
+        cur_word_buff[(*cur_word_buff_pos)++] = (char)*c;
+        *c = fgetc(f);
     }
-
-    (*cur)--;
 }
 
 TokenArr *lexeme(char *filename) {
@@ -74,16 +50,12 @@ TokenArr *lexeme(char *filename) {
         return NULL;
     }
 
-    char *src_code;
-
-    src_code = read_file(filename);
-    if (!src_code) {
-        fprintf(stderr, "failed to open %s\n", filename);
+    FILE *file = fopen(filename, "r");
+    if (!file) {
         return NULL;
     }
 
-    size_t src_code_len = strlen(src_code);
-    TokenArr *token_arr = token_arr_init(src_code_len);
+    TokenArr *token_arr = token_arr_init(MIN_FILE_LEN);
     if (!token_arr) {
         return NULL;
     }
@@ -93,32 +65,35 @@ TokenArr *lexeme(char *filename) {
 
     char ahead_word_buff[WORD_MAX_CAP] = {0};
 
-    size_t ahead = 0;
-    for (size_t cur = 0; cur < src_code_len; ++cur) {
+    int c;
+    int ahead;
+    while (c != EOF) {
         Token token;
-        ahead = cur + 1;
+        c = fgetc(file);
+        ahead = fgetc(file);
+        ungetc(ahead, file);
 
-        if (src_code[cur] == ' ') {
+        if (c == ' ') {
             continue;
         }
 
-        if (src_code[cur] == '\n') {
+        if (c == '\n') {
             continue;
         }
 
-        cur_word_buff[cur_word_buff_pos++] = src_code[cur];
-        ahead_word_buff[0] = src_code[ahead];
+        cur_word_buff[cur_word_buff_pos++] = (char)c;
+        ahead_word_buff[0] = (char)ahead;
 
-        if (src_code[cur] == '"') {
-            handle_str(&cur, src_code, cur_word_buff, &cur_word_buff_pos);
+        if (c == '"') {
+            handle_str(file, &c, cur_word_buff, &cur_word_buff_pos);
             strcpy(token.type, "STRING");
             strcpy(token.value, cur_word_buff);
             emit_token(token_arr, &token, cur_word_buff, &cur_word_buff_pos);
             continue;
         }
 
-        if (is_digit(src_code[cur])) {
-            hande_number(&cur, src_code, cur_word_buff, &cur_word_buff_pos);
+        if (is_digit((char)c)) {
+            hande_number(file, &c, cur_word_buff, &cur_word_buff_pos);
             strcpy(token.type, "NUMBER");
             strcpy(token.value, cur_word_buff);
             emit_token(token_arr, &token, cur_word_buff, &cur_word_buff_pos);
@@ -137,16 +112,11 @@ TokenArr *lexeme(char *filename) {
             continue;
         }
 
-        if (src_code[ahead] == ' ') {
+        if (ahead == ' ') {
             token_init(&token, cur_word_buff);
             emit_token(token_arr, &token, cur_word_buff, &cur_word_buff_pos);
             continue;
         }
-    }
-
-    if (src_code) {
-        free(src_code);
-        src_code = NULL;
     }
 
     return token_arr;
