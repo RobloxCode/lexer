@@ -24,20 +24,20 @@ static void emit_token(TokenArr *token_arr, Token *token, char *cur_word_buff,
 }
 
 static void handle_str(FILE *f, int *c, char *cur_word_buff,
-                       size_t *cur_word_buff_pos, size_t *str_count) {
+                       size_t *cur_word_buff_pos, int *chars_count) {
     *c = fgetc(f);
 
     while (*c != '"') {
         cur_word_buff[(*cur_word_buff_pos)++] = (char)*c;
         *c = fgetc(f);
-        (*str_count)++;
+        (*chars_count)++;
     }
 
     cur_word_buff[(*cur_word_buff_pos)++] = '"';
 }
 
 static void hande_number(FILE *f, int *c, char *cur_word_buff,
-                         size_t *cur_word_buff_pos, size_t *digits_count) {
+                         size_t *cur_word_buff_pos, int *digits_count) {
     *c = fgetc(f);
 
     while (is_digit((char)*c) || *c == '.') {
@@ -97,10 +97,10 @@ TokenArr *lexeme(char *filename) {
         ahead_word_buff[0] = (char)ahead_char;
 
         if (cur_char == '"') {
-            size_t str_count = 0;
+            int chars_count = 0;
             handle_str(file, &cur_char, cur_word_buff, &cur_word_buff_pos,
-                       &str_count);
-            col += (int)str_count;
+                       &chars_count);
+            col += chars_count;
             token_init_type(&token, "STRING", cur_word_buff, line, col);
             emit_token(token_arr, &token, cur_word_buff, &cur_word_buff_pos);
             col++;
@@ -108,10 +108,10 @@ TokenArr *lexeme(char *filename) {
         }
 
         if (is_digit((char)cur_char)) {
-            size_t digits_count = 0;
+            int digits_count = 0;
             hande_number(file, &cur_char, cur_word_buff, &cur_word_buff_pos,
                          &digits_count);
-            col += (int)digits_count;
+            col += digits_count;
             token_init_type(&token, "NUMBER", cur_word_buff, line, col);
             emit_token(token_arr, &token, cur_word_buff, &cur_word_buff_pos);
             continue;
