@@ -24,25 +24,29 @@ static void emit_token(TokenArr *token_arr, Token *token, char *cur_word_buff,
 }
 
 static void handle_str(FILE *f, int *c, char *cur_word_buff,
-                       size_t *cur_word_buff_pos) {
+                       size_t *cur_word_buff_pos, int *chars_count) {
     *c = fgetc(f);
 
     while (*c != '"') {
         cur_word_buff[(*cur_word_buff_pos)++] = (char)*c;
         *c = fgetc(f);
+        (*chars_count)++;
     }
 
     cur_word_buff[(*cur_word_buff_pos)++] = '"';
 }
 
 static void hande_number(FILE *f, int *c, char *cur_word_buff,
-                         size_t *cur_word_buff_pos) {
+                         size_t *cur_word_buff_pos, int *digits_count) {
     *c = fgetc(f);
 
     while (is_digit((char)*c) || *c == '.') {
         cur_word_buff[(*cur_word_buff_pos)++] = (char)*c;
         *c = fgetc(f);
+        (*digits_count)++;
     }
+
+    ungetc(*c, f);
 }
 
 TokenArr *lexeme(char *filename) {
@@ -65,40 +69,49 @@ TokenArr *lexeme(char *filename) {
 
     char ahead_word_buff[WORD_MAX_CAP] = {0};
 
-    int c;
-    int ahead;
     int line = 1;
     int col = 0;
-    while (c != EOF) {
+
+    int cur_char;
+    int ahead_char;
+
+    while (cur_char != EOF) {
         Token token;
-        c = fgetc(file);
-        ahead = fgetc(file);
-        ungetc(ahead, file);
+        cur_char = fgetc(file);
+        ahead_char = fgetc(file);
+        ungetc(ahead_char, file);
 
         col++;
 
-        if (c == ' ') {
+        if (cur_char == ' ') {
             continue;
         }
 
-        if (c == '\n') {
+        if (cur_char == '\n') {
             line++;
-            col = 1;
+            col = 0;
             continue;
         }
 
-        cur_word_buff[cur_word_buff_pos++] = (char)c;
-        ahead_word_buff[0] = (char)ahead;
+        cur_word_buff[cur_word_buff_pos++] = (char)cur_char;
+        ahead_word_buff[0] = (char)ahead_char;
 
-        if (c == '"') {
-            handle_str(file, &c, cur_word_buff, &cur_word_buff_pos);
+        if (cur_char == '"') {
+            int chars_count = 0;
+            handle_str(file, &cur_char, cur_word_buff, &cur_word_buff_pos,
+                       &chars_count);
+            col += chars_count;
             token_init_type(&token, "STRING", cur_word_buff, line, col);
             emit_token(token_arr, &token, cur_word_buff, &cur_word_buff_pos);
+            col++;
             continue;
         }
 
-        if (is_digit((char)c)) {
-            hande_number(file, &c, cur_word_buff, &cur_word_buff_pos);
+        if (is_digit((char)cur_char)) {
+            int digits_count = 0;
+            hande_number(file, &cur_char, cur_word_buff, &cur_word_buff_pos,
+                         &digits_count);
+            col += digits_count;
             token_init_type(&token, "NUMBER", cur_word_buff, line, col);
             emit_token(token_arr, &token, cur_word_buff, &cur_word_buff_pos);
             continue;
@@ -116,7 +129,7 @@ TokenArr *lexeme(char *filename) {
             continue;
         }
 
-        if (ahead == ' ') {
+        if (ahead_char == ' ') {
             token_init(&token, cur_word_buff, line, col);
             emit_token(token_arr, &token, cur_word_buff, &cur_word_buff_pos);
             continue;
