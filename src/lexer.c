@@ -37,12 +37,13 @@ static void handle_str(FILE *f, int *c, char *cur_word_buff,
 }
 
 static void hande_number(FILE *f, int *c, char *cur_word_buff,
-                         size_t *cur_word_buff_pos) {
+                         size_t *cur_word_buff_pos, size_t *digits_count) {
     *c = fgetc(f);
 
     while (is_digit((char)*c) || *c == '.') {
         cur_word_buff[(*cur_word_buff_pos)++] = (char)*c;
         *c = fgetc(f);
+        (*digits_count)++;
     }
 
     ungetc(*c, f);
@@ -99,14 +100,18 @@ TokenArr *lexeme(char *filename) {
             size_t str_count = 0;
             handle_str(file, &cur_char, cur_word_buff, &cur_word_buff_pos,
                        &str_count);
-            token_init_type(&token, "STRING", cur_word_buff, line,
-                            col + (int)str_count);
+            col += (int)str_count;
+            token_init_type(&token, "STRING", cur_word_buff, line, col);
             emit_token(token_arr, &token, cur_word_buff, &cur_word_buff_pos);
+            col++;
             continue;
         }
 
         if (is_digit((char)cur_char)) {
-            hande_number(file, &cur_char, cur_word_buff, &cur_word_buff_pos);
+            size_t digits_count = 0;
+            hande_number(file, &cur_char, cur_word_buff, &cur_word_buff_pos,
+                         &digits_count);
+            col += (int)digits_count;
             token_init_type(&token, "NUMBER", cur_word_buff, line, col);
             emit_token(token_arr, &token, cur_word_buff, &cur_word_buff_pos);
             continue;
