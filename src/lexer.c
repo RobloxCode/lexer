@@ -49,6 +49,20 @@ static void hande_number(FILE *f, int *c, char *cur_word_buff,
     ungetc(*c, f);
 }
 
+static void handle_one_line_comment(FILE *file, int *c, char *cur_word_buff,
+                                    size_t *cur_word_buff_pos,
+                                    int *cols_count) {
+    *c = fgetc(file);
+
+    while (*c != '\n') {
+        cur_word_buff[(*cur_word_buff_pos)++] = (char)*c;
+        *c = fgetc(file);
+        (*cols_count)++;
+    }
+
+    ungetc(*c, file);
+}
+
 TokenArr *lexeme(char *filename) {
     if (!filename) {
         return NULL;
@@ -104,6 +118,16 @@ TokenArr *lexeme(char *filename) {
             token_init_type(&token, "STRING", cur_word_buff, line, col);
             emit_token(token_arr, &token, cur_word_buff, &cur_word_buff_pos);
             col++;
+            continue;
+        }
+
+        if (cur_char == '/' && ahead_char == '/') {
+            int cols_count = 0;
+            handle_one_line_comment(file, &cur_char, cur_word_buff,
+                                    &cur_word_buff_pos, &cols_count);
+            col += cols_count;
+            token_init_type(&token, "COMMENT", cur_word_buff, line, col);
+            emit_token(token_arr, &token, cur_word_buff, &cur_word_buff_pos);
             continue;
         }
 
