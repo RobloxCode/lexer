@@ -23,70 +23,82 @@ static void emit_token(TokenArr *token_arr, Token *token, char *cur_word_buff,
     token_arr_append(token_arr, *token);
 }
 
-static void handle_str(FILE *f, int *c, char *cur_word_buff,
-                       size_t *cur_word_buff_pos, int *chars_count) {
-    *c = fgetc(f);
+static void handle_str(FILE *file, int *cur_char, char *cur_word_buff,
+                       size_t *cur_word_buff_pos, int *col) {
+    int chars_count = 0;
+    *cur_char = fgetc(file);
 
-    while (*c != '"') {
-        cur_word_buff[(*cur_word_buff_pos)++] = (char)*c;
-        *c = fgetc(f);
-        (*chars_count)++;
+    while (*cur_char != '"') {
+        cur_word_buff[(*cur_word_buff_pos)++] = (char)*cur_char;
+        *cur_char = fgetc(file);
+        chars_count++;
     }
 
     cur_word_buff[(*cur_word_buff_pos)++] = '"';
+    *col += chars_count;
 }
 
-static void hande_number(FILE *f, int *c, char *cur_word_buff,
-                         size_t *cur_word_buff_pos, int *digits_count) {
-    *c = fgetc(f);
+static void hande_number(FILE *file, int *cur_char, char *cur_word_buff,
+                         size_t *cur_word_buff_pos, int *col) {
+    int digits_count = 0;
+    *cur_char = fgetc(file);
 
-    while (is_digit((char)*c) || *c == '.') {
-        cur_word_buff[(*cur_word_buff_pos)++] = (char)*c;
-        *c = fgetc(f);
-        (*digits_count)++;
+    while (is_digit((char)*cur_char) || *cur_char == '.') {
+        cur_word_buff[(*cur_word_buff_pos)++] = (char)*cur_char;
+        *cur_char = fgetc(file);
+        digits_count++;
     }
 
-    ungetc(*c, f);
+    ungetc(*cur_char, file);
+    *col += digits_count;
 }
 
-static void handle_one_line_comment(FILE *file, int *c, char *cur_word_buff,
-                                    size_t *cur_word_buff_pos,
-                                    int *cols_count) {
-    *c = fgetc(file);
+static void handle_one_line_comment(FILE *file, int *cur_char,
+                                    char *cur_word_buff,
+                                    size_t *cur_word_buff_pos, int *col) {
+    int cols_count = 0;
+    *cur_char = fgetc(file);
 
-    while (*c != '\n') {
-        cur_word_buff[(*cur_word_buff_pos)++] = (char)*c;
-        *c = fgetc(file);
-        (*cols_count)++;
+    while (*cur_char != '\n') {
+        cur_word_buff[(*cur_word_buff_pos)++] = (char)*cur_char;
+        *cur_char = fgetc(file);
+        cols_count++;
     }
 
-    ungetc(*c, file);
+    ungetc(*cur_char, file);
+    *col += cols_count;
 }
 
-static void handle_multi_line_comment(FILE *file, int *c, int *ahead,
+static void handle_multi_line_comment(FILE *file, int *cur_char, int *ahead,
                                       char *cur_word_buff,
-                                      size_t *cur_word_buff_pos,
-                                      int *cols_count, int *lines_count) {
-    while ((*c = fgetc(file)) != EOF) {
+                                      size_t *cur_word_buff_pos, int *col,
+                                      int *line) {
+    int lines_count = 0;
+    int cols_count = 0;
+
+    while ((*cur_char = fgetc(file)) != EOF) {
         *ahead = fgetc(file);
 
         if (*ahead != EOF) {
             ungetc(*ahead, file);
         }
 
-        if (*c == '*' && *ahead == '/') {
-            *c = fgetc(file);
+        if (*cur_char == '*' && *ahead == '/') {
+            *cur_char = fgetc(file);
             cur_word_buff[(*cur_word_buff_pos)++] = (char)*ahead;
             break;
         }
 
-        if (*c == '\n') {
-            (*lines_count)++;
+        if (*cur_char == '\n') {
+            lines_count++;
         }
 
-        cur_word_buff[(*cur_word_buff_pos)++] = (char)*c;
-        (*cols_count)++;
+        cur_word_buff[(*cur_word_buff_pos)++] = (char)*cur_char;
+        cols_count++;
     }
+
+    *col += cols_count;
+    *line += lines_count;
 }
 
 TokenArr *lexeme(char *filename) {
@@ -137,10 +149,8 @@ TokenArr *lexeme(char *filename) {
         ahead_word_buff[0] = (char)ahead_char;
 
         if (cur_char == '"') {
-            int chars_count = 0;
             handle_str(file, &cur_char, cur_word_buff, &cur_word_buff_pos,
-                       &chars_count);
-            col += chars_count;
+                       &col);
             token_init_type(&token, "STRING", cur_word_buff, line, col);
             emit_token(token_arr, &token, cur_word_buff, &cur_word_buff_pos);
             col++;
@@ -148,23 +158,18 @@ TokenArr *lexeme(char *filename) {
         }
 
         if (cur_char == '/' && ahead_char == '/') {
-            int cols_count = 0;
             handle_one_line_comment(file, &cur_char, cur_word_buff,
-                                    &cur_word_buff_pos, &cols_count);
-            col += cols_count;
-            token_init_type(&token, "COMMENT", cur_word_buff, line, col);
+                                    &cur_word_buff_pos, &col);
+            token_init_type(&token, "ONE LINE COMMENT", cur_word_buff, line,
+                            col);
             emit_token(token_arr, &token, cur_word_buff, &cur_word_buff_pos);
             continue;
         }
 
         if (cur_char == '/' && ahead_char == '*') {
-            int cols_count = 0;
-            int lines_count = 0;
             handle_multi_line_comment(file, &cur_char, &ahead_char,
-                                      cur_word_buff, &cur_word_buff_pos,
-                                      &cols_count, &lines_count);
-            col += cols_count;
-            line += lines_count;
+                                      cur_word_buff, &cur_word_buff_pos, &col,
+                                      &line);
             token_init_type(&token, "MULTI-LINE COMMENT", cur_word_buff, line,
                             col);
             emit_token(token_arr, &token, cur_word_buff, &cur_word_buff_pos);
@@ -172,10 +177,8 @@ TokenArr *lexeme(char *filename) {
         }
 
         if (is_digit((char)cur_char)) {
-            int digits_count = 0;
             hande_number(file, &cur_char, cur_word_buff, &cur_word_buff_pos,
-                         &digits_count);
-            col += digits_count;
+                         &col);
             token_init_type(&token, "NUMBER", cur_word_buff, line, col);
             emit_token(token_arr, &token, cur_word_buff, &cur_word_buff_pos);
             continue;
