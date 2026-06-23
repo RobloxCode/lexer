@@ -63,6 +63,32 @@ static void handle_one_line_comment(FILE *file, int *c, char *cur_word_buff,
     ungetc(*c, file);
 }
 
+static void handle_multi_line_comment(FILE *file, int *c, int *ahead,
+                                      char *cur_word_buff,
+                                      size_t *cur_word_buff_pos,
+                                      int *cols_count, int *lines_count) {
+    while ((*c = fgetc(file)) != EOF) {
+        *ahead = fgetc(file);
+
+        if (*ahead != EOF) {
+            ungetc(*ahead, file);
+        }
+
+        if (*c == '*' && *ahead == '/') {
+            *c = fgetc(file);
+            cur_word_buff[(*cur_word_buff_pos)++] = (char)*ahead;
+            break;
+        }
+
+        if (*c == '\n') {
+            (*lines_count)++;
+        }
+
+        cur_word_buff[(*cur_word_buff_pos)++] = (char)*c;
+        (*cols_count)++;
+    }
+}
+
 TokenArr *lexeme(char *filename) {
     if (!filename) {
         return NULL;
@@ -127,6 +153,20 @@ TokenArr *lexeme(char *filename) {
                                     &cur_word_buff_pos, &cols_count);
             col += cols_count;
             token_init_type(&token, "COMMENT", cur_word_buff, line, col);
+            emit_token(token_arr, &token, cur_word_buff, &cur_word_buff_pos);
+            continue;
+        }
+
+        if (cur_char == '/' && ahead_char == '*') {
+            int cols_count = 0;
+            int lines_count = 0;
+            handle_multi_line_comment(file, &cur_char, &ahead_char,
+                                      cur_word_buff, &cur_word_buff_pos,
+                                      &cols_count, &lines_count);
+            col += cols_count;
+            line += lines_count;
+            token_init_type(&token, "MULTI-LINE COMMENT", cur_word_buff, line,
+                            col);
             emit_token(token_arr, &token, cur_word_buff, &cur_word_buff_pos);
             continue;
         }
