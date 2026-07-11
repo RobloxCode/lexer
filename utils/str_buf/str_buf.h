@@ -19,7 +19,7 @@ typedef struct {
  *
  * @param sb Pointer to StrBuf
  */
-void strbuf_init(StrBuf *sl);
+void strbuf_init(StrBuf *sb);
 
 /**
  * @brief Adds a character after the current last element
@@ -27,7 +27,7 @@ void strbuf_init(StrBuf *sl);
  * @param sb Pointer to StrBuf
  * @param c  Character to be added
  */
-int strbuf_push(StrBuf *sl, char c);
+int strbuf_push(StrBuf *sb, char c);
 
 /**
  * @brief Sets a character at a given index
@@ -36,13 +36,13 @@ int strbuf_push(StrBuf *sl, char c);
  * @param c  Character to be set
  * @param i  Index of the character being set
  */
-int strbuf_set(StrBuf *sl, char c, size_t i);
+int strbuf_set(StrBuf *sb, char c, size_t i);
 
 /**
  * @brief Sets all the characters to 0
  *
  * @param sb Pointer to StrBuf
  */
-void strbuf_clear(StrBuf *sl);
+void strbuf_clear(StrBuf *sb);
 
 #endif
