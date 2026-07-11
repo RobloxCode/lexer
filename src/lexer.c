@@ -1,50 +1,14 @@
 #include "lexer.h"
 
+#include "../utils/str_slice.h"
 #include "../utils/token.h"
 #include "../utils/token_arr.h"
 
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 
 #define WORD_MAX_CAP 255
 #define MIN_FILE_LEN 30
-
-typedef struct {
-    char items[WORD_MAX_CAP];
-    size_t count;
-} StrSlice;
-
-void str_slice_init(StrSlice *sl) {
-    memset(sl->items, 0, sizeof sl->items);
-    sl->count = 0;
-}
-
-int str_slice_push(StrSlice *sl, char c) {
-    if (sl->count >= WORD_MAX_CAP) {
-        return 1;
-    }
-
-    sl->items[sl->count++] = c;
-
-    return 0;
-}
-
-void str_slice_push_i(StrSlice *sl, char c, size_t i) {
-    if (i >= WORD_MAX_CAP) {
-        return;
-    }
-
-    sl->items[i] = c;
-}
-
-void str_slice_clear(StrSlice *sl) {
-    for (size_t i = 0; i < WORD_MAX_CAP; ++i) {
-        sl->items[i] = 0;
-    }
-
-    sl->count = 0;
-}
 
 static void emit_token(TokenArr *token_arr, Token *token, StrSlice *cur_word) {
     str_slice_clear(cur_word);
@@ -172,7 +136,6 @@ TokenArr *lexeme(char *filename) {
         }
 
         str_slice_push(&cur_word, (char)cur_char);
-
         str_slice_push_i(&ahead_word, (char)ahead_char, 0);
 
         if (cur_char == '"') {
