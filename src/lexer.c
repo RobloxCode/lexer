@@ -7,7 +7,6 @@
 #include <stdio.h>
 #include <string.h>
 
-#define WORD_MAX_CAP 255
 #define MIN_FILE_LEN 30
 
 static void emit_token(TokenArr *token_arr, Token *token, StrBuf *cur_word) {
