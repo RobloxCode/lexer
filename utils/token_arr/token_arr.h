@@ -37,6 +37,7 @@ typedef struct TokenArr {
  * @brief Allocate and initialize a new TokenArr.
  *
  * @param cap Initial capacity to reserve (number of Token slots).
+ *
  * @return Pointer to a heap-allocated TokenArr, or NULL on allocation failure
  *         or if @p cap is invalid.
  */
@@ -48,6 +49,7 @@ TokenArr *token_arr_init(size_t cap);
  * Sets *token_arr to NULL after freeing to prevent dangling access.
  *
  * @param token_arr Pointer to the TokenArr pointer to deinitialize.
+ *
  * @return TOKENARR_OK on success, TOKENARR_WRONG_PTR if @p token_arr
  *         or *token_arr is NULL.
  */
@@ -58,6 +60,7 @@ TokenArr_status token_arr_deinit(TokenArr **token_arr);
  *
  * @param token_arr Array to append to.
  * @param item      Token value to copy into the array.
+ *
  * @return TOKENARR_OK on success, TOKENARR_WRONG_PTR if @p token_arr is NULL,
  *         TOKENARR_ERR_REALLOC if growth was needed and reallocation failed,
  *         TOKENARR_ERR_OVERFLOW if growing would overflow size_t.
@@ -70,6 +73,7 @@ TokenArr_status token_arr_append(TokenArr *token_arr, Token item);
  * @param token_arr Array to operate on.
  * @param idx1      First index.
  * @param idx2      Second index.
+ *
  * @return TOKENARR_OK on success, TOKENARR_WRONG_PTR if @p token_arr is NULL,
  *         TOKENARR_IDX_OUT_OF_BOUNDS if either index is >= length.
  */
@@ -81,6 +85,7 @@ TokenArr_status token_arr_swap(TokenArr *token_arr, size_t idx1, size_t idx2);
  *
  * @param token_arr Array to operate on.
  * @param idx       Index of the element to remove.
+ *
  * @return TOKENARR_OK on success, TOKENARR_WRONG_PTR if @p token_arr is NULL,
  *         TOKENARR_IDX_OUT_OF_BOUNDS if @p idx >= length.
  */
@@ -90,6 +95,7 @@ TokenArr_status token_arr_remove(TokenArr *token_arr, size_t idx);
  * @brief Print the contents of the array to stdout for debugging.
  *
  * @param token_arr Array to print.
+ *
  * @return TOKENARR_OK on success, TOKENARR_WRONG_PTR if @p token_arr is NULL.
  */
 TokenArr_status token_arr_println(TokenArr *token_arr);
@@ -100,6 +106,7 @@ TokenArr_status token_arr_println(TokenArr *token_arr);
  * @param token_arr Array to read from.
  * @param idx       Index of the element to fetch.
  * @param buff      Destination buffer to receive a copy of the Token.
+ *
  * @return TOKENARR_OK on success, TOKENARR_WRONG_PTR if @p token_arr or
  *         @p buff is NULL, TOKENARR_IDX_OUT_OF_BOUNDS if @p idx >= length.
  */
