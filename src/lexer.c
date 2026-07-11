@@ -10,6 +10,26 @@
 #define WORD_MAX_CAP 255
 #define MIN_FILE_LEN 30
 
+typedef struct {
+    char items[WORD_MAX_CAP];
+    size_t count;
+} StrSlice;
+
+void str_slice_init(StrSlice *sl) {
+    memset(sl->items, 0, sizeof sl->items);
+    sl->count = 0;
+}
+
+int str_slice_push(StrSlice *sl, char c) {
+    if (sl->count >= WORD_MAX_CAP) {
+        return 1;
+    }
+
+    sl->items[sl->count++] = c;
+
+    return 0;
+}
+
 static void clear_str(char *str) {
     for (size_t i = 0; str[i] != '\0'; ++i) {
         str[i] = 0;
@@ -115,6 +135,12 @@ TokenArr *lexeme(char *filename) {
     if (!token_arr) {
         return NULL;
     }
+
+    StrSlice cur_word;
+    str_slice_init(&cur_word);
+
+    StrSlice ahead_word;
+    str_slice_init(&ahead_word);
 
     char cur_word_buff[WORD_MAX_CAP] = {0};
     size_t cur_word_buff_pos = 0;
