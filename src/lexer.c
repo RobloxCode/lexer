@@ -1,6 +1,6 @@
 #include "lexer.h"
 
-#include "../utils/str_slice.h"
+#include "../utils/str_buf.h"
 #include "../utils/token.h"
 #include "../utils/token_arr.h"
 
@@ -10,33 +10,32 @@
 #define WORD_MAX_CAP 255
 #define MIN_FILE_LEN 30
 
-static void emit_token(TokenArr *token_arr, Token *token, StrSlice *cur_word) {
-    str_slice_clear(cur_word);
+static void emit_token(TokenArr *token_arr, Token *token, StrBuf *cur_word) {
+    strbuf_clear(cur_word);
     token_arr_append(token_arr, *token);
 }
 
-static void handle_str(FILE *file, int *cur_char, StrSlice *cur_word,
-                       int *col) {
+static void handle_str(FILE *file, int *cur_char, StrBuf *cur_word, int *col) {
     int chars_count = 0;
     *cur_char = fgetc(file);
 
     while (*cur_char != '"') {
-        str_slice_push(cur_word, (char)*cur_char);
+        strbuf_push(cur_word, (char)*cur_char);
         *cur_char = fgetc(file);
         chars_count++;
     }
 
-    str_slice_push(cur_word, '"');
+    strbuf_push(cur_word, '"');
     *col += chars_count;
 }
 
-static void hande_number(FILE *file, int *cur_char, StrSlice *cur_word,
+static void hande_number(FILE *file, int *cur_char, StrBuf *cur_word,
                          int *col) {
     int digits_count = 0;
     *cur_char = fgetc(file);
 
     while (is_digit((char)*cur_char) || *cur_char == '.') {
-        str_slice_push(cur_word, (char)*cur_char);
+        strbuf_push(cur_word, (char)*cur_char);
         *cur_char = fgetc(file);
         digits_count++;
     }
@@ -45,13 +44,13 @@ static void hande_number(FILE *file, int *cur_char, StrSlice *cur_word,
     *col += digits_count;
 }
 
-static void handle_one_line_comment(FILE *file, int *cur_char,
-                                    StrSlice *cur_word, int *col) {
+static void handle_one_line_comment(FILE *file, int *cur_char, StrBuf *cur_word,
+                                    int *col) {
     int cols_count = 0;
     *cur_char = fgetc(file);
 
     while (*cur_char != '\n') {
-        str_slice_push(cur_word, (char)*cur_char);
+        strbuf_push(cur_word, (char)*cur_char);
         *cur_char = fgetc(file);
         cols_count++;
     }
@@ -61,7 +60,7 @@ static void handle_one_line_comment(FILE *file, int *cur_char,
 }
 
 static void handle_multiline_comment(FILE *file, int *cur_char, int *ahead,
-                                     StrSlice *cur_word, int *col, int *line) {
+                                     StrBuf *cur_word, int *col, int *line) {
     int lines_count = 0;
     int cols_count = 0;
 
@@ -74,7 +73,7 @@ static void handle_multiline_comment(FILE *file, int *cur_char, int *ahead,
 
         if (*cur_char == '*' && *ahead == '/') {
             *cur_char = fgetc(file);
-            str_slice_push(cur_word, (char)*ahead);
+            strbuf_push(cur_word, (char)*ahead);
             break;
         }
 
@@ -82,7 +81,7 @@ static void handle_multiline_comment(FILE *file, int *cur_char, int *ahead,
             lines_count++;
         }
 
-        str_slice_push(cur_word, (char)*cur_char);
+        strbuf_push(cur_word, (char)*cur_char);
         cols_count++;
     }
 
@@ -105,11 +104,11 @@ TokenArr *lexeme(char *filename) {
         return NULL;
     }
 
-    StrSlice cur_word;
-    str_slice_init(&cur_word);
+    StrBuf cur_word;
+    strbuf_init(&cur_word);
 
-    StrSlice ahead_word;
-    str_slice_init(&ahead_word);
+    StrBuf ahead_word;
+    strbuf_init(&ahead_word);
 
     int line = 1;
     int col = 0;
@@ -135,8 +134,8 @@ TokenArr *lexeme(char *filename) {
             continue;
         }
 
-        str_slice_push(&cur_word, (char)cur_char);
-        str_slice_push_i(&ahead_word, (char)ahead_char, 0);
+        strbuf_push(&cur_word, (char)cur_char);
+        strbuf_set(&ahead_word, (char)ahead_char, 0);
 
         if (cur_char == '"') {
             handle_str(file, &cur_char, &cur_word, &col);
