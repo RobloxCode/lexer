@@ -4,6 +4,9 @@
 #define TOKEN_VALUE_MAX_CAP 255
 #define TOKEN_TYPE_MAX_CAP  255
 
+/**
+ * @brief Enumerator for all the token types available
+ * */
 typedef enum {
     // delimiters
     TOK_LPAREN,
@@ -121,19 +124,72 @@ typedef enum {
     TOK_INVALID
 } TokType;
 
+/**
+ * @brief Single Token
+ */
 typedef struct {
-    char type[TOKEN_TYPE_MAX_CAP];
-    char value[TOKEN_VALUE_MAX_CAP];
-    int line;
-    int col;
+    char type[TOKEN_TYPE_MAX_CAP]; /* < String representation of the token type
+                                      (ID, PLUS, RPAR, ...) */
+    char value[TOKEN_VALUE_MAX_CAP]; /* < Value foind in source code */
+    int line; /* < Number of line where token was found at */
+    int col;  /* < Number of colun where token was found at*/
 } Token;
 
-void token_init(Token *t, const char *word, int line, int col);
-void token_init_type(Token *t, char *type, char *word, int line, int col);
-void token_println(Token t);
+/**
+ * @brief Sets the values of a given Token, it determines what
+ *        type to give to each token
+ *
+ * @param t Pointer to Token
+ * @param word String storing the word being tokenized
+ * @param line Line where the token was found at
+ * @param col Column where the token was found at
+ */
+void token_init(Token *t, const char *word, const int line, const int col);
 
+/**
+ * @brief Sets the values of a given Token and sets the type to the
+ *        given value by the caller
+ *
+ * @param t Pointer to Token
+ * @param type String to the type to be stored
+ * @param word Srring storing the word being tokenized
+ * @param line Line where the token was found at
+ * @param col Column where the token was found at
+ */
+void token_init_type(Token *t, const char *type, const char *word,
+                     const int line, const int col);
+
+/**
+ * @brief Prints the elements of a Token
+ *
+ * @param t Pointer to Token
+ */
+void token_println(const Token *t);
+
+/**
+ * @brief helper function to check if the characters of a
+ *        String make a number
+ *
+ * @return 1 on true
+ *         0 on false or empty String
+ */
 int is_number(const char *s);
+
+/**
+ * @brief helper function to check if a single character is a number
+ *
+ * @return 1 on true
+ * @return 0 os false
+ */
 int is_digit(const char c);
+
+/**
+ * @brief Checks is a given String is eather hash, a keyword, an operator
+ *        or a delimeter
+ *
+ * @return 1 on true
+ * @return 0 os false
+ */
 int is_language_feature(const char *word);
 
 #endif

@@ -5,8 +5,8 @@
 #include <stdio.h>
 #include <string.h>
 
-void token_println(Token t) {
-    printf("[ %d:%d ]    %s(%s)\n", t.line, t.col, t.type, t.value);
+void token_println(const Token *t) {
+    printf("[ %d:%d ]    %s(%s)\n", t->line, t->col, t->type, t->value);
 }
 
 static int _is_hash(const char *s) {
@@ -115,7 +115,7 @@ static int _is_identifier(const char *s) {
     return 1;
 }
 
-void token_init(Token *t, const char *word, int line, int col) {
+void token_init(Token *t, const char *word, const int line, const int col) {
     t->line = line;
     t->col = col;
 
@@ -165,7 +165,8 @@ void token_init(Token *t, const char *word, int line, int col) {
     }
 }
 
-void token_init_type(Token *t, char *type, char *word, int line, int col) {
+void token_init_type(Token *t, const char *type, const char *word,
+                     const int line, const int col) {
     strcpy(t->type, type);
     strcpy(t->value, word);
     t->line = line;
