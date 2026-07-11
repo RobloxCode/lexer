@@ -1,7 +1,7 @@
 #ifndef EXP_H
 #define EXP_H
 
-#include "token.h"
+#include "../../utils/token/token.h"
 
 #include <stddef.h>
 

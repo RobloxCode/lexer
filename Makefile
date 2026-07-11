@@ -2,7 +2,12 @@ CC = gcc
 CFLAGS = -std=c11 -Wall -Wextra -Wconversion -pedantic -g \
          -fsanitize=address -fno-omit-frame-pointer
 
-SRC = src/main.c src/lexer.c utils/token_arr.c utils/token.c utils/exp.c utils/str_buf.c
+SRC = src/main.c src/lexer.c \
+	  utils/token_arr/token_arr.c \
+	  utils/token/token.c \
+	  utils/exp/exp.c \
+	  utils/str_buf/str_buf.c
+
 OUT = bin/out
 
 $(OUT): $(SRC)

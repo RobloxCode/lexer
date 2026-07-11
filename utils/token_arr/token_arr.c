@@ -1,6 +1,6 @@
 #include "token_arr.h"
 
-#include "token.h"
+#include "../../utils/token/token.h"
 
 #include <inttypes.h>
 #include <stdio.h>

@@ -1,6 +1,6 @@
 #include "token.h"
 
-#include "exp.h"
+#include "../../utils/exp/exp.h"
 
 #include <stdio.h>
 #include <string.h>

@@ -1,7 +1,7 @@
 #ifndef TOKEN_ARR_H
 #define TOKEN_ARR_H
 
-#include "token.h"
+#include "../token/token.h"
 
 #include <stddef.h>
 
