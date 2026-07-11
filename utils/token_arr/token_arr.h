@@ -9,15 +9,15 @@
  * @brief Status codes returned by TokenArr operations.
  */
 typedef enum {
-    TOKENARR_OK,                /**< Operation completed successfully. */
-    TOKENARR_WRONG_PTR,         /**< A required pointer argument was NULL. */
-    TOKENARR_ERR_MALLOC,        /**< Initial heap allocation failed. */
-    TOKENARR_ERR_REALLOC,       /**< Growing the backing buffer failed. */
-    TOKENARR_ERR_OVERFLOW,      /**< Capacity/length calculation would overflow
+    TOKENARR_OK,                /** < Operation completed successfully. */
+    TOKENARR_WRONG_PTR,         /** < A required pointer argument was NULL. */
+    TOKENARR_ERR_MALLOC,        /** < Initial heap allocation failed. */
+    TOKENARR_ERR_REALLOC,       /** < Growing the backing buffer failed. */
+    TOKENARR_ERR_OVERFLOW,      /** < Capacity/length calculation would overflow
                                      size_t. */
-    TOKENARR_ERR_INVALID_SIZE,  /**< Requested capacity was zero or otherwise
+    TOKENARR_ERR_INVALID_SIZE,  /** < Requested capacity was zero or otherwise
                                      invalid. */
-    TOKENARR_IDX_OUT_OF_BOUNDS, /**< Supplied index is >= length. */
+    TOKENARR_IDX_OUT_OF_BOUNDS, /** < Supplied index is >= length. */
 } TokenArr_status;
 
 /**

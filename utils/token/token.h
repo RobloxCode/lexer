@@ -139,7 +139,7 @@ typedef struct {
  * @brief Sets the values of a given Token, it determines what
  *        type to give to each token
  *
- * @param t Pointer to Token
+ * @param t Pointer to a stack allocated Token
  * @param word String storing the word being tokenized
  * @param line Line where the token was found at
  * @param col Column where the token was found at

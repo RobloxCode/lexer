@@ -17,7 +17,7 @@ typedef struct {
 /**
  * @brief Sets all the fields in a StrBuf to default
  *
- * @param sb Pointer to StrBuf
+ * @param sb Pointer to a stack allocated StrBuf
  */
 void strbuf_init(StrBuf *sb);
 
