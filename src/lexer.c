@@ -30,41 +30,49 @@ int str_slice_push(StrSlice *sl, char c) {
     return 0;
 }
 
-static void clear_str(char *str) {
-    for (size_t i = 0; str[i] != '\0'; ++i) {
-        str[i] = 0;
+void str_slice_push_i(StrSlice *sl, char c, size_t i) {
+    if (i >= WORD_MAX_CAP) {
+        return;
     }
+
+    sl->items[i] = c;
 }
 
-static void emit_token(TokenArr *token_arr, Token *token, char *cur_word_buff,
-                       size_t *cur_word_buff_pos) {
-    clear_str(cur_word_buff);
-    *cur_word_buff_pos = 0;
+void str_slice_clear(StrSlice *sl) {
+    for (size_t i = 0; i < WORD_MAX_CAP; ++i) {
+        sl->items[i] = 0;
+    }
+
+    sl->count = 0;
+}
+
+static void emit_token(TokenArr *token_arr, Token *token, StrSlice *cur_word) {
+    str_slice_clear(cur_word);
     token_arr_append(token_arr, *token);
 }
 
-static void handle_str(FILE *file, int *cur_char, char *cur_word_buff,
-                       size_t *cur_word_buff_pos, int *col) {
+static void handle_str(FILE *file, int *cur_char, StrSlice *cur_word,
+                       int *col) {
     int chars_count = 0;
     *cur_char = fgetc(file);
 
     while (*cur_char != '"') {
-        cur_word_buff[(*cur_word_buff_pos)++] = (char)*cur_char;
+        str_slice_push(cur_word, (char)*cur_char);
         *cur_char = fgetc(file);
         chars_count++;
     }
 
-    cur_word_buff[(*cur_word_buff_pos)++] = '"';
+    str_slice_push(cur_word, '"');
     *col += chars_count;
 }
 
-static void hande_number(FILE *file, int *cur_char, char *cur_word_buff,
-                         size_t *cur_word_buff_pos, int *col) {
+static void hande_number(FILE *file, int *cur_char, StrSlice *cur_word,
+                         int *col) {
     int digits_count = 0;
     *cur_char = fgetc(file);
 
     while (is_digit((char)*cur_char) || *cur_char == '.') {
-        cur_word_buff[(*cur_word_buff_pos)++] = (char)*cur_char;
+        str_slice_push(cur_word, (char)*cur_char);
         *cur_char = fgetc(file);
         digits_count++;
     }
@@ -74,13 +82,12 @@ static void hande_number(FILE *file, int *cur_char, char *cur_word_buff,
 }
 
 static void handle_one_line_comment(FILE *file, int *cur_char,
-                                    char *cur_word_buff,
-                                    size_t *cur_word_buff_pos, int *col) {
+                                    StrSlice *cur_word, int *col) {
     int cols_count = 0;
     *cur_char = fgetc(file);
 
     while (*cur_char != '\n') {
-        cur_word_buff[(*cur_word_buff_pos)++] = (char)*cur_char;
+        str_slice_push(cur_word, (char)*cur_char);
         *cur_char = fgetc(file);
         cols_count++;
     }
@@ -89,10 +96,8 @@ static void handle_one_line_comment(FILE *file, int *cur_char,
     *col += cols_count;
 }
 
-static void handle_multi_line_comment(FILE *file, int *cur_char, int *ahead,
-                                      char *cur_word_buff,
-                                      size_t *cur_word_buff_pos, int *col,
-                                      int *line) {
+static void handle_multiline_comment(FILE *file, int *cur_char, int *ahead,
+                                     StrSlice *cur_word, int *col, int *line) {
     int lines_count = 0;
     int cols_count = 0;
 
@@ -105,7 +110,7 @@ static void handle_multi_line_comment(FILE *file, int *cur_char, int *ahead,
 
         if (*cur_char == '*' && *ahead == '/') {
             *cur_char = fgetc(file);
-            cur_word_buff[(*cur_word_buff_pos)++] = (char)*ahead;
+            str_slice_push(cur_word, (char)*ahead);
             break;
         }
 
@@ -113,7 +118,7 @@ static void handle_multi_line_comment(FILE *file, int *cur_char, int *ahead,
             lines_count++;
         }
 
-        cur_word_buff[(*cur_word_buff_pos)++] = (char)*cur_char;
+        str_slice_push(cur_word, (char)*cur_char);
         cols_count++;
     }
 
@@ -142,11 +147,6 @@ TokenArr *lexeme(char *filename) {
     StrSlice ahead_word;
     str_slice_init(&ahead_word);
 
-    char cur_word_buff[WORD_MAX_CAP] = {0};
-    size_t cur_word_buff_pos = 0;
-
-    char ahead_word_buff[WORD_MAX_CAP] = {0};
-
     int line = 1;
     int col = 0;
 
@@ -171,60 +171,57 @@ TokenArr *lexeme(char *filename) {
             continue;
         }
 
-        cur_word_buff[cur_word_buff_pos++] = (char)cur_char;
-        ahead_word_buff[0] = (char)ahead_char;
+        str_slice_push(&cur_word, (char)cur_char);
+
+        str_slice_push_i(&ahead_word, (char)ahead_char, 0);
 
         if (cur_char == '"') {
-            handle_str(file, &cur_char, cur_word_buff, &cur_word_buff_pos,
-                       &col);
-            token_init_type(&token, "STRING", cur_word_buff, line, col);
-            emit_token(token_arr, &token, cur_word_buff, &cur_word_buff_pos);
+            handle_str(file, &cur_char, &cur_word, &col);
+            token_init_type(&token, "STRING", cur_word.items, line, col);
+            emit_token(token_arr, &token, &cur_word);
             col++;
             continue;
         }
 
         if (cur_char == '/' && ahead_char == '/') {
-            handle_one_line_comment(file, &cur_char, cur_word_buff,
-                                    &cur_word_buff_pos, &col);
-            token_init_type(&token, "ONE LINE COMMENT", cur_word_buff, line,
+            handle_one_line_comment(file, &cur_char, &cur_word, &col);
+            token_init_type(&token, "ONE LINE COMMENT", cur_word.items, line,
                             col);
-            emit_token(token_arr, &token, cur_word_buff, &cur_word_buff_pos);
+            emit_token(token_arr, &token, &cur_word);
             continue;
         }
 
         if (cur_char == '/' && ahead_char == '*') {
-            handle_multi_line_comment(file, &cur_char, &ahead_char,
-                                      cur_word_buff, &cur_word_buff_pos, &col,
-                                      &line);
-            token_init_type(&token, "MULTI-LINE COMMENT", cur_word_buff, line,
+            handle_multiline_comment(file, &cur_char, &ahead_char, &cur_word,
+                                     &col, &line);
+            token_init_type(&token, "MULTI-LINE COMMENT", cur_word.items, line,
                             col);
-            emit_token(token_arr, &token, cur_word_buff, &cur_word_buff_pos);
+            emit_token(token_arr, &token, &cur_word);
             continue;
         }
 
         if (is_digit((char)cur_char)) {
-            hande_number(file, &cur_char, cur_word_buff, &cur_word_buff_pos,
-                         &col);
-            token_init_type(&token, "NUMBER", cur_word_buff, line, col);
-            emit_token(token_arr, &token, cur_word_buff, &cur_word_buff_pos);
+            hande_number(file, &cur_char, &cur_word, &col);
+            token_init_type(&token, "NUMBER", cur_word.items, line, col);
+            emit_token(token_arr, &token, &cur_word);
             continue;
         }
 
-        if (is_language_feature(cur_word_buff)) {
-            token_init(&token, cur_word_buff, line, col);
-            emit_token(token_arr, &token, cur_word_buff, &cur_word_buff_pos);
+        if (is_language_feature(cur_word.items)) {
+            token_init(&token, cur_word.items, line, col);
+            emit_token(token_arr, &token, &cur_word);
             continue;
         }
 
-        if (is_language_feature(ahead_word_buff)) {
-            token_init(&token, cur_word_buff, line, col);
-            emit_token(token_arr, &token, cur_word_buff, &cur_word_buff_pos);
+        if (is_language_feature(ahead_word.items)) {
+            token_init(&token, cur_word.items, line, col);
+            emit_token(token_arr, &token, &cur_word);
             continue;
         }
 
         if (ahead_char == ' ') {
-            token_init(&token, cur_word_buff, line, col);
-            emit_token(token_arr, &token, cur_word_buff, &cur_word_buff_pos);
+            token_init(&token, cur_word.items, line, col);
+            emit_token(token_arr, &token, &cur_word);
             continue;
         }
     }
