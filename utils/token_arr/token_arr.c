@@ -17,7 +17,7 @@ TokenArr *token_arr_init(size_t cap) {
         return NULL;
     }
 
-    Token *items = calloc(cap, sizeof *items);
+    Token *items = malloc(cap * sizeof *items);
     if (!items) {
         free(token_arr);
         return NULL;
@@ -55,15 +55,13 @@ TokenArr_status token_arr_append(TokenArr *token_arr, Token item) {
         size_t new_capacity = token_arr->capacity * 2;
         Token *new_items =
             realloc(token_arr->items, new_capacity * sizeof *new_items);
+
         if (!new_items) {
             return TOKENARR_ERR_MALLOC;
         }
 
         token_arr->items = new_items;
         token_arr->capacity = new_capacity;
-        token_arr->items[token_arr->length++] = item;
-
-        return TOKENARR_OK;
     }
 
     token_arr->items[token_arr->length++] = item;
