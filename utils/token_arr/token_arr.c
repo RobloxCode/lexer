@@ -42,8 +42,8 @@ TokenArr_status token_arr_deinit(TokenArr **token_arr) {
     return TOKENARR_OK;
 }
 
-TokenArr_status token_arr_append(TokenArr *token_arr, Token item) {
-    if (!token_arr) {
+TokenArr_status token_arr_append(TokenArr *token_arr, const Token *item) {
+    if (!token_arr || !item) {
         return TOKENARR_WRONG_PTR;
     }
 
@@ -64,7 +64,8 @@ TokenArr_status token_arr_append(TokenArr *token_arr, Token item) {
         token_arr->capacity = new_capacity;
     }
 
-    token_arr->items[token_arr->length++] = item;
+    token_arr->items[token_arr->length] = *item;
+    token_arr->length++;
 
     return TOKENARR_OK;
 }

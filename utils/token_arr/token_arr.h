@@ -65,7 +65,7 @@ TokenArr_status token_arr_deinit(TokenArr **token_arr);
  *         TOKENARR_ERR_REALLOC if growth was needed and reallocation failed,
  *         TOKENARR_ERR_OVERFLOW if growing would overflow size_t.
  */
-TokenArr_status token_arr_append(TokenArr *token_arr, Token item);
+TokenArr_status token_arr_append(TokenArr *token_arr, const Token *item);
 
 /**
  * @brief Swap the Tokens at two indices in place.

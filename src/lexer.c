@@ -11,7 +11,7 @@
 
 static void emit_token(TokenArr *token_arr, Token *token, StrBuf *cur_word) {
     strbuf_clear(cur_word);
-    token_arr_append(token_arr, *token);
+    token_arr_append(token_arr, token);
 }
 
 static void handle_str(FILE *file, int *cur_char, StrBuf *cur_word, int *col) {
