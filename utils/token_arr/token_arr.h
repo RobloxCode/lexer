@@ -59,7 +59,7 @@ TokenArr_status token_arr_deinit(TokenArr **token_arr);
  * @brief Append a Token to the end of the array, growing capacity if needed.
  *
  * @param token_arr Array to append to.
- * @param item      Token value to copy into the array.
+ * @param item      Pointer to Token value to copy into the array.
  *
  * @return TOKENARR_OK on success, TOKENARR_WRONG_PTR if @p token_arr is NULL,
  *         TOKENARR_ERR_REALLOC if growth was needed and reallocation failed,
