@@ -39,7 +39,10 @@ static void hande_number(FILE *file, int *cur_char, StrBuf *cur_word,
         digits_count++;
     }
 
-    ungetc(*cur_char, file);
+    if (*cur_char != EOF) {
+        ungetc(*cur_char, file);
+    }
+
     *col += digits_count;
 }
 
@@ -54,7 +57,9 @@ static void handle_one_line_comment(FILE *file, int *cur_char, StrBuf *cur_word,
         cols_count++;
     }
 
-    ungetc(*cur_char, file);
+    if (*cur_char != EOF) {
+        ungetc(*cur_char, file);
+    }
     *col += cols_count;
 }
 
@@ -119,7 +124,10 @@ TokenArr *lexeme(char *filename) {
         Token token;
         cur_char = fgetc(file);
         ahead_char = fgetc(file);
-        ungetc(ahead_char, file);
+
+        if (ahead_char != EOF) {
+            ungetc(ahead_char, file);
+        }
 
         col++;
 
