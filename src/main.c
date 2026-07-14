@@ -3,12 +3,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define SOURCE_CODE_FILENAME "src/source.c"
+#define FILE_PATH "src/source.c"
 
 int main(void) {
-    TokenArr *token_arr = lexeme(SOURCE_CODE_FILENAME);
+    TokenArr *token_arr = lexeme(FILE_PATH);
     if (!token_arr) {
-        fprintf(stderr, "Error lexing: %s\n", SOURCE_CODE_FILENAME);
+        fprintf(stderr, "Error lexing: %s\n", FILE_PATH);
         return EXIT_FAILURE;
     }
 

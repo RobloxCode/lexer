@@ -3,6 +3,11 @@
 
 #include "../utils/token_arr/token_arr.h"
 
-TokenArr *lexeme(char *src_code);
+/**
+ * @brief Lexes a file at a given path
+ *
+ * @param path Path of the file to be lexed
+ */
+TokenArr *lexeme(char *path);
 
 #endif

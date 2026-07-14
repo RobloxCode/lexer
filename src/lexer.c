@@ -93,12 +93,12 @@ static void handle_multiline_comment(FILE *file, int *cur_char, int *ahead,
     *line += lines_count;
 }
 
-TokenArr *lexeme(char *filename) {
-    if (!filename) {
+TokenArr *lexeme(char *path) {
+    if (!path) {
         return NULL;
     }
 
-    FILE *file = fopen(filename, "r");
+    FILE *file = fopen(path, "r");
     if (!file) {
         return NULL;
     }
