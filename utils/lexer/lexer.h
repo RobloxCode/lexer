@@ -1,7 +1,7 @@
 #ifndef LEXER_H
 #define LEXER_H
 
-#include "../utils/token_arr/token_arr.h"
+#include "../token_arr/token_arr.h"
 
 /**
  * @brief Lexes a file at a given path
