@@ -4,6 +4,7 @@
 #include "../token/token.h"
 #include "../token_arr/token_arr.h"
 
+#include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
 
