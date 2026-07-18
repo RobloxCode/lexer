@@ -192,6 +192,6 @@ bool is_digit(const char c);
  * @return 1 on true
  * @return 0 os false
  */
-bool is_language_feature(const char *word);
+bool is_sintax_element(const char *word);
 
 #endif

@@ -164,7 +164,7 @@ void token_init_type(Token *t, const char *type, const char *word,
     t->col = col;
 }
 
-bool is_language_feature(const char *word) {
+bool is_sintax_element(const char *word) {
     size_t found_idx = 0;
     if (_is_hash(word) || _is_keyword(word, &found_idx)
         || _is_operator(word, &found_idx) || _is_delimeter(word, &found_idx)) {
