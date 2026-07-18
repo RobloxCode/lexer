@@ -2,6 +2,7 @@
 
 #include "../../utils/exp/exp.h"
 
+#include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -9,58 +10,60 @@ void token_println(const Token *t) {
     printf("[ %d:%d ]    %s(%s)\n", t->line, t->col, t->type, t->value);
 }
 
-static int _is_hash(const char *s) {
+static bool _is_hash(const char *s) {
     if (strcmp(s, "#") == 0) {
-        return 1;
+        return true;
     }
 
-    return 0;
+    return false;
 }
 
-static int _is_keyword(const char *s) {
+// TODO: we could save the index and not have to look up again when
+// initializing the token
+static bool _is_keyword(const char *s) {
     for (size_t i = 0; i < exp_keywords_len; ++i) {
         if (strcmp(s, exp_keywords[i].val) == 0) {
-            return 1;
+            return true;
         }
     }
 
-    return 0;
+    return false;
 }
 
-static int _is_operator(const char *s) {
+static bool _is_operator(const char *s) {
     for (size_t i = 0; i < exp_operators_len; ++i) {
         if (strcmp(s, exp_operators[i].val) == 0) {
-            return 1;
+            return true;
         }
     }
 
-    return 0;
+    return false;
 }
 
-static int _is_delimeter(const char *s) {
+static bool _is_delimeter(const char *s) {
     for (size_t i = 0; i < exp_delimeters_len; ++i) {
         if (strcmp(s, exp_delimeters[i].val) == 0) {
-            return 1;
+            return true;
         }
     }
 
-    return 0;
+    return false;
 }
 
-int is_digit(const char c) {
+bool is_digit(const char c) {
     if (c >= '0' && c <= '9') {
-        return 1;
+        return true;
     }
 
-    return 0;
+    return false;
 }
 
-int is_number(const char *s) {
+bool is_number(const char *s) {
     size_t i = 0;
     int dots_counter = 0;
 
     if (!strlen(s)) {
-        return 0;
+        return false;
     }
 
     if (s[0] == '+' || s[0] == '-') {
@@ -74,28 +77,28 @@ int is_number(const char *s) {
         }
 
         if (!is_digit(s[i])) {
-            return 0;
+            return false;
         }
     }
 
     if (dots_counter > 1) {
-        return 0;
+        return false;
     }
 
-    return 1;
+    return true;
 }
 
-static int _is_letter(const char c) {
+static bool _is_letter(const char c) {
     if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z')) {
-        return 1;
+        return true;
     }
 
-    return 0;
+    return false;
 }
 
-static int _is_identifier(const char *s) {
+static bool _is_identifier(const char *s) {
     if (is_digit(s[0])) {
-        return 0;
+        return false;
     }
 
     for (size_t i = 0; s[i] != '\0'; ++i) {
@@ -108,11 +111,11 @@ static int _is_identifier(const char *s) {
         }
 
         if (!_is_letter(s[i])) {
-            return 0;
+            return false;
         }
     }
 
-    return 1;
+    return true;
 }
 
 void token_init(Token *t, const char *word, const int line, const int col) {
@@ -124,6 +127,7 @@ void token_init(Token *t, const char *word, const int line, const int col) {
         strcpy(t->value, word);
     }
 
+    // TODO: save index
     else if (_is_keyword(word)) {
         for (size_t i = 0; i < exp_keywords_len; ++i) {
             if (strcmp(word, exp_keywords[i].val) == 0) {
@@ -134,6 +138,7 @@ void token_init(Token *t, const char *word, const int line, const int col) {
         strcpy(t->value, word);
     }
 
+    // TODO: save index
     else if (_is_operator(word)) {
         for (size_t i = 0; i < exp_operators_len; ++i) {
             if (strcmp(word, exp_operators[i].val) == 0) {
@@ -173,11 +178,11 @@ void token_init_type(Token *t, const char *type, const char *word,
     t->col = col;
 }
 
-int is_language_feature(const char *word) {
+bool is_language_feature(const char *word) {
     if (_is_hash(word) || _is_keyword(word) || _is_operator(word)
         || _is_delimeter(word)) {
-        return 1;
+        return true;
     }
 
-    return 0;
+    return false;
 }

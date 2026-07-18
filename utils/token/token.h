@@ -4,6 +4,8 @@
 #define TOKEN_VALUE_MAX_CAP 255
 #define TOKEN_TYPE_MAX_CAP  255
 
+#include <stdbool.h>
+
 /**
  * @brief Enumerator for all the token types available
  * */
@@ -173,7 +175,7 @@ void token_println(const Token *t);
  * @return 1 on true
  *         0 on false or empty String
  */
-int is_number(const char *s);
+bool is_number(const char *s);
 
 /**
  * @brief helper function to check if a single character is a number
@@ -181,7 +183,7 @@ int is_number(const char *s);
  * @return 1 on true
  * @return 0 os false
  */
-int is_digit(const char c);
+bool is_digit(const char c);
 
 /**
  * @brief Checks is a given String is eather hash, a keyword, an operator
@@ -190,6 +192,6 @@ int is_digit(const char c);
  * @return 1 on true
  * @return 0 os false
  */
-int is_language_feature(const char *word);
+bool is_language_feature(const char *word);
 
 #endif
