@@ -172,16 +172,14 @@ void token_println(const Token *t);
  * @brief helper function to check if the characters of a
  *        String make a number
  *
- * @return 1 on true
- *         0 on false or empty String
+ * @return eather true or false
  */
 bool is_number(const char *s);
 
 /**
  * @brief helper function to check if a single character is a number
  *
- * @return 1 on true
- * @return 0 os false
+ * @return eather true or false
  */
 bool is_digit(const char c);
 
@@ -189,8 +187,7 @@ bool is_digit(const char c);
  * @brief Checks is a given String is eather hash, a keyword, an operator
  *        or a delimeter
  *
- * @return 1 on true
- * @return 0 os false
+ * @return eather true or false
  */
 bool is_sintax_element(const char *word);
 
