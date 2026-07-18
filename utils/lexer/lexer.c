@@ -4,6 +4,7 @@
 #include "../token/token.h"
 #include "../token_arr/token_arr.h"
 
+#include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -176,13 +177,13 @@ TokenArr *lexeme(char *path) {
             continue;
         }
 
-        if (is_language_feature(cur_word.items)) {
+        if (is_sintax_element(cur_word.items)) {
             token_init(&token, cur_word.items, line, col);
             emit_token(token_arr, &token, &cur_word);
             continue;
         }
 
-        if (is_language_feature(ahead_word.items)) {
+        if (is_sintax_element(ahead_word.items)) {
             token_init(&token, cur_word.items, line, col);
             emit_token(token_arr, &token, &cur_word);
             continue;
