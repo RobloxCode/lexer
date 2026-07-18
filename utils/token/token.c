@@ -6,7 +6,7 @@
 #include <stdio.h>
 #include <string.h>
 
-void token_println(const Token *t) {
+inline void token_println(const Token *t) {
     printf("[ %d:%d ]    %s(%s)\n", t->line, t->col, t->type, t->value);
 }
 
