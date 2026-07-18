@@ -18,11 +18,10 @@ static bool _is_hash(const char *s) {
     return false;
 }
 
-// TODO: we could save the index and not have to look up again when
-// initializing the token
-static bool _is_keyword(const char *s) {
+static bool _is_keyword(const char *s, size_t *found_idx) {
     for (size_t i = 0; i < exp_keywords_len; ++i) {
         if (strcmp(s, exp_keywords[i].val) == 0) {
+            *found_idx = i;
             return true;
         }
     }
@@ -30,9 +29,10 @@ static bool _is_keyword(const char *s) {
     return false;
 }
 
-static bool _is_operator(const char *s) {
+static bool _is_operator(const char *s, size_t *found_idx) {
     for (size_t i = 0; i < exp_operators_len; ++i) {
         if (strcmp(s, exp_operators[i].val) == 0) {
+            *found_idx = i;
             return true;
         }
     }
@@ -40,9 +40,10 @@ static bool _is_operator(const char *s) {
     return false;
 }
 
-static bool _is_delimeter(const char *s) {
+static bool _is_delimeter(const char *s, size_t *found_idx) {
     for (size_t i = 0; i < exp_delimeters_len; ++i) {
         if (strcmp(s, exp_delimeters[i].val) == 0) {
+            *found_idx = i;
             return true;
         }
     }
@@ -122,30 +123,20 @@ void token_init(Token *t, const char *word, const int line, const int col) {
     t->line = line;
     t->col = col;
 
+    size_t found_idx = 0;
+
     if (_is_hash(word)) {
         strcpy(t->type, "HASH");
         strcpy(t->value, word);
     }
 
-    // TODO: save index
-    else if (_is_keyword(word)) {
-        for (size_t i = 0; i < exp_keywords_len; ++i) {
-            if (strcmp(word, exp_keywords[i].val) == 0) {
-                strcpy(t->type, exp_keywords[i].tok_type_str);
-                break;
-            }
-        }
+    else if (_is_keyword(word, &found_idx)) {
+        strcpy(t->type, exp_keywords[found_idx].tok_type_str);
         strcpy(t->value, word);
     }
 
-    // TODO: save index
-    else if (_is_operator(word)) {
-        for (size_t i = 0; i < exp_operators_len; ++i) {
-            if (strcmp(word, exp_operators[i].val) == 0) {
-                strcpy(t->type, exp_operators[i].tok_type_str);
-                break;
-            }
-        }
+    else if (_is_operator(word, &found_idx)) {
+        strcpy(t->type, exp_operators[found_idx].tok_type_str);
         strcpy(t->value, word);
     }
 
@@ -154,13 +145,8 @@ void token_init(Token *t, const char *word, const int line, const int col) {
         strcpy(t->value, word);
     }
 
-    else if (_is_delimeter(word)) {
-        for (size_t i = 0; i < exp_delimeters_len; ++i) {
-            if (strcmp(word, exp_delimeters[i].val) == 0) {
-                strcpy(t->type, exp_delimeters[i].tok_type_str);
-                break;
-            }
-        }
+    else if (_is_delimeter(word, &found_idx)) {
+        strcpy(t->type, exp_delimeters[found_idx].tok_type_str);
         strcpy(t->value, word);
     }
 
@@ -179,8 +165,9 @@ void token_init_type(Token *t, const char *type, const char *word,
 }
 
 bool is_language_feature(const char *word) {
-    if (_is_hash(word) || _is_keyword(word) || _is_operator(word)
-        || _is_delimeter(word)) {
+    size_t found_idx = 0;
+    if (_is_hash(word) || _is_keyword(word, &found_idx)
+        || _is_operator(word, &found_idx) || _is_delimeter(word, &found_idx)) {
         return true;
     }
 
