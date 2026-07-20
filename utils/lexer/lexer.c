@@ -94,6 +94,10 @@ static void handle_multiline_comment(FILE *file, int *cur_char, int *ahead,
     *line += lines_count;
 }
 
+static void handle_multichar_op(const char *cur, size_t cur_idx,
+                                const char *ahead, size_t ahead_idx) {
+}
+
 TokenArr *lexeme(char *path) {
     if (!path) {
         return NULL;
@@ -146,10 +150,13 @@ TokenArr *lexeme(char *path) {
         strbuf_set(&ahead_word, (char)ahead_char, 0);
 
         // TODO: have to add a way of checking for multi line characters
-        // if (cur_char == '=' || cur_char == '!' || cur_char == '<'
-        //     || cur_char == '>' || cur_char == '&' || cur_char == '|'
-        //     || cur_char == '-' ||) {
-        // }
+        size_t cur_word_idx = 0;
+        size_t ahead_word_idx = 0;
+        if (is_operator(cur_word.items, &cur_word_idx)
+            && is_operator(ahead_word.items, &ahead_word_idx)) {
+            handle_multichar_op(cur_word.items, cur_word_idx, ahead_word.items,
+                                ahead_word_idx);
+        }
 
         if (cur_char == '"') {
             handle_str(file, &cur_char, &cur_word, &col);

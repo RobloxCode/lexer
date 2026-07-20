@@ -14,6 +14,39 @@ typedef struct {
     TokType tok_type;   /* < Actuall token type*/
 } Exp;
 
+typedef enum {
+    PLUS,
+    MINUS,
+    STAR,
+    SLASH,
+    MODULO,
+    ASSIGN,
+    ADD_ASSIGN,
+    SUB_ASSIGN,
+    MUL_ASSIGN,
+    DIV_ASSIGN,
+    MOD_ASSIGN,
+    AND_ASSIGN,
+    OR_ASSIGN,
+    XOR_ASSIGN,
+    LBITSHIFT,
+    RBITSHIFT,
+    BIT_AND,
+    BIT_OR,
+    BIT_NOT,
+    BIT_XOR,
+    AND,
+    OR,
+    NOT_EQUAL,
+    EQUAL,
+    LESS,
+    GREATER,
+    LESS_EQ,
+    GREATER_EQ,
+    INCREMENT,
+    DECREMENT,
+} exp_operators_idxs;
+
 /* Array of Exp containing all the operators (+, -, =, ...) */
 extern Exp exp_operators[];
 

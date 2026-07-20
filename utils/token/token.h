@@ -5,6 +5,7 @@
 #define TOKEN_TYPE_MAX_CAP  255
 
 #include <stdbool.h>
+#include <stddef.h>
 
 /**
  * @brief Enumerator for all the token types available
@@ -190,5 +191,7 @@ bool is_digit(const char c);
  * @return eather true or false
  */
 bool is_sintax_element(const char *word);
+
+bool is_operator(const char *s, size_t *found_idx);
 
 #endif
