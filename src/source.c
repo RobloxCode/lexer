@@ -7,5 +7,13 @@ int some_fn(void *some_param) {
     const float PI = 3.1415;
     return 0;
 
+    if (var != 100) {
+        return 0;
+    }
+
+    if (var <= -3) {
+        return 0;
+    }
+
     float dec = 130.3f;
 }
