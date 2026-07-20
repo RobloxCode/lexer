@@ -29,8 +29,8 @@ static void handle_str(FILE *file, int *cur_char, StrBuf *cur_word, int *col) {
     *col += chars_count;
 }
 
-static void hande_number(FILE *file, int *cur_char, StrBuf *cur_word,
-                         int *col) {
+static void handle_number(FILE *file, int *cur_char, StrBuf *cur_word,
+                          int *col) {
     int digits_count = 0;
     *cur_char = fgetc(file);
 
@@ -118,8 +118,8 @@ TokenArr *lexeme(char *path) {
     int line = 1;
     int col = 0;
 
-    int cur_char;
-    int ahead_char;
+    int cur_char = 0;
+    int ahead_char = 0;
 
     while (cur_char != EOF) {
         Token token;
@@ -144,6 +144,12 @@ TokenArr *lexeme(char *path) {
 
         strbuf_push(&cur_word, (char)cur_char);
         strbuf_set(&ahead_word, (char)ahead_char, 0);
+
+        // TODO: have to add a way of checking for multi line characters
+        // if (cur_char == '=' || cur_char == '!' || cur_char == '<'
+        //     || cur_char == '>' || cur_char == '&' || cur_char == '|'
+        //     || cur_char == '-' ||) {
+        // }
 
         if (cur_char == '"') {
             handle_str(file, &cur_char, &cur_word, &col);
@@ -171,7 +177,7 @@ TokenArr *lexeme(char *path) {
         }
 
         if (is_digit((char)cur_char)) {
-            hande_number(file, &cur_char, &cur_word, &col);
+            handle_number(file, &cur_char, &cur_word, &col);
             token_init_type(&token, "NUMBER", cur_word.items, line, col);
             emit_token(token_arr, &token, &cur_word);
             continue;
