@@ -8,7 +8,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#define MIN_FILE_LEN 30
+#define INIT_TOKEN_CAP 30
 
 static void emit_token(TokenArr *token_arr, Token *token, StrBuf *cur_word) {
     strbuf_clear(cur_word);
@@ -84,15 +84,16 @@ TokenArr *lexeme(char *path) {
         return NULL;
     }
 
-    TokenArr *token_arr = token_arr_init(MIN_FILE_LEN);
+    TokenArr *token_arr = token_arr_init(INIT_TOKEN_CAP);
     if (!token_arr) {
+        fclose(file);
         return NULL;
     }
 
-    StrBuf cur_word;
+    StrBuf cur_word = {0};
     strbuf_init(&cur_word);
 
-    StrBuf ahead_word;
+    StrBuf ahead_word = {0};
     strbuf_init(&ahead_word);
 
     int line = 1;
@@ -112,38 +113,40 @@ TokenArr *lexeme(char *path) {
 
         col++;
 
-        if (cur_char == ' ') {
-            continue;
-        }
+        switch (cur_char) {
+            case ' ':
+                continue;
 
-        if (cur_char == '\n') {
-            line++;
-            col = 0;
-            continue;
+            case '\n':
+                line++;
+                col = 0;
+                continue;
+
+            case '"':
+                handle_str(file, &cur_char, &cur_word, &col);
+                token_init_type(&token, "STRING", cur_word.items, line, col);
+                emit_token(token_arr, &token, &cur_word);
+                col++;
+                continue;
+
+            case '/':
+                if (ahead_char == '/') {
+                    handle_one_line_comment(file, &cur_char);
+                    strbuf_clear(&cur_word);
+                    continue;
+                }
+
+                if (ahead_char == '*') {
+                    handle_multiline_comment(file, &cur_char, &ahead_char);
+                    strbuf_clear(&cur_word);
+                    continue;
+                }
+
+                continue;
         }
 
         strbuf_push(&cur_word, (char)cur_char);
         strbuf_set(&ahead_word, (char)ahead_char, 0);
-
-        if (cur_char == '"') {
-            handle_str(file, &cur_char, &cur_word, &col);
-            token_init_type(&token, "STRING", cur_word.items, line, col);
-            emit_token(token_arr, &token, &cur_word);
-            col++;
-            continue;
-        }
-
-        if (cur_char == '/' && ahead_char == '/') {
-            handle_one_line_comment(file, &cur_char);
-            strbuf_clear(&cur_word);
-            continue;
-        }
-
-        if (cur_char == '/' && ahead_char == '*') {
-            handle_multiline_comment(file, &cur_char, &ahead_char);
-            strbuf_clear(&cur_word);
-            continue;
-        }
 
         if (is_digit((char)cur_char)) {
             handle_number(file, &cur_char, &cur_word, &col);
