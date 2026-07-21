@@ -1,4 +1,4 @@
-#include "../../utils/token.h"
+#include "../../utils/token/token.h"
 
 #include <stdio.h>
 #include <stdlib.h>

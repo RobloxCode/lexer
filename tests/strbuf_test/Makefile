@@ -3,7 +3,7 @@ CC = gcc
 CFLAGS = -std=c11 -Wall -Wextra -Wconversion -pedantic -g \
          -fsanitize=address -fno-omit-frame-pointer
 
-SRC = test.c ../../utils/token/token.c
+SRC = test.c ../../utils/str_buf/str_buf.c
 OUT = test
 
 $(OUT): $(SRC)

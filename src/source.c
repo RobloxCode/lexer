@@ -16,4 +16,6 @@ int some_fn(void *some_param) {
     }
 
     float dec = 130.3f;
+
+    var++;
 }

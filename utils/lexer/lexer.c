@@ -145,12 +145,6 @@ TokenArr *lexeme(char *path) {
         strbuf_push(&cur_word, (char)cur_char);
         strbuf_set(&ahead_word, (char)ahead_char, 0);
 
-        // TODO: have to add a way of checking for multi line characters
-        // if (cur_char == '=' || cur_char == '!' || cur_char == '<'
-        //     || cur_char == '>' || cur_char == '&' || cur_char == '|'
-        //     || cur_char == '-' ||) {
-        // }
-
         if (cur_char == '"') {
             handle_str(file, &cur_char, &cur_word, &col);
             token_init_type(&token, "STRING", cur_word.items, line, col);
