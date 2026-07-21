@@ -22,4 +22,5 @@ int some_fn(void *some_param) {
      */
 
     var++;
+    //
 }

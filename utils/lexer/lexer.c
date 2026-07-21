@@ -16,9 +16,8 @@ static void emit_token(TokenArr *token_arr, Token *token) {
 
 static void handle_str(FILE *file, int *cur_char, StrBuf *cur_word, int *col) {
     int chars_count = 0;
-    *cur_char = fgetc(file);
 
-    while (*cur_char != '"') {
+    while ((*cur_char = fgetc(file)) != EOF && *cur_char != '"') {
         strbuf_push(cur_word, (char)*cur_char);
         *cur_char = fgetc(file);
         chars_count++;
