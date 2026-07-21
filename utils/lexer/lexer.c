@@ -10,8 +10,7 @@
 
 #define INIT_TOKEN_CAP 30
 
-static void emit_token(TokenArr *token_arr, Token *token, StrBuf *cur_word) {
-    strbuf_clear(cur_word);
+static void emit_token(TokenArr *token_arr, Token *token) {
     token_arr_append(token_arr, token);
 }
 
@@ -125,7 +124,8 @@ TokenArr *lexeme(char *path) {
             case '"':
                 handle_str(file, &cur_char, &cur_word, &col);
                 token_init_type(&token, "STRING", cur_word.items, line, col);
-                emit_token(token_arr, &token, &cur_word);
+                emit_token(token_arr, &token);
+                strbuf_clear(&cur_word);
                 col++;
                 continue;
 
@@ -151,27 +151,33 @@ TokenArr *lexeme(char *path) {
         if (is_digit((char)cur_char)) {
             handle_number(file, &cur_char, &cur_word, &col);
             token_init_type(&token, "NUMBER", cur_word.items, line, col);
-            emit_token(token_arr, &token, &cur_word);
+            emit_token(token_arr, &token);
+            strbuf_clear(&cur_word);
             continue;
         }
 
         if (is_sintax_element(cur_word.items)) {
             token_init(&token, cur_word.items, line, col);
-            emit_token(token_arr, &token, &cur_word);
+            emit_token(token_arr, &token);
+            strbuf_clear(&cur_word);
             continue;
         }
 
         if (is_sintax_element(ahead_word.items)) {
             token_init(&token, cur_word.items, line, col);
-            emit_token(token_arr, &token, &cur_word);
+            emit_token(token_arr, &token);
+            strbuf_clear(&cur_word);
             continue;
         }
 
         if (ahead_char == ' ') {
             token_init(&token, cur_word.items, line, col);
-            emit_token(token_arr, &token, &cur_word);
+            emit_token(token_arr, &token);
+            strbuf_clear(&cur_word);
             continue;
         }
+
+        // TODO: unknown / error
     }
 
     fclose(file);
