@@ -14,6 +14,9 @@ typedef struct {
     TokType tok_type;   /* < Actuall token type*/
 } Exp;
 
+/**
+ * @brief indexes of the operators in the exp_operators array
+ */
 typedef enum {
     PLUS_IDX,
     MINUS_IDX,
