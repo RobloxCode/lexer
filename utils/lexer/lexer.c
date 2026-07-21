@@ -47,28 +47,19 @@ static void handle_number(FILE *file, int *cur_char, StrBuf *cur_word,
     *col += digits_count;
 }
 
-static void handle_one_line_comment(FILE *file, int *cur_char, StrBuf *cur_word,
-                                    int *col) {
-    int cols_count = 0;
+static void handle_one_line_comment(FILE *file, int *cur_char) {
     *cur_char = fgetc(file);
 
     while (*cur_char != '\n') {
-        strbuf_push(cur_word, (char)*cur_char);
         *cur_char = fgetc(file);
-        cols_count++;
     }
 
     if (*cur_char != EOF) {
         ungetc(*cur_char, file);
     }
-    *col += cols_count;
 }
 
-static void handle_multiline_comment(FILE *file, int *cur_char, int *ahead,
-                                     StrBuf *cur_word, int *col, int *line) {
-    int lines_count = 0;
-    int cols_count = 0;
-
+static void handle_multiline_comment(FILE *file, int *cur_char, int *ahead) {
     while ((*cur_char = fgetc(file)) != EOF) {
         *ahead = fgetc(file);
 
@@ -78,20 +69,9 @@ static void handle_multiline_comment(FILE *file, int *cur_char, int *ahead,
 
         if (*cur_char == '*' && *ahead == '/') {
             *cur_char = fgetc(file);
-            strbuf_push(cur_word, (char)*ahead);
             break;
         }
-
-        if (*cur_char == '\n') {
-            lines_count++;
-        }
-
-        strbuf_push(cur_word, (char)*cur_char);
-        cols_count++;
     }
-
-    *col += cols_count;
-    *line += lines_count;
 }
 
 TokenArr *lexeme(char *path) {
@@ -154,19 +134,14 @@ TokenArr *lexeme(char *path) {
         }
 
         if (cur_char == '/' && ahead_char == '/') {
-            handle_one_line_comment(file, &cur_char, &cur_word, &col);
-            token_init_type(&token, "ONE LINE COMMENT", cur_word.items, line,
-                            col);
-            emit_token(token_arr, &token, &cur_word);
+            handle_one_line_comment(file, &cur_char);
+            strbuf_clear(&cur_word);
             continue;
         }
 
         if (cur_char == '/' && ahead_char == '*') {
-            handle_multiline_comment(file, &cur_char, &ahead_char, &cur_word,
-                                     &col, &line);
-            token_init_type(&token, "MULTI-LINE COMMENT", cur_word.items, line,
-                            col);
-            emit_token(token_arr, &token, &cur_word);
+            handle_multiline_comment(file, &cur_char, &ahead_char);
+            strbuf_clear(&cur_word);
             continue;
         }
 
