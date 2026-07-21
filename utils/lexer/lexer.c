@@ -27,13 +27,21 @@ static void handle_str(FILE *file, int *cur_char, StrBuf *cur_word, int *col) {
     *col += chars_count;
 }
 
-static void handle_number(FILE *file, int *cur_char, StrBuf *cur_word,
-                          int *col) {
+static int handle_number(FILE *file, int *cur_char, StrBuf *cur_word,
+                         int *col) {
+    int ret = 0;
+    int count_dot = 0;
+
     int digits_count = 0;
     *cur_char = fgetc(file);
 
     while (is_digit((char)*cur_char) || *cur_char == '.') {
+        if (*cur_char == '.') {
+            count_dot++;
+        }
+
         strbuf_push(cur_word, (char)*cur_char);
+
         *cur_char = fgetc(file);
         digits_count++;
     }
@@ -43,6 +51,14 @@ static void handle_number(FILE *file, int *cur_char, StrBuf *cur_word,
     }
 
     *col += digits_count;
+
+    if (count_dot > 1) {
+        ret = 1;
+    } else {
+        ret = 0;
+    }
+
+    return ret;
 }
 
 static void handle_one_line_comment(FILE *file, int *cur_char) {
@@ -148,11 +164,19 @@ TokenArr *lexeme(char *path) {
         strbuf_set(&ahead_word, (char)ahead_char, 0);
 
         if (is_digit((char)cur_char)) {
-            handle_number(file, &cur_char, &cur_word, &col);
-            token_init_type(&token, "NUMBER", cur_word.items, line, col);
-            emit_token(token_arr, &token);
-            strbuf_clear(&cur_word);
-            continue;
+            if (handle_number(file, &cur_char, &cur_word, &col) == 0) {
+                handle_number(file, &cur_char, &cur_word, &col);
+                token_init_type(&token, "NUMBER", cur_word.items, line, col);
+                emit_token(token_arr, &token);
+                strbuf_clear(&cur_word);
+                continue;
+            } else {
+                token_init_type(&token, "INVALID NUMBER", cur_word.items, line,
+                                col);
+                emit_token(token_arr, &token);
+                strbuf_clear(&cur_word);
+                continue;
+            }
         }
 
         if (is_sintax_element(cur_word.items)) {

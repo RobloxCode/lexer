@@ -15,7 +15,8 @@ int some_fn(void *some_param) {
         return 0;
     }
 
-    float dec = 130.3f;
+    float dec = 13.0.3f;
+    double dec2 = 2.71;
 
     /*
      * this is a comment
