@@ -62,9 +62,7 @@ static int handle_number(FILE *file, int *cur_char, StrBuf *cur_word,
 }
 
 static void handle_one_line_comment(FILE *file, int *cur_char) {
-    *cur_char = fgetc(file);
-
-    while (*cur_char != '\n') {
+    while ((*cur_char = fgetc(file)) != EOF && *cur_char != '\n') {
         *cur_char = fgetc(file);
     }
 
