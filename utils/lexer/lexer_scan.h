@@ -2,10 +2,11 @@
 #define LEXER_SCAN_H
 
 #include "../str_buf/str_buf.h"
+#include "lexer.h"
 
 #include <stdio.h>
 
-void handle_str(FILE *file, int *cur_char, StrBuf *cur_word, int *col);
+void handle_str(Lexer *l);
 
 int handle_number(FILE *file, int *cur_char, StrBuf *cur_word, int *col);
 

@@ -85,8 +85,7 @@ Lexer *lexeme(char *path) {
                 continue;
 
             case '"':
-                handle_str(lexer->file, &lexer->cur_char, &lexer->cur_word,
-                           &lexer->col);
+                handle_str(lexer);
                 token_init_type(&token, "STRING", lexer->cur_word.items,
                                 lexer->line, lexer->col);
                 emit_token(lexer->tokens, &token);

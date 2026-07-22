@@ -1,19 +1,20 @@
 #include "../../utils/str_buf/str_buf.h"
 #include "../../utils/token/token.h"
+#include "lexer.h"
 
 #include <stdio.h>
 
-void handle_str(FILE *file, int *cur_char, StrBuf *cur_word, int *col) {
+void handle_str(Lexer *l) {
     int chars_count = 0;
 
-    while ((*cur_char = fgetc(file)) != EOF && *cur_char != '"') {
-        strbuf_push(cur_word, (char)*cur_char);
-        *cur_char = fgetc(file);
+    while ((l->cur_char = fgetc(l->file)) != EOF && l->cur_char != '"') {
+        strbuf_push(&l->cur_word, (char)l->cur_char);
+        l->cur_char = fgetc(l->file);
         chars_count++;
     }
 
-    strbuf_push(cur_word, '"');
-    *col += chars_count;
+    strbuf_push(&l->cur_word, '"');
+    l->col = chars_count;
 }
 
 int handle_number(FILE *file, int *cur_char, StrBuf *cur_word, int *col) {
