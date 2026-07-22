@@ -10,11 +10,11 @@
 #include <stdlib.h>
 #include <string.h>
 
-static void emit_token(TokenArr *token_arr, Token *token) {
-    token_arr_append(token_arr, token);
+static void emit_token(Lexer *l, Token *token) {
+    token_arr_append(l->tokens, token);
 }
 
-Lexer *lexer_init(const char *path) {
+static Lexer *lexer_init(const char *path) {
     Lexer *l = malloc(sizeof *l);
     if (!l) {
         return NULL;
@@ -86,9 +86,9 @@ Lexer *lexeme(char *path) {
 
             case '"':
                 handle_str(lexer);
-                token_init_type(&token, "STRING", lexer->cur_word.items,
-                                lexer->line, lexer->col);
-                emit_token(lexer->tokens, &token);
+                token_init_type(&token, "STRING", &lexer->cur_word, lexer->line,
+                                lexer->col);
+                emit_token(lexer, &token);
                 strbuf_clear(&lexer->cur_word);
                 lexer->col++;
                 continue;
@@ -114,37 +114,37 @@ Lexer *lexeme(char *path) {
 
         if (is_digit((char)lexer->cur_char)) {
             if (handle_number(lexer) == 0) {
-                token_init_type(&token, "NUMBER", lexer->cur_word.items,
-                                lexer->line, lexer->col);
-                emit_token(lexer->tokens, &token);
+                token_init_type(&token, "NUMBER", &lexer->cur_word, lexer->line,
+                                lexer->col);
+                emit_token(lexer, &token);
                 strbuf_clear(&lexer->cur_word);
                 continue;
             } else {
-                token_init_type(&token, "INVALID NUMBER", lexer->cur_word.items,
+                token_init_type(&token, "INVALID NUMBER", &lexer->cur_word,
                                 lexer->line, lexer->col);
-                emit_token(lexer->tokens, &token);
+                emit_token(lexer, &token);
                 strbuf_clear(&lexer->cur_word);
                 continue;
             }
         }
 
         if (is_sintax_element(lexer->cur_word.items)) {
-            token_init(&token, lexer->cur_word.items, lexer->line, lexer->col);
-            emit_token(lexer->tokens, &token);
+            token_init(&token, &lexer->cur_word, lexer->line, lexer->col);
+            emit_token(lexer, &token);
             strbuf_clear(&lexer->cur_word);
             continue;
         }
 
         if (is_sintax_element(lexer->ahead_word.items)) {
-            token_init(&token, lexer->cur_word.items, lexer->line, lexer->col);
-            emit_token(lexer->tokens, &token);
+            token_init(&token, &lexer->cur_word, lexer->line, lexer->col);
+            emit_token(lexer, &token);
             strbuf_clear(&lexer->cur_word);
             continue;
         }
 
         if (lexer->ahead_char == ' ') {
-            token_init(&token, lexer->cur_word.items, lexer->line, lexer->col);
-            emit_token(lexer->tokens, &token);
+            token_init(&token, &lexer->cur_word, lexer->line, lexer->col);
+            emit_token(lexer, &token);
             strbuf_clear(&lexer->cur_word);
             continue;
         }
