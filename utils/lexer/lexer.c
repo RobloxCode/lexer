@@ -95,14 +95,13 @@ Lexer *lexeme(char *path) {
 
             case '/':
                 if (lexer->ahead_char == '/') {
-                    handle_one_line_comment(lexer->file, &lexer->cur_char);
+                    handle_one_line_comment(lexer);
                     strbuf_clear(&lexer->cur_word);
                     continue;
                 }
 
                 if (lexer->ahead_char == '*') {
-                    handle_multiline_comment(lexer->file, &lexer->cur_char,
-                                             &lexer->ahead_char);
+                    handle_multiline_comment(lexer);
                     strbuf_clear(&lexer->cur_word);
                     continue;
                 }
@@ -114,11 +113,7 @@ Lexer *lexeme(char *path) {
         strbuf_set(&lexer->ahead_word, (char)lexer->ahead_char, 0);
 
         if (is_digit((char)lexer->cur_char)) {
-            if (handle_number(lexer->file, &lexer->cur_char, &lexer->cur_word,
-                              &lexer->col)
-                == 0) {
-                handle_number(lexer->file, &lexer->cur_char, &lexer->cur_word,
-                              &lexer->col);
+            if (handle_number(lexer) == 0) {
                 token_init_type(&token, "NUMBER", lexer->cur_word.items,
                                 lexer->line, lexer->col);
                 emit_token(lexer->tokens, &token);

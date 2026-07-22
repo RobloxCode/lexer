@@ -8,10 +8,10 @@
 
 void handle_str(Lexer *l);
 
-int handle_number(FILE *file, int *cur_char, StrBuf *cur_word, int *col);
+int handle_number(Lexer *l);
 
-void handle_one_line_comment(FILE *file, int *cur_char);
+void handle_one_line_comment(Lexer *l);
 
-void handle_multiline_comment(FILE *file, int *cur_char, int *ahead);
+void handle_multiline_comment(Lexer *l);
 
 #endif

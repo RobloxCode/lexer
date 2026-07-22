@@ -17,29 +17,29 @@ void handle_str(Lexer *l) {
     l->col = chars_count;
 }
 
-int handle_number(FILE *file, int *cur_char, StrBuf *cur_word, int *col) {
+int handle_number(Lexer *l) {
     int ret = 0;
     int count_dot = 0;
 
     int digits_count = 0;
-    *cur_char = fgetc(file);
+    l->cur_char = fgetc(l->file);
 
-    while (is_digit((char)*cur_char) || *cur_char == '.') {
-        if (*cur_char == '.') {
+    while (is_digit((char)l->cur_char) || l->cur_char == '.') {
+        if (l->cur_char == '.') {
             count_dot++;
         }
 
-        strbuf_push(cur_word, (char)*cur_char);
+        strbuf_push(&l->cur_word, (char)l->cur_char);
 
-        *cur_char = fgetc(file);
+        l->cur_char = fgetc(l->file);
         digits_count++;
     }
 
-    if (*cur_char != EOF) {
-        ungetc(*cur_char, file);
+    if (l->cur_char != EOF) {
+        ungetc(l->cur_char, l->file);
     }
 
-    *col += digits_count;
+    l->col += digits_count;
 
     if (count_dot > 1) {
         ret = 1;
@@ -50,26 +50,31 @@ int handle_number(FILE *file, int *cur_char, StrBuf *cur_word, int *col) {
     return ret;
 }
 
-void handle_one_line_comment(FILE *file, int *cur_char) {
-    while ((*cur_char = fgetc(file)) != EOF && *cur_char != '\n') {
-        *cur_char = fgetc(file);
+void handle_one_line_comment(Lexer *l) {
+    while ((l->cur_char = fgetc(l->file)) != EOF && l->cur_char != '\n') {
+        l->cur_char = fgetc(l->file);
     }
 
-    if (*cur_char != EOF) {
-        ungetc(*cur_char, file);
+    if (l->cur_char != EOF) {
+        ungetc(l->cur_char, l->file);
     }
 }
 
-void handle_multiline_comment(FILE *file, int *cur_char, int *ahead) {
-    while ((*cur_char = fgetc(file)) != EOF) {
-        *ahead = fgetc(file);
+void handle_multiline_comment(Lexer *l) {
+    while ((l->cur_char = fgetc(l->file)) != EOF) {
+        l->ahead_char = fgetc(l->file);
 
-        if (*ahead != EOF) {
-            ungetc(*ahead, file);
+        if (l->cur_char == '\n') {
+            l->line++;
         }
 
-        if (*cur_char == '*' && *ahead == '/') {
-            *cur_char = fgetc(file);
+        if (l->ahead_char != EOF) {
+            ungetc(l->ahead_char, l->file);
+        }
+
+        if (l->cur_char == '*' && l->ahead_char == '/') {
+            l->cur_char = fgetc(l->file);
+            l->line++;
             break;
         }
     }
