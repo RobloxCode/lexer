@@ -4,6 +4,8 @@
 #define TOKEN_VALUE_MAX_CAP 255
 #define TOKEN_TYPE_MAX_CAP  255
 
+#include "../../utils/str_buf/str_buf.h"
+
 #include <stdbool.h>
 #include <stddef.h>
 
@@ -147,7 +149,7 @@ typedef struct {
  * @param line Line where the token was found at
  * @param col Column where the token was found at
  */
-void token_init(Token *t, const char *word, const int line, const int col);
+void token_init(Token *t, const StrBuf *word, const int line, const int col);
 
 /**
  * @brief Sets the values of a given Token and sets the type to the
@@ -159,7 +161,7 @@ void token_init(Token *t, const char *word, const int line, const int col);
  * @param line Line where the token was found at
  * @param col Column where the token was found at
  */
-void token_init_type(Token *t, const char *type, const char *word,
+void token_init_type(Token *t, const char *type, const StrBuf *word,
                      const int line, const int col);
 
 /**
