@@ -18,8 +18,7 @@ int main(void) {
 
     token_arr_println(lexer->tokens);
 
-    token_arr_deinit(&lexer->tokens);
-    free(lexer);
+    lexer_deinit(&lexer);
 
     return EXIT_SUCCESS;
 }

@@ -4,6 +4,8 @@
 #include "../str_buf/str_buf.h"
 #include "../token_arr/token_arr.h"
 
+#define INIT_TOKEN_CAP 30
+
 #include <stdio.h>
 
 typedef struct {
@@ -28,5 +30,7 @@ typedef struct {
  * @param path Path of the file to be lexed
  */
 Lexer *lexeme(char *path);
+
+void lexer_deinit(Lexer **l);
 
 #endif

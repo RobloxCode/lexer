@@ -4,6 +4,10 @@
 #include <string.h>
 
 void strbuf_init(StrBuf *sb) {
+    if (!sb) {
+        return;
+    }
+
     memset(sb->items, 0, sizeof sb->items);
     sb->count = 0;
 }
