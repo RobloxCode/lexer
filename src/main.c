@@ -6,14 +6,20 @@
 #define PATH "src/source.c"
 
 int main(void) {
-    TokenArr *token_arr = lexeme(PATH);
-    if (!token_arr) {
+    Lexer *lexer = lexeme(PATH);
+    if (!lexer) {
+        return EXIT_FAILURE;
+    }
+
+    if (!lexer->tokens) {
         fprintf(stderr, "Error lexing: %s\n", PATH);
         return EXIT_FAILURE;
     }
 
-    token_arr_println(token_arr);
+    token_arr_println(lexer->tokens);
 
-    token_arr_deinit(&token_arr);
+    token_arr_deinit(&lexer->tokens);
+    free(lexer);
+
     return EXIT_SUCCESS;
 }
