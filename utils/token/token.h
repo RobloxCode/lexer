@@ -194,6 +194,16 @@ bool is_digit(const char c);
  */
 bool is_sintax_element(const char *word);
 
+/**
+ * @brief Checks if a given String is an operator, if so it saves the position
+ *
+ * @param s String to find in the list
+ * @param found_idx Buffer to store the position if found, the variable
+ *                  is not modified if not found
+ *
+ * @return true if word is an operator
+ *         false on owrd not found in operators list
+ */
 bool is_operator(const char *s, size_t *found_idx);
 
 #endif
