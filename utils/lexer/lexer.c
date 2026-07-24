@@ -121,15 +121,10 @@ Lexer *lexeme(char *path) {
             // TODO: the ahead_char gets tokenized by itself even though
             // theres the continue to skip the iteration
 
-            strbuf_push(&lexer->cur_word, lexer->ahead_char);
+            strbuf_push(&lexer->cur_word, (char)lexer->ahead_char);
 
             size_t op_idx = 0;
-            for (size_t i = 0; i < exp_operators_len; ++i) {
-                if (strcmp(lexer->cur_word.items, exp_operators[i].val) == 0) {
-                    op_idx = i;
-                    break;
-                }
-            }
+            is_operator(lexer->cur_word.items, &op_idx);
 
             token_init_type(&token, exp_operators[op_idx].tok_type_str,
                             &lexer->cur_word, lexer->line, lexer->col);
