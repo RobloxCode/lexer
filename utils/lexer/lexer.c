@@ -33,7 +33,7 @@ static Lexer *lexer_init(const char *path) {
     }
 
     l->cur_char = 0;
-    l->ahead_char = 0;
+    l->peek_char = 0;
     l->line = 0;
     l->col = 0;
     strbuf_init(&l->cur_word);
@@ -67,8 +67,8 @@ Lexer *lexeme(char *path) {
 
     while (lexer->cur_char != EOF) {
         Token token;
-        lexer->cur_char = (char)next_char(lexer);
-        lexer->ahead_char = (char)peek_char(lexer);
+        lexer->cur_char = next_char(lexer);
+        lexer->peek_char = peek_char(lexer);
 
         lexer->col++;
 
@@ -91,13 +91,13 @@ Lexer *lexeme(char *path) {
                 continue;
 
             case '/':
-                if (lexer->ahead_char == '/') {
+                if (lexer->peek_char == '/') {
                     handle_one_line_comment(lexer);
                     strbuf_clear(&lexer->cur_word);
                     continue;
                 }
 
-                if (lexer->ahead_char == '*') {
+                if (lexer->peek_char == '*') {
                     handle_multiline_comment(lexer);
                     strbuf_clear(&lexer->cur_word);
                     continue;
@@ -107,7 +107,7 @@ Lexer *lexeme(char *path) {
         }
 
         strbuf_push(&lexer->cur_word, (char)lexer->cur_char);
-        strbuf_set(&lexer->ahead_word, (char)lexer->ahead_char, 0);
+        strbuf_set(&lexer->ahead_word, (char)lexer->peek_char, 0);
 
         size_t found_idx_buf = 0;
         size_t found_idx_buf_two = 0;
@@ -117,7 +117,7 @@ Lexer *lexeme(char *path) {
             // TODO: the ahead_char gets tokenized by itself even though
             // theres the continue to skip the iteration
 
-            strbuf_push(&lexer->cur_word, (char)lexer->ahead_char);
+            strbuf_push(&lexer->cur_word, (char)lexer->peek_char);
             is_operator(lexer->cur_word.items, &found_idx_buf);
             token_init_type(&token, exp_operators[found_idx_buf].tok_type_str,
                             &lexer->cur_word, lexer->line, lexer->col);
@@ -156,7 +156,7 @@ Lexer *lexeme(char *path) {
             continue;
         }
 
-        if (lexer->ahead_char == ' ') {
+        if (lexer->peek_char == ' ') {
             token_init(&token, &lexer->cur_word, lexer->line, lexer->col);
             emit_token(lexer, &token);
             strbuf_clear(&lexer->cur_word);

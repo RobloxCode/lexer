@@ -21,7 +21,7 @@ int peek_char(Lexer *l) {
 void handle_str(Lexer *l) {
     int chars_count = 0;
 
-    while ((l->cur_char = fgetc(l->file)) != EOF && l->cur_char != '"') {
+    while ((l->cur_char = next_char(l)) != EOF && l->cur_char != '"') {
         strbuf_push(&l->cur_word, (char)l->cur_char);
         l->cur_char = fgetc(l->file);
         chars_count++;
@@ -36,7 +36,7 @@ int handle_number(Lexer *l) {
     int count_dot = 0;
 
     int digits_count = 0;
-    l->cur_char = fgetc(l->file);
+    l->cur_char = next_char(l);
 
     while (is_digit((char)l->cur_char) || l->cur_char == '.') {
         if (l->cur_char == '.') {
@@ -45,7 +45,7 @@ int handle_number(Lexer *l) {
 
         strbuf_push(&l->cur_word, (char)l->cur_char);
 
-        l->cur_char = fgetc(l->file);
+        l->cur_char = next_char(l);
         digits_count++;
     }
 
@@ -65,8 +65,8 @@ int handle_number(Lexer *l) {
 }
 
 void handle_one_line_comment(Lexer *l) {
-    while ((l->cur_char = fgetc(l->file)) != EOF && l->cur_char != '\n') {
-        l->cur_char = fgetc(l->file);
+    while ((l->cur_char = next_char(l)) != EOF && l->cur_char != '\n') {
+        l->cur_char = next_char(l);
     }
 
     if (l->cur_char != EOF) {
@@ -75,18 +75,14 @@ void handle_one_line_comment(Lexer *l) {
 }
 
 void handle_multiline_comment(Lexer *l) {
-    while ((l->cur_char = fgetc(l->file)) != EOF) {
-        l->ahead_char = fgetc(l->file);
+    while ((l->cur_char = next_char(l)) != EOF) {
+        l->peek_char = peek_char(l);
 
         if (l->cur_char == '\n') {
             l->line++;
         }
 
-        if (l->ahead_char != EOF) {
-            ungetc(l->ahead_char, l->file);
-        }
-
-        if (l->cur_char == '*' && l->ahead_char == '/') {
+        if (l->cur_char == '*' && l->peek_char == '/') {
             l->cur_char = fgetc(l->file);
             l->line++;
             break;
