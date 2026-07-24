@@ -12,18 +12,21 @@
  * @brief Lexer state holding data to help the lexeme
  */
 typedef struct {
-    FILE *file;        /* < Pointer to the file being lexed */
+    FILE *file;       /* < Pointer to the file being lexed */
 
-    int cur_char;      /* < Current character in the file */
-    int ahead_char;    /* < Character after cur_char */
+    int cur_char;     /* < Current character in the file */
+    int peek_char;    /* < Character after cur_char */
 
-    int line;          /* < Current number of lines */
-    int col;           /* < Current number of columns */
+    int line;         /* < Current number of lines */
+    int col;          /* < Current number of columns */
 
-    StrBuf cur_word;   /* < StrBuf storing the current word */
-    StrBuf ahead_word; /* < StrBuf storing the word ahead of cur_word */
+    StrBuf cur_word;  /* < StrBuf storing the current word */
+    char peek_buf[2]; /* < This is a buffer for peek_char since some
+                       *   functions need to check for peek_char bet
+                       *   they must take a char *
+                       */
 
-    TokenArr *tokens;  /* < Pointer to a TokenArr */
+    TokenArr *tokens; /* < Pointer to a TokenArr */
 
 } Lexer;
 

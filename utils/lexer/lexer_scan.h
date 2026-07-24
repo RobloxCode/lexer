@@ -6,6 +6,10 @@
 
 #include <stdio.h>
 
+int next_char(Lexer *l);
+
+int peek_char(Lexer *l);
+
 /**
  * @brief Helper function to lexe strings
  *
