@@ -126,7 +126,9 @@ typedef enum {
 
     // special tokens
     TOK_EOF,
-    TOK_INVALID
+    TOK_INVALID,
+
+    TOK_BANG,
 } TokType;
 
 /**

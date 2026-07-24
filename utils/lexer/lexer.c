@@ -1,5 +1,6 @@
 #include "lexer.h"
 
+#include "../exp/exp.h"
 #include "../str_buf/str_buf.h"
 #include "../token/token.h"
 #include "../token_arr/token_arr.h"
@@ -111,6 +112,23 @@ Lexer *lexeme(char *path) {
 
         strbuf_push(&lexer->cur_word, (char)lexer->cur_char);
         strbuf_set(&lexer->ahead_word, (char)lexer->ahead_char, 0);
+
+        size_t found_idx_buf = 0;
+        size_t found_idx_buf_two = 0;
+
+        if (is_operator(lexer->cur_word.items, &found_idx_buf)
+            && is_operator(lexer->ahead_word.items, &found_idx_buf_two)) {
+            // TODO: the ahead_char gets tokenized by itself even though
+            // theres the continue to skip the iteration
+
+            strbuf_push(&lexer->cur_word, (char)lexer->ahead_char);
+            is_operator(lexer->cur_word.items, &found_idx_buf);
+            token_init_type(&token, exp_operators[found_idx_buf].tok_type_str,
+                            &lexer->cur_word, lexer->line, lexer->col);
+            emit_token(lexer, &token);
+            strbuf_clear(&lexer->cur_word);
+            continue;
+        }
 
         if (is_digit((char)lexer->cur_char)) {
             if (handle_number(lexer) == 0) {
