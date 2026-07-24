@@ -79,17 +79,3 @@ void handle_multiline_comment(Lexer *l) {
         }
     }
 }
-
-// void handle_multichar_operator(Lexer *l) {
-//     strbuf_push(l->cur_word, l->ahead_char);
-//
-//     for (size_t i = 0; i < exp_operators_len; ++i) {
-//         if (strcmp(l->cur_word.items, exp_operators[i].val) == 0) {
-//             strcpy(token.type, exp_operators[i].tok_type_str);
-//         }
-//     }
-//
-//     strcpy(token.value, l->cur_word.items);
-//     token.line = lexer->line;
-//     token.col = lexer->col;
-// }
