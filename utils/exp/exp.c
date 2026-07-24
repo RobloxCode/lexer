@@ -33,6 +33,7 @@ Exp exp_operators[] = {
     {">=", "GREATER_EQ", TOK_GREATER_EQ},
     {"++", "INCREMENT", TOK_INCREMENT},
     {"--", "DECREMENT", TOK_DECREMENT},
+    {"!", "BANG", TOK_BANG},
 };
 
 Exp exp_delimeters[] = {

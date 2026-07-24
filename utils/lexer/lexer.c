@@ -112,6 +112,24 @@ Lexer *lexeme(char *path) {
         strbuf_push(&lexer->cur_word, (char)lexer->cur_char);
         strbuf_set(&lexer->ahead_word, (char)lexer->ahead_char, 0);
 
+        size_t cur_char_found_idx = 0;
+        size_t ahead_char_found_idx = 0;
+        if (is_operator(lexer->cur_word.items, &cur_char_found_idx)
+            && is_operator(lexer->ahead_word.items, &ahead_char_found_idx)) {
+            strbuf_push(&lexer->cur_word, lexer->ahead_char);
+
+            // TODO: get the type with the index
+
+            strcpy(token.type, "");
+            strcpy(token.value, lexer->cur_word.items);
+            token.line = lexer->line;
+            token.col = lexer->col;
+
+            emit_token(lexer, &token);
+            strbuf_clear(&lexer->cur_word);
+            continue;
+        }
+
         if (is_digit((char)lexer->cur_char)) {
             if (handle_number(lexer) == 0) {
                 token_init_type(&token, "NUMBER", &lexer->cur_word, lexer->line,
