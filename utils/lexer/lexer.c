@@ -1,5 +1,6 @@
 #include "lexer.h"
 
+#include "../exp/exp.h"
 #include "../str_buf/str_buf.h"
 #include "../token/token.h"
 #include "../token_arr/token_arr.h"
@@ -114,16 +115,24 @@ Lexer *lexeme(char *path) {
 
         size_t cur_char_found_idx = 0;
         size_t ahead_char_found_idx = 0;
+
         if (is_operator(lexer->cur_word.items, &cur_char_found_idx)
             && is_operator(lexer->ahead_word.items, &ahead_char_found_idx)) {
+            // TODO: the ahead_char gets tokenized by itself even though
+            // theres the continue to skip the iteration
+
             strbuf_push(&lexer->cur_word, lexer->ahead_char);
 
-            // TODO: get the type with the index
+            size_t op_idx = 0;
+            for (size_t i = 0; i < exp_operators_len; ++i) {
+                if (strcmp(lexer->cur_word.items, exp_operators[i].val) == 0) {
+                    op_idx = i;
+                    break;
+                }
+            }
 
-            strcpy(token.type, "");
-            strcpy(token.value, lexer->cur_word.items);
-            token.line = lexer->line;
-            token.col = lexer->col;
+            token_init_type(&token, exp_operators[op_idx].tok_type_str,
+                            &lexer->cur_word, lexer->line, lexer->col);
 
             emit_token(lexer, &token);
             strbuf_clear(&lexer->cur_word);
