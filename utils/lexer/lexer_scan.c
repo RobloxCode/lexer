@@ -4,6 +4,20 @@
 
 #include <stdio.h>
 
+int next_char(Lexer *l) {
+    return fgetc(l->file);
+}
+
+int peek_char(Lexer *l) {
+    int c = fgetc(l->file);
+
+    if (c != EOF) {
+        ungetc(c, l->file);
+    }
+
+    return c;
+}
+
 void handle_str(Lexer *l) {
     int chars_count = 0;
 

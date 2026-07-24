@@ -67,12 +67,8 @@ Lexer *lexeme(char *path) {
 
     while (lexer->cur_char != EOF) {
         Token token;
-        lexer->cur_char = fgetc(lexer->file);
-        lexer->ahead_char = fgetc(lexer->file);
-
-        if (lexer->ahead_char != EOF) {
-            ungetc(lexer->ahead_char, lexer->file);
-        }
+        lexer->cur_char = (char)next_char(lexer);
+        lexer->ahead_char = (char)peek_char(lexer);
 
         lexer->col++;
 
