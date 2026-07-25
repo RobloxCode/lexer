@@ -3,7 +3,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-static int fail;
+static int tests_run = 0, tests_failed = 0;
+
+#define ASSERT_EQ(a, b)                                                        \
+    do {                                                                       \
+        tests_run++;                                                           \
+        if ((a) != (b)) {                                                      \
+            tests_failed++;                                                    \
+            printf("FAIL %s:%d: %s != %s\n", __FILE__, __LINE__, #a, #b);      \
+        }                                                                      \
+    } while (0)
 
 int main() {
     TokenArr_status status = TOKENARR_OK;
@@ -13,43 +22,44 @@ int main() {
     }
 
     // int number = 3 + 2;
-    status =
-        token_arr_append(token_arr, (Token){.type = "KEYWORD", .value = "int"});
+    status = token_arr_append(token_arr,
+                              &(Token){.type = "KEYWORD", .value = "int"});
     if (status != TOKENARR_OK) {
         goto cleanup;
     }
 
     status =
-        token_arr_append(token_arr, (Token){.type = "ID", .value = "number"});
+        token_arr_append(token_arr, &(Token){.type = "ID", .value = "number"});
     if (status != TOKENARR_OK) {
         goto cleanup;
     }
 
     status =
-        token_arr_append(token_arr, (Token){.type = "ASSIGN", .value = "="});
+        token_arr_append(token_arr, &(Token){.type = "ASSIGN", .value = "="});
     if (status != TOKENARR_OK) {
         goto cleanup;
     }
 
     status =
-        token_arr_append(token_arr, (Token){.type = "NUMBER", .value = "3"});
-    if (status != TOKENARR_OK) {
-        goto cleanup;
-    }
-
-    status = token_arr_append(token_arr, (Token){.type = "PLUS", .value = "+"});
+        token_arr_append(token_arr, &(Token){.type = "NUMBER", .value = "3"});
     if (status != TOKENARR_OK) {
         goto cleanup;
     }
 
     status =
-        token_arr_append(token_arr, (Token){.type = "NUMBER", .value = "2"});
+        token_arr_append(token_arr, &(Token){.type = "PLUS", .value = "+"});
     if (status != TOKENARR_OK) {
         goto cleanup;
     }
 
     status =
-        token_arr_append(token_arr, (Token){.type = "SEMICOLON", .value = ";"});
+        token_arr_append(token_arr, &(Token){.type = "NUMBER", .value = "2"});
+    if (status != TOKENARR_OK) {
+        goto cleanup;
+    }
+
+    status = token_arr_append(token_arr,
+                              &(Token){.type = "SEMICOLON", .value = ";"});
     if (status != TOKENARR_OK) {
         goto cleanup;
     }

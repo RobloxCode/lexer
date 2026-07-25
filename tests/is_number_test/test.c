@@ -1,6 +1,7 @@
 #include "../../utils/token/token.h"
 
 #include <stdio.h>
+#include <stdlib.h>
 
 static int tests_run = 0, tests_failed = 0;
 
@@ -27,7 +28,7 @@ int main(void) {
     test_is_number("");
     test_is_number(" ");
 
-    return 0;
+    return tests_failed > 0 ? EXIT_FAILURE : EXIT_SUCCESS;
 }
 
 void test_is_number(const char *num) {
