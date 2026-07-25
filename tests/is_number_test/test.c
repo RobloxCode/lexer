@@ -4,8 +4,6 @@
 
 static int tests_run = 0, tests_failed = 0;
 
-#define TEST(name) static void name(void)
-
 #define ASSERT_EQ(a, b)                                                        \
     do {                                                                       \
         tests_run++;                                                           \
