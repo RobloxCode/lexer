@@ -1,11 +1,21 @@
 #include "../../utils/token/token.h"
 
 #include <stdio.h>
-#include <stdlib.h>
 
-static int fail;
+static int tests_run = 0, tests_failed = 0;
 
-void test_is_number(const char *s);
+#define TEST(name) static void name(void)
+
+#define ASSERT_EQ(a, b)                                                        \
+    do {                                                                       \
+        tests_run++;                                                           \
+        if ((a) != (b)) {                                                      \
+            tests_failed++;                                                    \
+            printf("FAIL %s:%d: %s != %s\n", __FILE__, __LINE__, #a, #b);      \
+        }                                                                      \
+    } while (0)
+
+void test_is_number(const char *num);
 
 int main(void) {
     test_is_number("12345");
@@ -19,14 +29,9 @@ int main(void) {
     test_is_number("");
     test_is_number(" ");
 
-    return fail ? EXIT_FAILURE : EXIT_SUCCESS;
+    return 0;
 }
 
-void test_is_number(const char *s) {
-    if (is_number(s)) {
-        printf("%s is a number\n", s);
-    } else {
-        printf("%s is not a number\n", s);
-        fail = 1;
-    }
+void test_is_number(const char *num) {
+    ASSERT_EQ(is_number(num), true);
 }
