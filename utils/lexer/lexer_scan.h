@@ -6,8 +6,22 @@
 
 #include <stdio.h>
 
+/**
+ * @brief Reads the next character from the field l->file
+ *
+ * @param l Pointer to Lexer
+ *
+ * @return character as integer
+ */
 int next_char(Lexer *l);
 
+/**
+ * @brief Reads one character ahead of the current character
+ *
+ * @param l Pointer to Lexer
+ *
+ * @return character as integer
+ */
 int peek_char(Lexer *l);
 
 /**
