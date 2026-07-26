@@ -1,6 +1,6 @@
 # lexer
 
-This is a lexer written in C that tokenizes C source code
+A simple, modular lexical analyzer built to tokenize source code into structured tokens. It handles basic syntax including identifiers, keywords, operators, and literals while stripping out whitespace and comments to prepare code for parsing.
 
 # build
 
