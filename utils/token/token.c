@@ -174,3 +174,19 @@ bool is_sintax_element(const char *word) {
 
     return false;
 }
+
+const char *token_type_str(TokType t) {
+    switch (t) {
+        case TOK_STRING:
+            return "STRING";
+
+        case TOK_NUMBER:
+            return "NUMBER";
+
+        case TOK_INVALID_NUMBER:
+            return "INVALID NUMBER";
+
+        default:
+            return "UNKNOWN";
+    }
+}

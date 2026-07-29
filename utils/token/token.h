@@ -129,6 +129,8 @@ typedef enum {
     TOK_INVALID,
 
     TOK_BANG,
+    TOK_NUMBER,
+    TOK_INVALID_NUMBER,
 } TokType;
 
 /**
@@ -207,5 +209,7 @@ bool is_sintax_element(const char *word);
  *         false on owrd not found in operators list
  */
 bool is_operator(const char *s, size_t *found_idx);
+
+const char *token_type_str(TokType t);
 
 #endif
