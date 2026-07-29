@@ -21,13 +21,13 @@ int peek_char(Lexer *l) {
 void handle_str(Lexer *l) {
     int chars_count = 0;
 
-    while ((l->cur_char = next_char(l)) != EOF && l->cur_char != '"') {
+    l->cur_char = next_char(l);
+    while (l->cur_char != EOF && l->cur_char != '"') {
         strbuf_push(&l->cur_word, (char)l->cur_char);
         l->cur_char = fgetc(l->file);
         chars_count++;
     }
 
-    strbuf_push(&l->cur_word, '"');
     l->col = chars_count;
 }
 
