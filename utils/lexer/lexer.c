@@ -114,10 +114,11 @@ Lexer *lexeme(char *path) {
 
         if (is_operator(lexer->cur_word.items, &found_idx_buf)
             && is_operator(lexer->peek_buf, &found_idx_buf_two)) {
-            // TODO: the ahead_char gets tokenized by itself even though
-            // theres the continue to skip the iteration
-
             strbuf_push(&lexer->cur_word, (char)lexer->peek_char);
+
+            memset(lexer->peek_buf, 0, sizeof lexer->peek_buf);
+            lexer->cur_char = next_char(lexer);
+
             is_operator(lexer->cur_word.items, &found_idx_buf);
             token_init_type(&token, exp_operators[found_idx_buf].tok_type_str,
                             &lexer->cur_word, lexer->line, lexer->col);
