@@ -210,6 +210,14 @@ bool is_sintax_element(const char *word);
  */
 bool is_operator(const char *s, size_t *found_idx);
 
+/**
+ * @brief Returns a string literal of the string type based on a given token
+ * type
+ *
+ * @param t Token type
+ *
+ * @return String literal containing the type of token
+ */
 const char *token_type_str(TokType t);
 
 #endif
