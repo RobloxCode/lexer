@@ -85,8 +85,8 @@ Lexer *lexeme(char *path) {
 
             case '"':
                 handle_str(lexer);
-                token_init_type(&token, "STRING", &lexer->cur_word, lexer->line,
-                                lexer->col);
+                token_init_type(&token, STR_TOK_TYPE, &lexer->cur_word,
+                                lexer->line, lexer->col);
                 emit_token(lexer, &token);
                 strbuf_clear(&lexer->cur_word);
                 lexer->col++;
@@ -131,13 +131,13 @@ Lexer *lexeme(char *path) {
 
         if (is_digit((char)lexer->cur_char)) {
             if (handle_number(lexer) == 0) {
-                token_init_type(&token, "NUMBER", &lexer->cur_word, lexer->line,
-                                lexer->col);
+                token_init_type(&token, NUM_TOK_TYPE, &lexer->cur_word,
+                                lexer->line, lexer->col);
                 emit_token(lexer, &token);
                 strbuf_clear(&lexer->cur_word);
                 continue;
             } else {
-                token_init_type(&token, "INVALID NUMBER", &lexer->cur_word,
+                token_init_type(&token, INVALID_NUM_TOK_TYPE, &lexer->cur_word,
                                 lexer->line, lexer->col);
                 emit_token(lexer, &token);
                 strbuf_clear(&lexer->cur_word);

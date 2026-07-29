@@ -6,6 +6,10 @@
 
 #include <stdio.h>
 
+#define STR_TOK_TYPE         "STRING"
+#define NUM_TOK_TYPE         "NUMBER"
+#define INVALID_NUM_TOK_TYPE "INVALID NUMBER"
+
 /**
  * @brief Reads the next character from the field l->file
  *
