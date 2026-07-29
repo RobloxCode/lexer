@@ -56,13 +56,15 @@ void lexer_deinit(Lexer **l) {
 }
 
 Lexer *lexeme(char *path) {
+    Lexer *lexer = NULL;
+
     if (!path) {
-        return NULL;
+        goto cleanup;
     }
 
-    Lexer *lexer = lexer_init(path);
+    lexer = lexer_init(path);
     if (!lexer) {
-        return NULL;
+        goto cleanup;
     }
 
     while (lexer->cur_char != EOF) {
@@ -167,6 +169,10 @@ Lexer *lexeme(char *path) {
         // TODO: unknown / error
     }
 
-    fclose(lexer->file);
+cleanup:
+    if (lexer->file) {
+        fclose(lexer->file);
+    }
+
     return lexer;
 }
