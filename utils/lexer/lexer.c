@@ -170,7 +170,7 @@ Lexer *lexeme(char *path) {
     }
 
 cleanup:
-    if (lexer->file) {
+    if (lexer) {
         fclose(lexer->file);
     }
 
