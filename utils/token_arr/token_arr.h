@@ -77,7 +77,22 @@ TokenArr_status token_arr_append(TokenArr *token_arr, const Token *item);
  * @return TOKENARR_OK on success, TOKENARR_WRONG_PTR if @p token_arr is NULL,
  *         TOKENARR_IDX_OUT_OF_BOUNDS if either index is >= length.
  */
-TokenArr_status token_arr_swap(TokenArr *token_arr, size_t idx1, size_t idx2);
+static inline TokenArr_status token_arr_swap(TokenArr *token_arr, size_t index1,
+                                             size_t index2) {
+    if (!token_arr) {
+        return TOKENARR_WRONG_PTR;
+    }
+
+    if (index1 >= token_arr->length || index2 >= token_arr->length) {
+        return TOKENARR_IDX_OUT_OF_BOUNDS;
+    }
+
+    Token tmp = token_arr->items[index1];
+    token_arr->items[index1] = token_arr->items[index2];
+    token_arr->items[index2] = tmp;
+
+    return TOKENARR_OK;
+}
 
 /**
  * @brief Remove the Token at the given index, shifting subsequent elements
@@ -110,6 +125,18 @@ TokenArr_status token_arr_println(TokenArr *token_arr);
  * @return TOKENARR_OK on success, TOKENARR_WRONG_PTR if @p token_arr or
  *         @p buff is NULL, TOKENARR_IDX_OUT_OF_BOUNDS if @p idx >= length.
  */
-TokenArr_status token_arr_get(TokenArr *token_arr, size_t idx, Token *buff);
+static inline TokenArr_status token_arr_get(TokenArr *token_arr, size_t index,
+                                            Token *buff) {
+    if (!token_arr || !buff) {
+        return TOKENARR_WRONG_PTR;
+    }
+
+    if (index >= token_arr->length) {
+        return TOKENARR_IDX_OUT_OF_BOUNDS;
+    }
+
+    *buff = token_arr->items[index];
+    return TOKENARR_OK;
+}
 
 #endif

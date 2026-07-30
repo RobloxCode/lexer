@@ -57,7 +57,7 @@ TokenArr_status token_arr_append(TokenArr *token_arr, const Token *item) {
             realloc(token_arr->items, new_capacity * sizeof *new_items);
 
         if (!new_items) {
-            return TOKENARR_ERR_MALLOC;
+            return TOKENARR_ERR_REALLOC;
         }
 
         token_arr->items = new_items;
@@ -66,23 +66,6 @@ TokenArr_status token_arr_append(TokenArr *token_arr, const Token *item) {
 
     token_arr->items[token_arr->length] = *item;
     token_arr->length++;
-
-    return TOKENARR_OK;
-}
-
-TokenArr_status token_arr_swap(TokenArr *token_arr, size_t index1,
-                               size_t index2) {
-    if (!token_arr) {
-        return TOKENARR_WRONG_PTR;
-    }
-
-    if (index1 >= token_arr->length || index2 >= token_arr->length) {
-        return TOKENARR_IDX_OUT_OF_BOUNDS;
-    }
-
-    Token tmp = token_arr->items[index1];
-    token_arr->items[index1] = token_arr->items[index2];
-    token_arr->items[index2] = tmp;
 
     return TOKENARR_OK;
 }
@@ -119,18 +102,5 @@ TokenArr_status token_arr_println(TokenArr *token_arr) {
     }
 
     printf("\n");
-    return TOKENARR_OK;
-}
-
-TokenArr_status token_arr_get(TokenArr *token_arr, size_t index, Token *buff) {
-    if (!token_arr || !buff) {
-        return TOKENARR_WRONG_PTR;
-    }
-
-    if (index >= token_arr->length) {
-        return TOKENARR_IDX_OUT_OF_BOUNDS;
-    }
-
-    *buff = token_arr->items[index];
     return TOKENARR_OK;
 }
