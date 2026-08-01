@@ -7,11 +7,15 @@
 void handle_str(Lexer *l) {
     int chars_count = 0;
 
+    advance(l);
+
     while (l->cur_char != EOF && l->cur_char != '"') {
         strbuf_push(&l->cur_word, (char)l->cur_char);
         advance(l);
         chars_count++;
     }
+
+    advance(l);
 
     l->col = chars_count;
 }
@@ -22,6 +26,7 @@ int handle_number(Lexer *l) {
 
     int digits_count = 0;
 
+    advance(l);
     while (is_digit((char)l->cur_char) || l->cur_char == '.') {
         if (l->cur_char == '.') {
             count_dot++;
