@@ -47,4 +47,6 @@ Lexer *lexeme(char *path);
  */
 void lexer_deinit(Lexer **l);
 
+void advance(Lexer *l);
+
 #endif

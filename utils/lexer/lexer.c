@@ -11,6 +11,12 @@
 #include <stdlib.h>
 #include <string.h>
 
+void advance(Lexer *l) {
+    l->cur_char = l->peek_char;
+    l->peek_char = fgetc(l->file);
+    l->col++;
+}
+
 static void emit_token(Lexer *l, Token *token) {
     token_arr_append(l->tokens, token);
 }
@@ -32,8 +38,9 @@ static Lexer *lexer_init(const char *path) {
         return NULL;
     }
 
-    l->cur_char = 0;
-    l->peek_char = 0;
+    l->cur_char = fgetc(l->file);
+    l->peek_char = fgetc(l->file);
+
     l->line = 0;
     l->col = 0;
     strbuf_init(&l->cur_word);
@@ -69,8 +76,8 @@ Lexer *lexeme(char *path) {
 
     while (lexer->cur_char != EOF) {
         Token token;
-        lexer->cur_char = next_char(lexer);
-        lexer->peek_char = peek_char(lexer);
+
+        advance(lexer);
 
         lexer->col++;
 
@@ -119,7 +126,7 @@ Lexer *lexeme(char *path) {
             strbuf_push(&lexer->cur_word, (char)lexer->peek_char);
 
             memset(lexer->peek_buf, 0, sizeof lexer->peek_buf);
-            lexer->cur_char = next_char(lexer);
+            advance(lexer);
 
             is_operator(lexer->cur_word.items, &found_idx_buf);
             token_init_type(&token, exp_operators[found_idx_buf].tok_type_str,
