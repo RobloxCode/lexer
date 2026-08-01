@@ -23,7 +23,7 @@ void handle_str(Lexer *l) {
 int handle_number(Lexer *l) {
     int count_dot = 0;
 
-    while (is_digit(l->peek_char) || l->peek_char == '.') {
+    while (is_digit((char)l->peek_char) || l->peek_char == '.') {
         advance(l);
 
         if (l->cur_char == '.') {
