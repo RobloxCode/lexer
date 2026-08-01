@@ -5,14 +5,12 @@
 
 #define PATH "src/source.c"
 
-int main(void) {
-    Lexer *lexer = lexeme(PATH);
-    if (!lexer) {
-        return EXIT_FAILURE;
-    }
+int main(int argc, char **argv) {
+    const char *path = (argc == 2) ? argv[1] : PATH;
 
-    if (!lexer->tokens) {
-        fprintf(stderr, "Error lexing: %s\n", PATH);
+    Lexer *lexer = lexeme(path);
+    if (!lexer) {
+        fprintf(stderr, "Failed to tokenize: %s\n", path);
         return EXIT_FAILURE;
     }
 
