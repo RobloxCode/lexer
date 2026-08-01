@@ -118,18 +118,17 @@ Lexer *lexeme(char *path) {
         strbuf_push(&lexer->cur_word, (char)lexer->cur_char);
         lexer->peek_buf[0] = (char)lexer->peek_char;
 
-        size_t found_idx_buf = 0;
-        size_t found_idx_buf_two = 0;
+        if (is_operator(lexer->cur_word.items, NULL)
+            && is_operator(lexer->peek_buf, NULL)) {
+            size_t idx = 0;
 
-        if (is_operator(lexer->cur_word.items, &found_idx_buf)
-            && is_operator(lexer->peek_buf, &found_idx_buf_two)) {
             strbuf_push(&lexer->cur_word, (char)lexer->peek_char);
 
             memset(lexer->peek_buf, 0, sizeof lexer->peek_buf);
             advance(lexer);
 
-            is_operator(lexer->cur_word.items, &found_idx_buf);
-            token_init_type(&token, exp_operators[found_idx_buf].tok_type_str,
+            is_operator(lexer->cur_word.items, &idx);
+            token_init_type(&token, exp_operators[idx].tok_type_str,
                             &lexer->cur_word, lexer->line, lexer->col);
             emit_token(lexer, &token);
             strbuf_clear(&lexer->cur_word);
