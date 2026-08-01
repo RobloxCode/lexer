@@ -22,7 +22,9 @@ static bool _is_hash(const char *s) {
 static bool _is_keyword(const char *s, size_t *found_idx) {
     for (size_t i = 0; i < exp_keywords_len; ++i) {
         if (strcmp(s, exp_keywords[i].val) == 0) {
-            *found_idx = i;
+            if (found_idx) {
+                *found_idx = i;
+            }
             return true;
         }
     }
@@ -33,7 +35,9 @@ static bool _is_keyword(const char *s, size_t *found_idx) {
 bool is_operator(const char *s, size_t *found_idx) {
     for (size_t i = 0; i < exp_operators_len; ++i) {
         if (strcmp(s, exp_operators[i].val) == 0) {
-            *found_idx = i;
+            if (found_idx) {
+                *found_idx = i;
+            }
             return true;
         }
     }
@@ -44,7 +48,9 @@ bool is_operator(const char *s, size_t *found_idx) {
 static bool _is_delimeter(const char *s, size_t *found_idx) {
     for (size_t i = 0; i < exp_delimeters_len; ++i) {
         if (strcmp(s, exp_delimeters[i].val) == 0) {
-            *found_idx = i;
+            if (found_idx) {
+                *found_idx = i;
+            }
             return true;
         }
     }
@@ -166,9 +172,8 @@ void token_init_type(Token *t, const char *type, const StrBuf *word,
 }
 
 bool is_sintax_element(const char *word) {
-    size_t found_idx = 0;
-    if (_is_hash(word) || _is_keyword(word, &found_idx)
-        || is_operator(word, &found_idx) || _is_delimeter(word, &found_idx)) {
+    if (_is_hash(word) || _is_keyword(word, NULL) || is_operator(word, NULL)
+        || _is_delimeter(word, NULL)) {
         return true;
     }
 
