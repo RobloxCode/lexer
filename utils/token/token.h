@@ -131,6 +131,7 @@ typedef enum {
     TOK_BANG,
     TOK_NUMBER,
     TOK_INVALID_NUMBER,
+    TOK_ARROW,
 } TokType;
 
 /**
