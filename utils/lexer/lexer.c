@@ -12,8 +12,8 @@
 #include <string.h>
 
 void advance(Lexer *l) {
-    l->cur_char = l->peek_char;
-    l->peek_char = fgetc(l->file);
+    l->cur = l->peek;
+    l->peek = fgetc(l->file);
     l->col++;
 }
 
@@ -38,8 +38,8 @@ static Lexer *lexer_init(const char *path) {
         return NULL;
     }
 
-    l->cur_char = fgetc(l->file);
-    l->peek_char = fgetc(l->file);
+    l->cur = fgetc(l->file);
+    l->peek = fgetc(l->file);
 
     l->line = 0;
     l->col = 0;
@@ -63,112 +63,112 @@ void lexer_deinit(Lexer **l) {
 }
 
 Lexer *lexeme(const char *path) {
-    Lexer *lexer = NULL;
+    Lexer *l = NULL;
 
     if (!path) {
         goto cleanup;
     }
 
-    lexer = lexer_init(path);
-    if (!lexer) {
+    l = lexer_init(path);
+    if (!l) {
         goto cleanup;
     }
 
-    while (lexer->cur_char != EOF) {
+    while (l->cur != EOF) {
         Token token;
 
-        advance(lexer);
+        advance(l);
 
-        lexer->col++;
+        l->col++;
 
-        switch (lexer->cur_char) {
+        switch (l->cur) {
             case ' ':
                 continue;
 
             case '\n':
-                lexer->line++;
-                lexer->col = 0;
+                l->line++;
+                l->col = 0;
                 continue;
 
             case '"':
-                handle_str(lexer);
+                handle_str(l);
                 token_init_type(&token, token_type_str(TOK_STRING),
-                                &lexer->cur_word, lexer->line, lexer->col);
-                emit_token(lexer, &token);
-                strbuf_clear(&lexer->cur_word);
-                lexer->col++;
+                                &l->cur_word, l->line, l->col);
+                emit_token(l, &token);
+                strbuf_clear(&l->cur_word);
+                l->col++;
                 continue;
 
             case '/':
-                if (lexer->peek_char == '/') {
-                    handle_one_line_comment(lexer);
-                    strbuf_clear(&lexer->cur_word);
+                if (l->peek == '/') {
+                    handle_one_line_comment(l);
+                    strbuf_clear(&l->cur_word);
                     continue;
                 }
 
-                if (lexer->peek_char == '*') {
-                    handle_multiline_comment(lexer);
-                    strbuf_clear(&lexer->cur_word);
+                if (l->peek == '*') {
+                    handle_multiline_comment(l);
+                    strbuf_clear(&l->cur_word);
                     continue;
                 }
 
                 continue;
         }
 
-        strbuf_push(&lexer->cur_word, (char)lexer->cur_char);
-        lexer->peek_buf[0] = (char)lexer->peek_char;
+        strbuf_push(&l->cur_word, (char)l->cur);
+        l->peek_buf[0] = (char)l->peek;
 
-        if (is_operator(lexer->cur_word.items, NULL)
-            && is_operator(lexer->peek_buf, NULL)) {
+        if (is_operator(l->cur_word.items, NULL)
+            && is_operator(l->peek_buf, NULL)) {
             size_t idx = 0;
 
-            strbuf_push(&lexer->cur_word, (char)lexer->peek_char);
+            strbuf_push(&l->cur_word, (char)l->peek);
 
-            memset(lexer->peek_buf, 0, sizeof lexer->peek_buf);
-            advance(lexer);
+            memset(l->peek_buf, 0, sizeof l->peek_buf);
+            advance(l);
 
-            is_operator(lexer->cur_word.items, &idx);
+            is_operator(l->cur_word.items, &idx);
             token_init_type(&token, exp_operators[idx].tok_type_str,
-                            &lexer->cur_word, lexer->line, lexer->col);
-            emit_token(lexer, &token);
-            strbuf_clear(&lexer->cur_word);
+                            &l->cur_word, l->line, l->col);
+            emit_token(l, &token);
+            strbuf_clear(&l->cur_word);
             continue;
         }
 
-        if (is_digit((char)lexer->cur_char)) {
-            if (handle_number(lexer) == 0) {
+        if (is_digit((char)l->cur)) {
+            if (handle_number(l) == 0) {
                 token_init_type(&token, token_type_str(TOK_NUMBER),
-                                &lexer->cur_word, lexer->line, lexer->col);
-                emit_token(lexer, &token);
-                strbuf_clear(&lexer->cur_word);
+                                &l->cur_word, l->line, l->col);
+                emit_token(l, &token);
+                strbuf_clear(&l->cur_word);
                 continue;
             } else {
                 token_init_type(&token, token_type_str(TOK_INVALID_NUMBER),
-                                &lexer->cur_word, lexer->line, lexer->col);
-                emit_token(lexer, &token);
-                strbuf_clear(&lexer->cur_word);
+                                &l->cur_word, l->line, l->col);
+                emit_token(l, &token);
+                strbuf_clear(&l->cur_word);
                 continue;
             }
         }
 
-        if (is_sintax_element(lexer->cur_word.items)) {
-            token_init(&token, &lexer->cur_word, lexer->line, lexer->col);
-            emit_token(lexer, &token);
-            strbuf_clear(&lexer->cur_word);
+        if (is_sintax_element(l->cur_word.items)) {
+            token_init(&token, &l->cur_word, l->line, l->col);
+            emit_token(l, &token);
+            strbuf_clear(&l->cur_word);
             continue;
         }
 
-        if (is_sintax_element(lexer->peek_buf)) {
-            token_init(&token, &lexer->cur_word, lexer->line, lexer->col);
-            emit_token(lexer, &token);
-            strbuf_clear(&lexer->cur_word);
+        if (is_sintax_element(l->peek_buf)) {
+            token_init(&token, &l->cur_word, l->line, l->col);
+            emit_token(l, &token);
+            strbuf_clear(&l->cur_word);
             continue;
         }
 
-        if (lexer->peek_char == ' ') {
-            token_init(&token, &lexer->cur_word, lexer->line, lexer->col);
-            emit_token(lexer, &token);
-            strbuf_clear(&lexer->cur_word);
+        if (l->peek == ' ') {
+            token_init(&token, &l->cur_word, l->line, l->col);
+            emit_token(l, &token);
+            strbuf_clear(&l->cur_word);
             continue;
         }
 
@@ -176,9 +176,9 @@ Lexer *lexeme(const char *path) {
     }
 
 cleanup:
-    if (lexer) {
-        fclose(lexer->file);
+    if (l) {
+        fclose(l->file);
     }
 
-    return lexer;
+    return l;
 }
