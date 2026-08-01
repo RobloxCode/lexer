@@ -62,7 +62,7 @@ void lexer_deinit(Lexer **l) {
     *l = NULL;
 }
 
-Lexer *lexeme(char *path) {
+Lexer *lexeme(const char *path) {
     Lexer *lexer = NULL;
 
     if (!path) {

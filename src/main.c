@@ -3,16 +3,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define PATH "src/source.c"
+#define DEFAULT_PATH "src/source.c"
 
-int main(void) {
-    Lexer *lexer = lexeme(PATH);
+int main(int argc, char **argv) {
+    const char *path = (argc == 2) ? argv[1] : DEFAULT_PATH;
+
+    Lexer *lexer = lexeme(path);
     if (!lexer) {
-        return EXIT_FAILURE;
-    }
-
-    if (!lexer->tokens) {
-        fprintf(stderr, "Error lexing: %s\n", PATH);
+        fprintf(stderr, "Failed to tokenize: %s\n", path);
         return EXIT_FAILURE;
     }
 
