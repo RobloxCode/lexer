@@ -1,6 +1,7 @@
 #include "token_arr.h"
 
 #include "../../utils/token/token.h"
+#include "../alloc/alloc.h"
 
 #include <inttypes.h>
 #include <stdio.h>
@@ -12,16 +13,8 @@ TokenArr *token_arr_init(size_t cap) {
         return NULL;
     }
 
-    TokenArr *token_arr = malloc(sizeof *token_arr);
-    if (!token_arr) {
-        return NULL;
-    }
-
-    Token *items = malloc(cap * sizeof *items);
-    if (!items) {
-        free(token_arr);
-        return NULL;
-    }
+    TokenArr *token_arr = xmalloc(sizeof *token_arr);
+    Token *items = xmalloc(cap * sizeof *items);
 
     token_arr->items = items;
     token_arr->capacity = cap;
@@ -54,11 +47,7 @@ TokenArr_status token_arr_append(TokenArr *token_arr, const Token *item) {
 
         size_t new_capacity = token_arr->capacity * 2;
         Token *new_items =
-            realloc(token_arr->items, new_capacity * sizeof *new_items);
-
-        if (!new_items) {
-            return TOKENARR_ERR_REALLOC;
-        }
+            xrealloc(token_arr->items, new_capacity * sizeof *new_items);
 
         token_arr->items = new_items;
         token_arr->capacity = new_capacity;

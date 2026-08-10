@@ -1,6 +1,5 @@
 #include "str_buf.h"
 
-#include <stddef.h>
 #include <string.h>
 
 void strbuf_init(StrBuf *sb) {

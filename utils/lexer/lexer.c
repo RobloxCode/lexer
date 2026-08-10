@@ -1,5 +1,6 @@
 #include "lexer.h"
 
+#include "../alloc/alloc.h"
 #include "../str_buf/str_buf.h"
 #include "../token_arr/token_arr.h"
 #include "lexer_scan.h"
@@ -16,10 +17,7 @@ void advance(Lexer *l) {
 }
 
 static Lexer *lexer_init(const char *path) {
-    Lexer *l = malloc(sizeof *l);
-    if (!l) {
-        return NULL;
-    }
+    Lexer *l = xmalloc(sizeof *l);
 
     l->file = fopen(path, "r");
     if (!l->file) {
