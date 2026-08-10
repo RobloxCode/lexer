@@ -37,7 +37,7 @@ typedef struct {
  *
  * @return Pointer to a heap allocated Lexer
  */
-Lexer *lexeme(const char *path);
+Lexer *lexer_lex(const char *path);
 
 /**
  * @brief Frees the memory of a Lexer

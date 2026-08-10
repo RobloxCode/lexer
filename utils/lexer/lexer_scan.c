@@ -1,10 +1,17 @@
 #include "../../utils/str_buf/str_buf.h"
 #include "../../utils/token/token.h"
+#include "../exp/exp.h"
+#include "../str_buf/str_buf.h"
 #include "lexer.h"
 
 #include <stdio.h>
+#include <string.h>
 
-void handle_str(Lexer *l) {
+#define STR_TOK_TYPE         "STRING"
+#define NUM_TOK_TYPE         "NUMBER"
+#define INVALID_NUM_TOK_TYPE "INVALID NUMBER"
+
+static void handle_str(Lexer *l) {
     int chars_count = 0;
 
     advance(l);
@@ -20,7 +27,7 @@ void handle_str(Lexer *l) {
     l->col = chars_count;
 }
 
-int handle_number(Lexer *l) {
+static int handle_number(Lexer *l) {
     int count_dot = 0;
 
     while (is_digit((char)l->peek) || l->peek == '.') {
@@ -33,16 +40,21 @@ int handle_number(Lexer *l) {
         strbuf_push(&l->cur_word, (char)l->cur);
     }
 
+    // TODO: have to fix the literal suffix case
+    if (l->peek == 'f') {
+        printf("this a floating point, f after number\n");
+    }
+
     return count_dot > 1;
 }
 
-void handle_one_line_comment(Lexer *l) {
+static void handle_one_line_comment(Lexer *l) {
     while (l->cur != EOF && l->cur != '\n') {
         advance(l);
     }
 }
 
-void handle_multiline_comment(Lexer *l) {
+static void handle_multiline_comment(Lexer *l) {
     while (l->cur != EOF) {
         if (l->cur == '\n') {
             l->line++;
@@ -56,4 +68,135 @@ void handle_multiline_comment(Lexer *l) {
 
         advance(l);
     }
+}
+
+static void emit_token(Lexer *l, Token *token) {
+    token_arr_append(l->tokens, token);
+}
+
+void scan_str(Lexer *l) {
+    Token t;
+
+    handle_str(l);
+    token_init_type(&t, token_type_str(TOK_STRING), &l->cur_word, l->line,
+                    l->col);
+    emit_token(l, &t);
+    strbuf_clear(&l->cur_word);
+    l->col++;
+}
+
+void scan_comment_or_op(Lexer *l) {
+    Token t;
+
+    if (l->peek == '/') {
+        handle_one_line_comment(l);
+        strbuf_clear(&l->cur_word);
+        return;
+    }
+
+    if (l->peek == '*') {
+        handle_multiline_comment(l);
+        strbuf_clear(&l->cur_word);
+        return;
+    } else {
+        strbuf_push(&l->cur_word, '/');
+        token_init_type(&t, "SLASH", &l->cur_word, l->line, l->col);
+        emit_token(l, &t);
+        strbuf_clear(&l->cur_word);
+        return;
+    }
+}
+
+void scan_double_char_ops(Lexer *l) {
+    Token t;
+    size_t idx = 0;
+
+    strbuf_push(&l->cur_word, (char)l->peek);
+
+    memset(l->peek_buf, 0, sizeof l->peek_buf);
+
+    advance(l);
+
+    is_operator(l->cur_word.items, &idx);
+    token_init_type(&t, exp_operators[idx].tok_type_str, &l->cur_word, l->line,
+                    l->col);
+    emit_token(l, &t);
+    strbuf_clear(&l->cur_word);
+}
+
+void scan_number(Lexer *l) {
+    Token t;
+
+    if (handle_number(l) == 0) {
+        token_init_type(&t, token_type_str(TOK_NUMBER), &l->cur_word, l->line,
+                        l->col);
+        emit_token(l, &t);
+        strbuf_clear(&l->cur_word);
+        return;
+    } else {
+        token_init_type(&t, token_type_str(TOK_INVALID_NUMBER), &l->cur_word,
+                        l->line, l->col);
+        emit_token(l, &t);
+        strbuf_clear(&l->cur_word);
+        return;
+    }
+}
+
+void scan_sintax_element(Lexer *l) {
+    Token t;
+
+    token_init(&t, &l->cur_word, l->line, l->col);
+    emit_token(l, &t);
+    strbuf_clear(&l->cur_word);
+}
+
+void scan_token(Lexer *l) {
+    switch (l->cur) {
+        case ' ':
+            return;
+
+        case '\n':
+            l->line++;
+            l->col = 0;
+            return;
+
+        case '"':
+            scan_str(l);
+            return;
+
+        case '/':
+            scan_comment_or_op(l);
+            return;
+    }
+
+    strbuf_push(&l->cur_word, (char)l->cur);
+    l->peek_buf[0] = (char)l->peek;
+
+    if (is_operator(l->cur_word.items, NULL)
+        && is_operator(l->peek_buf, NULL)) {
+        scan_double_char_ops(l);
+        return;
+    }
+
+    if (is_digit((char)l->cur)) {
+        scan_number(l);
+        return;
+    }
+
+    if (is_sintax_element(l->cur_word.items)) {
+        scan_sintax_element(l);
+        return;
+    }
+
+    if (is_sintax_element(l->peek_buf)) {
+        scan_sintax_element(l);
+        return;
+    }
+
+    if (l->peek == ' ') {
+        scan_sintax_element(l);
+        return;
+    }
+
+    // TODO: unknown / error
 }
