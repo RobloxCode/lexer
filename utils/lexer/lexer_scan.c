@@ -69,9 +69,83 @@ static void emit_token(Lexer *l, Token *token) {
     token_arr_append(l->tokens, token);
 }
 
-void scan_token(Lexer *l) {
+void scan_str(Lexer *l) {
     Token token;
 
+    handle_str(l);
+    token_init_type(&token, token_type_str(TOK_STRING), &l->cur_word, l->line,
+                    l->col);
+    emit_token(l, &token);
+    strbuf_clear(&l->cur_word);
+    l->col++;
+}
+
+void scan_comment_or_op(Lexer *l) {
+    Token token;
+
+    if (l->peek == '/') {
+        handle_one_line_comment(l);
+        strbuf_clear(&l->cur_word);
+        return;
+    }
+
+    if (l->peek == '*') {
+        handle_multiline_comment(l);
+        strbuf_clear(&l->cur_word);
+        return;
+    } else {
+        strbuf_push(&l->cur_word, '/');
+        token_init_type(&token, "SLASH", &l->cur_word, l->line, l->col);
+        emit_token(l, &token);
+        strbuf_clear(&l->cur_word);
+        return;
+    }
+}
+
+void scan_double_char_ops(Lexer *l) {
+    Token token;
+    size_t idx = 0;
+
+    strbuf_push(&l->cur_word, (char)l->peek);
+
+    memset(l->peek_buf, 0, sizeof l->peek_buf);
+
+    advance(l);
+
+    is_operator(l->cur_word.items, &idx);
+    token_init_type(&token, exp_operators[idx].tok_type_str, &l->cur_word,
+                    l->line, l->col);
+    emit_token(l, &token);
+    strbuf_clear(&l->cur_word);
+}
+
+void scan_number(Lexer *l) {
+    Token token;
+
+    if (handle_number(l) == 0) {
+        token_init_type(&token, token_type_str(TOK_NUMBER), &l->cur_word,
+                        l->line, l->col);
+        emit_token(l, &token);
+        strbuf_clear(&l->cur_word);
+        return;
+    } else {
+        token_init_type(&token, token_type_str(TOK_INVALID_NUMBER),
+                        &l->cur_word, l->line, l->col);
+        emit_token(l, &token);
+        strbuf_clear(&l->cur_word);
+        return;
+    }
+}
+
+void scan_sintax_element(Lexer *l) {
+    Token token;
+
+    token_init(&token, &l->cur_word, l->line, l->col);
+    emit_token(l, &token);
+    strbuf_clear(&l->cur_word);
+}
+
+void scan_token(Lexer *l) {
     switch (l->cur) {
         case ' ':
             return;
@@ -82,32 +156,12 @@ void scan_token(Lexer *l) {
             return;
 
         case '"':
-            handle_str(l);
-            token_init_type(&token, token_type_str(TOK_STRING), &l->cur_word,
-                            l->line, l->col);
-            emit_token(l, &token);
-            strbuf_clear(&l->cur_word);
-            l->col++;
+            scan_str(l);
             return;
 
         case '/':
-            if (l->peek == '/') {
-                handle_one_line_comment(l);
-                strbuf_clear(&l->cur_word);
-                return;
-            }
-
-            if (l->peek == '*') {
-                handle_multiline_comment(l);
-                strbuf_clear(&l->cur_word);
-                return;
-            } else {
-                strbuf_push(&l->cur_word, '/');
-                token_init_type(&token, "SLASH", &l->cur_word, l->line, l->col);
-                emit_token(l, &token);
-                strbuf_clear(&l->cur_word);
-                return;
-            }
+            scan_comment_or_op(l);
+            return;
     }
 
     strbuf_push(&l->cur_word, (char)l->cur);
@@ -115,55 +169,27 @@ void scan_token(Lexer *l) {
 
     if (is_operator(l->cur_word.items, NULL)
         && is_operator(l->peek_buf, NULL)) {
-        size_t idx = 0;
-
-        strbuf_push(&l->cur_word, (char)l->peek);
-
-        memset(l->peek_buf, 0, sizeof l->peek_buf);
-        advance(l);
-
-        is_operator(l->cur_word.items, &idx);
-        token_init_type(&token, exp_operators[idx].tok_type_str, &l->cur_word,
-                        l->line, l->col);
-        emit_token(l, &token);
-        strbuf_clear(&l->cur_word);
+        scan_double_char_ops(l);
         return;
     }
 
     if (is_digit((char)l->cur)) {
-        if (handle_number(l) == 0) {
-            token_init_type(&token, token_type_str(TOK_NUMBER), &l->cur_word,
-                            l->line, l->col);
-            emit_token(l, &token);
-            strbuf_clear(&l->cur_word);
-            return;
-        } else {
-            token_init_type(&token, token_type_str(TOK_INVALID_NUMBER),
-                            &l->cur_word, l->line, l->col);
-            emit_token(l, &token);
-            strbuf_clear(&l->cur_word);
-            return;
-        }
+        scan_number(l);
+        return;
     }
 
     if (is_sintax_element(l->cur_word.items)) {
-        token_init(&token, &l->cur_word, l->line, l->col);
-        emit_token(l, &token);
-        strbuf_clear(&l->cur_word);
+        scan_sintax_element(l);
         return;
     }
 
     if (is_sintax_element(l->peek_buf)) {
-        token_init(&token, &l->cur_word, l->line, l->col);
-        emit_token(l, &token);
-        strbuf_clear(&l->cur_word);
+        scan_sintax_element(l);
         return;
     }
 
     if (l->peek == ' ') {
-        token_init(&token, &l->cur_word, l->line, l->col);
-        emit_token(l, &token);
-        strbuf_clear(&l->cur_word);
+        scan_sintax_element(l);
         return;
     }
 
