@@ -1,10 +1,16 @@
 #include "../../utils/str_buf/str_buf.h"
 #include "../../utils/token/token.h"
+#include "../exp/exp.h"
 #include "lexer.h"
 
 #include <stdio.h>
+#include <string.h>
 
-void handle_str(Lexer *l) {
+#define STR_TOK_TYPE         "STRING"
+#define NUM_TOK_TYPE         "NUMBER"
+#define INVALID_NUM_TOK_TYPE "INVALID NUMBER"
+
+static void handle_str(Lexer *l) {
     int chars_count = 0;
 
     advance(l);
@@ -20,7 +26,7 @@ void handle_str(Lexer *l) {
     l->col = chars_count;
 }
 
-int handle_number(Lexer *l) {
+static int handle_number(Lexer *l) {
     int count_dot = 0;
 
     while (is_digit((char)l->peek) || l->peek == '.') {
@@ -36,13 +42,13 @@ int handle_number(Lexer *l) {
     return count_dot > 1;
 }
 
-void handle_one_line_comment(Lexer *l) {
+static void handle_one_line_comment(Lexer *l) {
     while (l->cur != EOF && l->cur != '\n') {
         advance(l);
     }
 }
 
-void handle_multiline_comment(Lexer *l) {
+static void handle_multiline_comment(Lexer *l) {
     while (l->cur != EOF) {
         if (l->cur == '\n') {
             l->line++;
@@ -56,4 +62,106 @@ void handle_multiline_comment(Lexer *l) {
 
         advance(l);
     }
+}
+
+static void emit_token(Lexer *l, Token *token) {
+    token_arr_append(l->tokens, token);
+}
+
+void scan_token(Lexer *l) {
+    l->col++;
+    Token token;
+
+    switch (l->cur) {
+        case ' ':
+            return;
+
+        case '\n':
+            l->line++;
+            l->col = 0;
+            return;
+
+        case '"':
+            handle_str(l);
+            token_init_type(&token, token_type_str(TOK_STRING), &l->cur_word,
+                            l->line, l->col);
+            emit_token(l, &token);
+            strbuf_clear(&l->cur_word);
+            l->col++;
+            return;
+
+        case '/':
+            if (l->peek == '/') {
+                handle_one_line_comment(l);
+                strbuf_clear(&l->cur_word);
+                return;
+            }
+
+            if (l->peek == '*') {
+                handle_multiline_comment(l);
+                strbuf_clear(&l->cur_word);
+                return;
+            }
+
+            return;
+    }
+
+    strbuf_push(&l->cur_word, (char)l->cur);
+    l->peek_buf[0] = (char)l->peek;
+
+    if (is_operator(l->cur_word.items, NULL)
+        && is_operator(l->peek_buf, NULL)) {
+        size_t idx = 0;
+
+        strbuf_push(&l->cur_word, (char)l->peek);
+
+        memset(l->peek_buf, 0, sizeof l->peek_buf);
+        advance(l);
+
+        is_operator(l->cur_word.items, &idx);
+        token_init_type(&token, exp_operators[idx].tok_type_str, &l->cur_word,
+                        l->line, l->col);
+        emit_token(l, &token);
+        strbuf_clear(&l->cur_word);
+        return;
+    }
+
+    if (is_digit((char)l->cur)) {
+        if (handle_number(l) == 0) {
+            token_init_type(&token, token_type_str(TOK_NUMBER), &l->cur_word,
+                            l->line, l->col);
+            emit_token(l, &token);
+            strbuf_clear(&l->cur_word);
+            return;
+        } else {
+            token_init_type(&token, token_type_str(TOK_INVALID_NUMBER),
+                            &l->cur_word, l->line, l->col);
+            emit_token(l, &token);
+            strbuf_clear(&l->cur_word);
+            return;
+        }
+    }
+
+    if (is_sintax_element(l->cur_word.items)) {
+        token_init(&token, &l->cur_word, l->line, l->col);
+        emit_token(l, &token);
+        strbuf_clear(&l->cur_word);
+        return;
+    }
+
+    if (is_sintax_element(l->peek_buf)) {
+        token_init(&token, &l->cur_word, l->line, l->col);
+        emit_token(l, &token);
+        strbuf_clear(&l->cur_word);
+        return;
+    }
+
+    if (l->peek == ' ') {
+        token_init(&token, &l->cur_word, l->line, l->col);
+        emit_token(l, &token);
+        strbuf_clear(&l->cur_word);
+        return;
+    }
+
+    // TODO: unknown / error
 }
