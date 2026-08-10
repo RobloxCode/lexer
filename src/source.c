@@ -19,6 +19,10 @@ int some_fn(void *some_param) {
     float dec2 = 2.71;
     int number = 1;
 
+    float div = dec2 / number;
+
+    printf("%f\n", div);
+
     /*
      * this is a comment
      */

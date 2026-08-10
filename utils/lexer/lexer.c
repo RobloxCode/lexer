@@ -23,20 +23,22 @@ static Lexer *lexer_init(const char *path) {
 
     l->file = fopen(path, "r");
     if (!l->file) {
+        free(l);
         return NULL;
     }
 
     l->tokens = token_arr_init(INIT_TOKEN_CAP);
     if (!l->tokens) {
         fclose(l->file);
+        free(l);
         return NULL;
     }
 
     l->cur = fgetc(l->file);
     l->peek = fgetc(l->file);
 
-    l->line = 0;
-    l->col = 0;
+    l->line = 1;
+    l->col = 1;
     strbuf_init(&l->cur_word);
     memset(l->peek_buf, 0, sizeof l->peek_buf);
 

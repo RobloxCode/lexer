@@ -1,6 +1,7 @@
 #include "../../utils/str_buf/str_buf.h"
 #include "../../utils/token/token.h"
 #include "../exp/exp.h"
+#include "../str_buf/str_buf.h"
 #include "lexer.h"
 
 #include <stdio.h>
@@ -69,7 +70,6 @@ static void emit_token(Lexer *l, Token *token) {
 }
 
 void scan_token(Lexer *l) {
-    l->col++;
     Token token;
 
     switch (l->cur) {
@@ -101,9 +101,13 @@ void scan_token(Lexer *l) {
                 handle_multiline_comment(l);
                 strbuf_clear(&l->cur_word);
                 return;
+            } else {
+                strbuf_push(&l->cur_word, '/');
+                token_init_type(&token, "SLASH", &l->cur_word, l->line, l->col);
+                emit_token(l, &token);
+                strbuf_clear(&l->cur_word);
+                return;
             }
-
-            return;
     }
 
     strbuf_push(&l->cur_word, (char)l->cur);
