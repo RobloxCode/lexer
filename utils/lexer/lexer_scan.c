@@ -70,18 +70,18 @@ static void emit_token(Lexer *l, Token *token) {
 }
 
 void scan_str(Lexer *l) {
-    Token token;
+    Token t;
 
     handle_str(l);
-    token_init_type(&token, token_type_str(TOK_STRING), &l->cur_word, l->line,
+    token_init_type(&t, token_type_str(TOK_STRING), &l->cur_word, l->line,
                     l->col);
-    emit_token(l, &token);
+    emit_token(l, &t);
     strbuf_clear(&l->cur_word);
     l->col++;
 }
 
 void scan_comment_or_op(Lexer *l) {
-    Token token;
+    Token t;
 
     if (l->peek == '/') {
         handle_one_line_comment(l);
@@ -95,15 +95,15 @@ void scan_comment_or_op(Lexer *l) {
         return;
     } else {
         strbuf_push(&l->cur_word, '/');
-        token_init_type(&token, "SLASH", &l->cur_word, l->line, l->col);
-        emit_token(l, &token);
+        token_init_type(&t, "SLASH", &l->cur_word, l->line, l->col);
+        emit_token(l, &t);
         strbuf_clear(&l->cur_word);
         return;
     }
 }
 
 void scan_double_char_ops(Lexer *l) {
-    Token token;
+    Token t;
     size_t idx = 0;
 
     strbuf_push(&l->cur_word, (char)l->peek);
@@ -113,35 +113,35 @@ void scan_double_char_ops(Lexer *l) {
     advance(l);
 
     is_operator(l->cur_word.items, &idx);
-    token_init_type(&token, exp_operators[idx].tok_type_str, &l->cur_word,
-                    l->line, l->col);
-    emit_token(l, &token);
+    token_init_type(&t, exp_operators[idx].tok_type_str, &l->cur_word, l->line,
+                    l->col);
+    emit_token(l, &t);
     strbuf_clear(&l->cur_word);
 }
 
 void scan_number(Lexer *l) {
-    Token token;
+    Token t;
 
     if (handle_number(l) == 0) {
-        token_init_type(&token, token_type_str(TOK_NUMBER), &l->cur_word,
-                        l->line, l->col);
-        emit_token(l, &token);
+        token_init_type(&t, token_type_str(TOK_NUMBER), &l->cur_word, l->line,
+                        l->col);
+        emit_token(l, &t);
         strbuf_clear(&l->cur_word);
         return;
     } else {
-        token_init_type(&token, token_type_str(TOK_INVALID_NUMBER),
-                        &l->cur_word, l->line, l->col);
-        emit_token(l, &token);
+        token_init_type(&t, token_type_str(TOK_INVALID_NUMBER), &l->cur_word,
+                        l->line, l->col);
+        emit_token(l, &t);
         strbuf_clear(&l->cur_word);
         return;
     }
 }
 
 void scan_sintax_element(Lexer *l) {
-    Token token;
+    Token t;
 
-    token_init(&token, &l->cur_word, l->line, l->col);
-    emit_token(l, &token);
+    token_init(&t, &l->cur_word, l->line, l->col);
+    emit_token(l, &t);
     strbuf_clear(&l->cur_word);
 }
 
