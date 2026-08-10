@@ -58,6 +58,10 @@ void lexer_deinit(Lexer **l) {
         token_arr_deinit(&(*l)->tokens);
     }
 
+    if ((*l)->file) {
+        fclose((*l)->file);
+    }
+
     free(*l);
     *l = NULL;
 }
@@ -66,12 +70,12 @@ Lexer *lexer_lex(const char *path) {
     Lexer *l = NULL;
 
     if (!path) {
-        goto cleanup;
+        return l;
     }
 
     l = lexer_init(path);
     if (!l) {
-        goto cleanup;
+        return l;
     }
 
     while (l->cur != EOF) {
@@ -173,11 +177,6 @@ Lexer *lexer_lex(const char *path) {
         }
 
         // TODO: unknown / error
-    }
-
-cleanup:
-    if (l) {
-        fclose(l->file);
     }
 
     return l;

@@ -155,6 +155,8 @@ typedef struct {
  * @param col Column where the token was found at
  */
 void token_init(Token *t, const StrBuf *word, const int line, const int col);
+// void token_init(Token *t, const StrBuf *word, const int line, const int col,
+//                 Lexer *l);
 
 /**
  * @brief Sets the values of a given Token and sets the type to the
