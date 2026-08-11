@@ -1,7 +1,5 @@
 #include "exp.h"
 
-#include <stddef.h>
-
 Exp exp_operators[] = {
     {"+", "PLUS", TOK_PLUS},
     {"-", "MINUS", TOK_MINUS},

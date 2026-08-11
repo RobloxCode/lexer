@@ -8,7 +8,8 @@ SRC = src/main.c \
 	  utils/exp/exp.c \
 	  utils/str_buf/str_buf.c \
 	  utils/lexer/lexer.c \
-	  utils/lexer/lexer_scan.c
+	  utils/lexer/lexer_scan.c \
+	  utils/alloc/alloc.c
 
 OUT = bin/out
 
