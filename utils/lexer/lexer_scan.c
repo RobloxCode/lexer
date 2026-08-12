@@ -33,9 +33,10 @@ static int handle_number(Lexer *l) {
         strbuf_push(&l->cur_word, (char)l->cur);
     }
 
-    // TODO: have to fix the literal suffix case
-    if (l->peek == 'f') {
-        printf("this a floating point, f after number\n");
+    if (l->peek == 'f' || l->peek == 'F' || l->peek == 'l' || l->peek == 'L'
+        || l->peek == 'u' || l->peek == 'U') {
+        advance(l);
+        strbuf_push(&l->cur_word, (char)l->cur);
     }
 
     return count_dot > 1;
