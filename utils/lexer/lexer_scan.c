@@ -12,19 +12,12 @@
 #define INVALID_NUM_TOK_TYPE "INVALID NUMBER"
 
 static void handle_str(Lexer *l) {
-    int chars_count = 0;
-
     advance(l);
 
     while (l->cur != EOF && l->cur != '"') {
         strbuf_push(&l->cur_word, (char)l->cur);
         advance(l);
-        chars_count++;
     }
-
-    advance(l);
-
-    l->col = chars_count;
 }
 
 static int handle_number(Lexer *l) {
@@ -52,6 +45,7 @@ static void handle_one_line_comment(Lexer *l) {
     while (l->cur != EOF && l->cur != '\n') {
         advance(l);
     }
+    l->line++;
 }
 
 static void handle_multiline_comment(Lexer *l) {
@@ -62,7 +56,6 @@ static void handle_multiline_comment(Lexer *l) {
 
         if (l->cur == '*' && l->peek == '/') {
             advance(l);
-            l->line++;
             break;
         }
 
@@ -82,7 +75,6 @@ void scan_str(Lexer *l) {
                     l->col);
     emit_token(l, &t);
     strbuf_clear(&l->cur_word);
-    l->col++;
 }
 
 void scan_comment_or_op(Lexer *l) {
