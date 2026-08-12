@@ -34,7 +34,8 @@ static int handle_number(Lexer *l) {
     }
 
     if (l->peek == 'f' || l->peek == 'F' || l->peek == 'l' || l->peek == 'L'
-        || l->peek == 'u' || l->peek == 'U') {
+        || l->peek == 'u' || l->peek == 'U' || l->peek == 'd'
+        || l->peek == 'D') {
         advance(l);
         strbuf_push(&l->cur_word, (char)l->cur);
     }
