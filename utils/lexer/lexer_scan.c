@@ -11,7 +11,7 @@
 #define NUM_TOK_TYPE         "NUMBER"
 #define INVALID_NUM_TOK_TYPE "INVALID NUMBER"
 
-static void handle_str(Lexer *l) {
+static void handle_str(Lexer *l, int *slen) {
     int chars_count = 0;
 
     advance(l);
@@ -22,9 +22,8 @@ static void handle_str(Lexer *l) {
         chars_count++;
     }
 
-    advance(l);
-
-    l->col = chars_count;
+    l->col = l->col - chars_count;
+    *slen = chars_count;
 }
 
 static int handle_number(Lexer *l) {
@@ -77,12 +76,15 @@ static void emit_token(Lexer *l, Token *token) {
 void scan_str(Lexer *l) {
     Token t;
 
-    handle_str(l);
+    int slen = 0;
+
+    handle_str(l, &slen);
     token_init_type(&t, token_type_str(TOK_STRING), &l->cur_word, l->line,
                     l->col);
     emit_token(l, &t);
     strbuf_clear(&l->cur_word);
-    l->col++;
+
+    l->col += slen;
 }
 
 void scan_comment_or_op(Lexer *l) {
