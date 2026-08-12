@@ -47,6 +47,12 @@ Lexer *lexer_lex(const char *path);
  */
 void lexer_deinit(Lexer **l);
 
+/**
+ * @brief Goes one character ahead, it also increments
+ *        the column by one
+ *
+ * @param l Pointer to a Lexer
+ */
 void advance(Lexer *l);
 
 #endif
