@@ -9,4 +9,6 @@ void some_fn() {
      *   5 lines comment
      *
      * */
+
+    int var = 10;
 }

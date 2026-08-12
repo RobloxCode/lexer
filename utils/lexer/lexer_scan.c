@@ -52,6 +52,7 @@ static void handle_one_line_comment(Lexer *l) {
     while (l->cur != EOF && l->cur != '\n') {
         advance(l);
     }
+    l->line++;
 }
 
 static void handle_multiline_comment(Lexer *l) {
@@ -62,7 +63,6 @@ static void handle_multiline_comment(Lexer *l) {
 
         if (l->cur == '*' && l->peek == '/') {
             advance(l);
-            l->line++;
             break;
         }
 
