@@ -73,10 +73,8 @@ Lexer *lexer_lex(const char *path) {
     }
 
     while (l->cur != EOF) {
-        // TODO: since we advance first, the first char
-        // doesn't get tokenized
-        advance(l);
         scan_token(l);
+        advance(l);
     }
 
     return l;
