@@ -151,6 +151,10 @@ static void handle_identifier(Lexer *l) {
         strbuf_push(&l->cur_word, (char)l->cur);
         advance(l);
     }
+}
+
+static void scan_identifier(Lexer *l) {
+    handle_identifier(l);
 
     size_t found_idx = 0;
 
@@ -193,12 +197,10 @@ void scan_token(Lexer *l) {
 
         default:
             if (is_letter((char)l->cur) || (char)l->cur == '_') {
-                handle_identifier(l);
-                return;
-            } else if (is_digit((char)l->cur)) {
-                handle_number(l);
+                scan_identifier(l);
                 return;
             }
+
             break;
     }
 
@@ -208,6 +210,11 @@ void scan_token(Lexer *l) {
     if (is_operator(l->cur_word.items, NULL)
         && is_operator(l->peek_buf, NULL)) {
         scan_double_char_ops(l);
+        return;
+    }
+
+    if (is_digit((char)l->cur)) {
+        scan_number(l);
         return;
     }
 
