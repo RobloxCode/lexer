@@ -191,6 +191,4 @@ void scan_token(Lexer *l) {
         scan_sintax_element(l);
         return;
     }
-
-    // TODO: unknown / error
 }
