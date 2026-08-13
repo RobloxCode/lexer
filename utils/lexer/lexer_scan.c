@@ -154,27 +154,14 @@ static void handle_identifier(Lexer *l) {
 }
 
 static void scan_identifier(Lexer *l) {
+    Token t;
+
     handle_identifier(l);
 
-    size_t found_idx = 0;
+    token_init(&t, &l->cur_word, l->line, l->col);
 
-    if (is_keyword(l->cur_word.items, &found_idx)) {
-        Token t;
-
-        token_init(&t, &l->cur_word, l->line, l->col);
-        strcpy(t.type, exp_keywords[found_idx].tok_type_str);
-        strcpy(t.value, l->cur_word.items);
-
-        emit_token(l, &t);
-
-        strbuf_clear(&l->cur_word);
-    } else {
-        Token t;
-
-        token_init(&t, &l->cur_word, l->line, l->col);
-        emit_token(l, &t);
-        strbuf_clear(&l->cur_word);
-    }
+    emit_token(l, &t);
+    strbuf_clear(&l->cur_word);
 }
 
 void scan_token(Lexer *l) {
@@ -219,11 +206,6 @@ void scan_token(Lexer *l) {
     }
 
     if (is_sintax_element(l->cur_word.items)) {
-        scan_sintax_element(l);
-        return;
-    }
-
-    if (is_sintax_element(l->peek_buf)) {
         scan_sintax_element(l);
         return;
     }
