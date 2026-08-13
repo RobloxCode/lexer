@@ -19,7 +19,7 @@ static bool _is_hash(const char *s) {
     return false;
 }
 
-static bool _is_keyword(const char *s, size_t *found_idx) {
+bool is_keyword(const char *s, size_t *found_idx) {
     for (size_t i = 0; i < exp_keywords_len; ++i) {
         if (strcmp(s, exp_keywords[i].val) == 0) {
             if (found_idx) {
@@ -96,7 +96,7 @@ bool is_number(const char *s) {
     return true;
 }
 
-static bool _is_letter(const char c) {
+bool is_letter(const char c) {
     if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z')) {
         return true;
     }
@@ -118,7 +118,7 @@ static bool _is_identifier(const char *s) {
             continue;
         }
 
-        if (!_is_letter(s[i])) {
+        if (!is_letter(s[i])) {
             return false;
         }
     }
@@ -134,11 +134,6 @@ void token_init(Token *t, const StrBuf *word, const int line, const int col) {
 
     if (_is_hash(word->items)) {
         strcpy(t->type, "HASH");
-        strcpy(t->value, word->items);
-    }
-
-    else if (_is_keyword(word->items, &found_idx)) {
-        strcpy(t->type, exp_keywords[found_idx].tok_type_str);
         strcpy(t->value, word->items);
     }
 
@@ -172,7 +167,7 @@ void token_init_type(Token *t, const char *type, const StrBuf *word,
 }
 
 bool is_sintax_element(const char *word) {
-    if (_is_hash(word) || _is_keyword(word, NULL) || is_operator(word, NULL)
+    if (_is_hash(word) || is_keyword(word, NULL) || is_operator(word, NULL)
         || _is_delimeter(word, NULL)) {
         return true;
     }

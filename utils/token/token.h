@@ -223,4 +223,7 @@ bool is_operator(const char *s, size_t *found_idx);
  */
 const char *token_type_str(TokType t);
 
+bool is_letter(const char c);
+bool is_keyword(const char *s, size_t *found_idx);
+
 #endif

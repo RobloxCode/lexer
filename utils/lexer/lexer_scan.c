@@ -5,6 +5,7 @@
 #include "lexer.h"
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #define STR_TOK_TYPE         "STRING"
@@ -144,6 +145,34 @@ void scan_sintax_element(Lexer *l) {
     strbuf_clear(&l->cur_word);
 }
 
+static void handle_identifier(Lexer *l) {
+    while (is_digit((char)l->cur) || is_letter((char)l->cur)
+           || (char)l->cur == '_') {
+        strbuf_push(&l->cur_word, (char)l->cur);
+        advance(l);
+    }
+
+    size_t found_idx = 0;
+
+    if (is_keyword(l->cur_word.items, &found_idx)) {
+        Token t;
+
+        token_init(&t, &l->cur_word, l->line, l->col);
+        strcpy(t.type, exp_keywords[found_idx].tok_type_str);
+        strcpy(t.value, l->cur_word.items);
+
+        emit_token(l, &t);
+
+        strbuf_clear(&l->cur_word);
+    } else {
+        Token t;
+
+        token_init(&t, &l->cur_word, l->line, l->col);
+        emit_token(l, &t);
+        strbuf_clear(&l->cur_word);
+    }
+}
+
 void scan_token(Lexer *l) {
     switch (l->cur) {
         case ' ':
@@ -161,6 +190,16 @@ void scan_token(Lexer *l) {
         case '/':
             scan_comment_or_op(l);
             return;
+
+        default:
+            if (is_letter((char)l->cur) || (char)l->cur == '_') {
+                handle_identifier(l);
+                return;
+            } else if (is_digit((char)l->cur)) {
+                handle_number(l);
+                return;
+            }
+            break;
     }
 
     strbuf_push(&l->cur_word, (char)l->cur);
@@ -169,11 +208,6 @@ void scan_token(Lexer *l) {
     if (is_operator(l->cur_word.items, NULL)
         && is_operator(l->peek_buf, NULL)) {
         scan_double_char_ops(l);
-        return;
-    }
-
-    if (is_digit((char)l->cur)) {
-        scan_number(l);
         return;
     }
 
