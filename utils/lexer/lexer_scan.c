@@ -48,7 +48,6 @@ static void handle_one_line_comment(Lexer *l) {
     while (l->cur != EOF && l->cur != '\n') {
         advance(l);
     }
-    // l->line++;
 }
 
 static void handle_multiline_comment(Lexer *l) {
@@ -62,11 +61,19 @@ static void handle_multiline_comment(Lexer *l) {
     }
 }
 
+static void handle_identifier(Lexer *l) {
+    while (is_digit((char)l->cur) || is_letter((char)l->cur)
+           || (char)l->cur == '_') {
+        strbuf_push(&l->cur_word, (char)l->cur);
+        advance(l);
+    }
+}
+
 static void emit_token(Lexer *l, Token *token) {
     token_arr_append(l->tokens, token);
 }
 
-void scan_str(Lexer *l) {
+static void scan_str(Lexer *l) {
     Token t;
 
     handle_str(l);
@@ -74,9 +81,11 @@ void scan_str(Lexer *l) {
                     l->col);
     emit_token(l, &t);
     strbuf_clear(&l->cur_word);
+
+    advance(l);
 }
 
-void scan_comment_or_op(Lexer *l) {
+static void scan_comment_or_op(Lexer *l) {
     Token t;
 
     if (l->peek == '/') {
@@ -98,7 +107,7 @@ void scan_comment_or_op(Lexer *l) {
     }
 }
 
-void scan_double_char_ops(Lexer *l) {
+static void scan_double_char_ops(Lexer *l) {
     Token t;
     size_t idx = 0;
 
@@ -115,7 +124,7 @@ void scan_double_char_ops(Lexer *l) {
     strbuf_clear(&l->cur_word);
 }
 
-void scan_number(Lexer *l) {
+static void scan_number(Lexer *l) {
     Token t;
 
     if (handle_number(l) == 0) {
@@ -133,20 +142,12 @@ void scan_number(Lexer *l) {
     }
 }
 
-void scan_sintax_element(Lexer *l) {
+static void scan_sintax_element(Lexer *l) {
     Token t;
 
     token_init(&t, &l->cur_word, l->line, l->col);
     emit_token(l, &t);
     strbuf_clear(&l->cur_word);
-}
-
-static void handle_identifier(Lexer *l) {
-    while (is_digit((char)l->cur) || is_letter((char)l->cur)
-           || (char)l->cur == '_') {
-        strbuf_push(&l->cur_word, (char)l->cur);
-        advance(l);
-    }
 }
 
 static void scan_identifier(Lexer *l) {
