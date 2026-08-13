@@ -48,15 +48,11 @@ static void handle_one_line_comment(Lexer *l) {
     while (l->cur != EOF && l->cur != '\n') {
         advance(l);
     }
-    l->line++;
+    // l->line++;
 }
 
 static void handle_multiline_comment(Lexer *l) {
     while (l->cur != EOF) {
-        if (l->cur == '\n') {
-            l->line++;
-        }
-
         if (l->cur == '*' && l->peek == '/') {
             advance(l);
             break;
@@ -170,8 +166,6 @@ void scan_token(Lexer *l) {
             return;
 
         case '\n':
-            l->line++;
-            l->col = 0;
             return;
 
         case '"':
@@ -206,11 +200,6 @@ void scan_token(Lexer *l) {
     }
 
     if (is_sintax_element(l->cur_word.items)) {
-        scan_sintax_element(l);
-        return;
-    }
-
-    if (l->peek == ' ') {
         scan_sintax_element(l);
         return;
     }

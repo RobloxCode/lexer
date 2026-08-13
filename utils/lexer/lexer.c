@@ -13,7 +13,13 @@
 void advance(Lexer *l) {
     l->cur = l->peek;
     l->peek = fgetc(l->file);
-    l->col++;
+
+    if (l->cur == '\n') {
+        l->line++;
+        l->col = 0;
+    } else {
+        l->col++;
+    }
 }
 
 static Lexer *lexer_init(const char *path) {
