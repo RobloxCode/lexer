@@ -66,8 +66,16 @@ bool is_number(const char *s) {
         return false;
     }
 
+    if (s[0] == '.' || s[strlen(s) - 1] == '.') {
+        return false;
+    }
+
     if (s[0] == '+' || s[0] == '-') {
         i = 1;
+
+        if (s[i] == '\0') {
+            return false;
+        }
     }
 
     for (; s[i] != '\0'; ++i) {
@@ -93,6 +101,10 @@ bool is_letter(const int c) {
 }
 
 static bool _is_identifier(const char *s) {
+    if (s[0] == '\0') {
+        return false;
+    }
+
     if (is_digit(s[0])) {
         return false;
     }
@@ -118,32 +130,29 @@ void token_init(Token *t, const StrBuf *word, const int line, const int col) {
     t->line = line;
     t->col = col;
 
-    size_t found_idx = 0;
+    size_t idx = 0;
 
     if (_is_hash(word->items)) {
         strcpy(t->type, "HASH");
-        strcpy(t->value, word->items);
     }
 
-    else if (is_operator(word->items, &found_idx)) {
-        strcpy(t->type, exp_operators[found_idx].tok_type_str);
-        strcpy(t->value, word->items);
+    else if (is_operator(word->items, &idx)) {
+        strcpy(t->type, exp_operators[idx].tok_type_str);
     }
 
     else if (_is_identifier(word->items)) {
         strcpy(t->type, "IDENTIFIER");
-        strcpy(t->value, word->items);
     }
 
-    else if (_is_delimeter(word->items, &found_idx)) {
-        strcpy(t->type, exp_delimeters[found_idx].tok_type_str);
-        strcpy(t->value, word->items);
+    else if (_is_delimeter(word->items, &idx)) {
+        strcpy(t->type, exp_delimeters[idx].tok_type_str);
     }
 
     else {
         strcpy(t->type, "INVALID");
-        strcpy(t->value, word->items);
     }
+
+    strcpy(t->value, word->items);
 }
 
 void token_init_type(Token *t, const char *type, const StrBuf *word,

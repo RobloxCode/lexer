@@ -147,7 +147,7 @@ typedef struct {
 
 /**
  * @brief Sets the values of a given Token, it determines what
- *        type to give to each token
+ *        type to give to each token, clasifies the resulting lexeme
  *
  * @param t Pointer to a stack allocated Token
  * @param word String storing the word being tokenized
