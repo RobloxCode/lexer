@@ -16,7 +16,7 @@ static void handle_str(Lexer *l) {
     advance(l);
 
     while (l->cur != EOF && l->cur != '"') {
-        strbuf_push(&l->cur_word, (char)l->cur);
+        strbuf_push(&l->cur_word, l->cur);
         advance(l);
     }
 }
@@ -24,21 +24,21 @@ static void handle_str(Lexer *l) {
 static int handle_number(Lexer *l) {
     int count_dot = 0;
 
-    while (is_digit((char)l->peek) || l->peek == '.') {
+    while (is_digit(l->peek) || l->peek == '.') {
         advance(l);
 
         if (l->cur == '.') {
             count_dot++;
         }
 
-        strbuf_push(&l->cur_word, (char)l->cur);
+        strbuf_push(&l->cur_word, l->cur);
     }
 
     if (l->peek == 'F' || l->peek == 'f' || l->peek == 'L' || l->peek == 'l'
         || l->peek == 'U' || l->peek == 'u' || l->peek == 'D'
         || l->peek == 'd') {
         advance(l);
-        strbuf_push(&l->cur_word, (char)l->cur);
+        strbuf_push(&l->cur_word, l->cur);
     }
 
     return count_dot > 1;
@@ -62,12 +62,12 @@ static void handle_multiline_comment(Lexer *l) {
 }
 
 static void handle_identifier(Lexer *l) {
-    while (is_digit((char)l->peek) || is_letter((char)l->peek)
-           || (char)l->peek == '_') {
-        strbuf_push(&l->cur_word, (char)l->cur);
+    while (is_digit(l->peek) || is_letter(l->peek) || l->peek == '_') {
+        strbuf_push(&l->cur_word, l->cur);
         advance(l);
     }
-    strbuf_push(&l->cur_word, (char)l->cur);
+
+    strbuf_push(&l->cur_word, l->cur);
 }
 
 static void emit_token(Lexer *l, Token *token) {
@@ -112,7 +112,7 @@ static void scan_double_char_ops(Lexer *l) {
     Token t;
     size_t idx = 0;
 
-    strbuf_push(&l->cur_word, (char)l->peek);
+    strbuf_push(&l->cur_word, l->peek);
 
     memset(l->peek_buf, 0, sizeof l->peek_buf);
 
@@ -179,7 +179,7 @@ void scan_token(Lexer *l) {
             return;
 
         default:
-            if (is_letter((char)l->cur) || (char)l->cur == '_') {
+            if (is_letter(l->cur) || l->cur == '_') {
                 scan_identifier(l);
                 return;
             }
@@ -187,7 +187,7 @@ void scan_token(Lexer *l) {
             break;
     }
 
-    strbuf_push(&l->cur_word, (char)l->cur);
+    strbuf_push(&l->cur_word, l->cur);
     l->peek_buf[0] = (char)l->peek;
 
     if (is_operator(l->cur_word.items, NULL)
@@ -196,7 +196,7 @@ void scan_token(Lexer *l) {
         return;
     }
 
-    if (is_digit((char)l->cur)) {
+    if (is_digit(l->cur)) {
         scan_number(l);
         return;
     }

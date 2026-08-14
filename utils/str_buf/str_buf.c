@@ -11,12 +11,12 @@ void strbuf_init(StrBuf *sb) {
     sb->count = 0;
 }
 
-int strbuf_push(StrBuf *sb, char c) {
+int strbuf_push(StrBuf *sb, const int c) {
     if (sb->count >= STR_BUF_MAX_CAP) {
         return 1;
     }
 
-    sb->items[sb->count++] = c;
+    sb->items[sb->count++] = (char)c;
 
     return 0;
 }
