@@ -62,8 +62,8 @@ static void handle_multiline_comment(Lexer *l) {
 }
 
 static void handle_identifier(Lexer *l) {
-    while (is_digit((char)l->cur) || is_letter((char)l->cur)
-           || (char)l->cur == '_') {
+    while (is_digit((char)l->peek) || is_letter((char)l->peek)
+           || (char)l->peek == '_') {
         strbuf_push(&l->cur_word, (char)l->cur);
         advance(l);
     }
