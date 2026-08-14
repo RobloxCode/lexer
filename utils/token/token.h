@@ -147,7 +147,7 @@ typedef struct {
 
 /**
  * @brief Sets the values of a given Token, it determines what
- *        type to give to each token
+ *        type to give to each token, clasifies the resulting lexeme
  *
  * @param t Pointer to a stack allocated Token
  * @param word String storing the word being tokenized
@@ -191,7 +191,7 @@ bool is_number(const char *s);
  *
  * @return eather true or false
  */
-bool is_digit(const char c);
+bool is_digit(const int c);
 
 /**
  * @brief Checks is a given String is eather hash, a keyword, an operator
@@ -222,5 +222,8 @@ bool is_operator(const char *s, size_t *found_idx);
  * @return String literal containing the type of token
  */
 const char *token_type_str(TokType t);
+
+bool is_letter(const int c);
+bool is_keyword(const char *s, size_t *found_idx);
 
 #endif

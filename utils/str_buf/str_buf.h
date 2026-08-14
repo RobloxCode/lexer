@@ -27,7 +27,7 @@ void strbuf_init(StrBuf *sb);
  * @param sb Pointer to StrBuf
  * @param c  Character to be added
  */
-int strbuf_push(StrBuf *sb, char c);
+int strbuf_push(StrBuf *sb, const int c);
 
 /**
  * @brief Sets a character at a given index

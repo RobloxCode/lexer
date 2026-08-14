@@ -27,10 +27,21 @@ int main(void) {
     test_is_number("12345;");
     test_is_number("");
     test_is_number(" ");
+    test_is_number("+");
+    test_is_number("-");
+    test_is_number("3.");
+    test_is_number(".");
+    test_is_number(".3");
 
     return tests_failed > 0 ? EXIT_FAILURE : EXIT_SUCCESS;
 }
 
 void test_is_number(const char *num) {
+    // if (is_number(num)) {
+    //     printf("%s is number\n", num);
+    // } else {
+    //     printf("%s is not a valid number\n", num);
+    // }
+
     ASSERT_EQ(is_number(num), true);
 }

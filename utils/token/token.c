@@ -12,14 +12,10 @@ inline void token_println(const Token *t) {
 }
 
 static bool _is_hash(const char *s) {
-    if (strcmp(s, "#") == 0) {
-        return true;
-    }
-
-    return false;
+    return strcmp(s, "#") == 0;
 }
 
-static bool _is_keyword(const char *s, size_t *found_idx) {
+bool is_keyword(const char *s, size_t *found_idx) {
     for (size_t i = 0; i < exp_keywords_len; ++i) {
         if (strcmp(s, exp_keywords[i].val) == 0) {
             if (found_idx) {
@@ -58,12 +54,8 @@ static bool _is_delimeter(const char *s, size_t *found_idx) {
     return false;
 }
 
-bool is_digit(const char c) {
-    if (c >= '0' && c <= '9') {
-        return true;
-    }
-
-    return false;
+bool is_digit(const int c) {
+    return c >= '0' && c <= '9';
 }
 
 bool is_number(const char *s) {
@@ -74,8 +66,16 @@ bool is_number(const char *s) {
         return false;
     }
 
+    if (s[0] == '.' || s[strlen(s) - 1] == '.') {
+        return false;
+    }
+
     if (s[0] == '+' || s[0] == '-') {
         i = 1;
+
+        if (s[i] == '\0') {
+            return false;
+        }
     }
 
     for (; s[i] != '\0'; ++i) {
@@ -96,15 +96,15 @@ bool is_number(const char *s) {
     return true;
 }
 
-static bool _is_letter(const char c) {
-    if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z')) {
-        return true;
-    }
-
-    return false;
+bool is_letter(const int c) {
+    return (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z');
 }
 
 static bool _is_identifier(const char *s) {
+    if (s[0] == '\0') {
+        return false;
+    }
+
     if (is_digit(s[0])) {
         return false;
     }
@@ -118,7 +118,7 @@ static bool _is_identifier(const char *s) {
             continue;
         }
 
-        if (!_is_letter(s[i])) {
+        if (!is_letter(s[i])) {
             return false;
         }
     }
@@ -130,37 +130,29 @@ void token_init(Token *t, const StrBuf *word, const int line, const int col) {
     t->line = line;
     t->col = col;
 
-    size_t found_idx = 0;
+    size_t idx = 0;
 
     if (_is_hash(word->items)) {
         strcpy(t->type, "HASH");
-        strcpy(t->value, word->items);
     }
 
-    else if (_is_keyword(word->items, &found_idx)) {
-        strcpy(t->type, exp_keywords[found_idx].tok_type_str);
-        strcpy(t->value, word->items);
-    }
-
-    else if (is_operator(word->items, &found_idx)) {
-        strcpy(t->type, exp_operators[found_idx].tok_type_str);
-        strcpy(t->value, word->items);
+    else if (is_operator(word->items, &idx)) {
+        strcpy(t->type, exp_operators[idx].tok_type_str);
     }
 
     else if (_is_identifier(word->items)) {
         strcpy(t->type, "IDENTIFIER");
-        strcpy(t->value, word->items);
     }
 
-    else if (_is_delimeter(word->items, &found_idx)) {
-        strcpy(t->type, exp_delimeters[found_idx].tok_type_str);
-        strcpy(t->value, word->items);
+    else if (_is_delimeter(word->items, &idx)) {
+        strcpy(t->type, exp_delimeters[idx].tok_type_str);
     }
 
     else {
         strcpy(t->type, "INVALID");
-        strcpy(t->value, word->items);
     }
+
+    strcpy(t->value, word->items);
 }
 
 void token_init_type(Token *t, const char *type, const StrBuf *word,
@@ -172,7 +164,7 @@ void token_init_type(Token *t, const char *type, const StrBuf *word,
 }
 
 bool is_sintax_element(const char *word) {
-    if (_is_hash(word) || _is_keyword(word, NULL) || is_operator(word, NULL)
+    if (_is_hash(word) || is_keyword(word, NULL) || is_operator(word, NULL)
         || _is_delimeter(word, NULL)) {
         return true;
     }
