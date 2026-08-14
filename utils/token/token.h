@@ -199,7 +199,7 @@ bool is_digit(const int c);
  *
  * @return eather true or false
  */
-bool is_sintax_element(const char *word);
+bool is_reserved_token(const char *word);
 
 /**
  * @brief Checks if a given String is an operator, if so it saves the position

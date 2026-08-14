@@ -163,7 +163,7 @@ void token_init_type(Token *t, const char *type, const StrBuf *word,
     t->col = col;
 }
 
-bool is_sintax_element(const char *word) {
+bool is_reserved_token(const char *word) {
     if (_is_hash(word) || is_keyword(word, NULL) || is_operator(word, NULL)
         || _is_delimeter(word, NULL)) {
         return true;

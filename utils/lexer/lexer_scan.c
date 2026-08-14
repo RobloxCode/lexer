@@ -201,7 +201,7 @@ void scan_token(Lexer *l) {
         return;
     }
 
-    if (is_sintax_element(l->cur_word.items)) {
+    if (is_reserved_token(l->cur_word.items)) {
         scan_sintax_element(l);
         return;
     }
