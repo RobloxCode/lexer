@@ -67,6 +67,7 @@ static void handle_identifier(Lexer *l) {
         strbuf_push(&l->cur_word, (char)l->cur);
         advance(l);
     }
+    strbuf_push(&l->cur_word, (char)l->cur);
 }
 
 static void emit_token(Lexer *l, Token *token) {

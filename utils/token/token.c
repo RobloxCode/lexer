@@ -12,11 +12,7 @@ inline void token_println(const Token *t) {
 }
 
 static bool _is_hash(const char *s) {
-    if (strcmp(s, "#") == 0) {
-        return true;
-    }
-
-    return false;
+    return strcmp(s, "#") == 0;
 }
 
 bool is_keyword(const char *s, size_t *found_idx) {
@@ -58,12 +54,8 @@ static bool _is_delimeter(const char *s, size_t *found_idx) {
     return false;
 }
 
-bool is_digit(const char c) {
-    if (c >= '0' && c <= '9') {
-        return true;
-    }
-
-    return false;
+bool is_digit(const int c) {
+    return c >= '0' && c <= '9';
 }
 
 bool is_number(const char *s) {
@@ -96,12 +88,8 @@ bool is_number(const char *s) {
     return true;
 }
 
-bool is_letter(const char c) {
-    if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z')) {
-        return true;
-    }
-
-    return false;
+bool is_letter(const int c) {
+    return (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z');
 }
 
 static bool _is_identifier(const char *s) {
