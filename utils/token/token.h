@@ -223,7 +223,27 @@ bool is_operator(const char *s, size_t *found_idx);
  */
 const char *token_type_str(TokType t);
 
+/**
+ * @brief Checks if a given character (as int) is a letter
+ *        checs for capital and lower case
+ *
+ * @param c Character to check
+ *
+ * @return true if c is letter, false otherwise
+ */
 bool is_letter(const int c);
-bool is_keyword(const char *s, size_t *found_idx);
+
+/**
+ * @brief Checks if a given string is a keyword from the c language
+ *        and also saves its index in the exp_keywords array
+ *        from the file utils/exp/exp.c
+ *
+ * @param s String to check
+ * @param idx Pointer to buffer holding the position if found, it can
+ *            be NULL if you don't need the position
+ *
+ * @return true if s is a keyword, false otherwise
+ */
+bool is_keyword(const char *s, size_t *idx);
 
 #endif

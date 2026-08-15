@@ -15,11 +15,11 @@ static bool _is_hash(const char *s) {
     return strcmp(s, "#") == 0;
 }
 
-bool is_keyword(const char *s, size_t *found_idx) {
+bool is_keyword(const char *s, size_t *idx) {
     for (size_t i = 0; i < exp_keywords_len; ++i) {
         if (strcmp(s, exp_keywords[i].val) == 0) {
-            if (found_idx) {
-                *found_idx = i;
+            if (idx) {
+                *idx = i;
             }
             return true;
         }
@@ -28,11 +28,11 @@ bool is_keyword(const char *s, size_t *found_idx) {
     return false;
 }
 
-bool is_operator(const char *s, size_t *found_idx) {
+bool is_operator(const char *s, size_t *idx) {
     for (size_t i = 0; i < exp_operators_len; ++i) {
         if (strcmp(s, exp_operators[i].val) == 0) {
-            if (found_idx) {
-                *found_idx = i;
+            if (idx) {
+                *idx = i;
             }
             return true;
         }
@@ -41,11 +41,11 @@ bool is_operator(const char *s, size_t *found_idx) {
     return false;
 }
 
-static bool _is_delimeter(const char *s, size_t *found_idx) {
+static bool _is_delimeter(const char *s, size_t *idx) {
     for (size_t i = 0; i < exp_delimeters_len; ++i) {
         if (strcmp(s, exp_delimeters[i].val) == 0) {
-            if (found_idx) {
-                *found_idx = i;
+            if (idx) {
+                *idx = i;
             }
             return true;
         }
