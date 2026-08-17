@@ -1,6 +1,12 @@
 #ifndef TOKEN_ARR_H
 #define TOKEN_ARR_H
 
+#if defined(__GNUC__) || defined(__clang__)
+    #define WARN_UNUSED __attribute__((warn_unused_result))
+#else
+    #define WARN_UNUSED
+#endif
+
 #include "../token/token.h"
 
 #include <stddef.h>
@@ -53,7 +59,7 @@ TokenArr *token_arr_init(size_t cap);
  * @return TOKENARR_OK on success, TOKENARR_WRONG_PTR if @p token_arr
  *         or *token_arr is NULL.
  */
-TokenArr_status token_arr_deinit(TokenArr **token_arr);
+TokenArr_status token_arr_deinit(TokenArr **token_arr) WARN_UNUSED;
 
 /**
  * @brief Append a Token to the end of the array, growing capacity if needed.
@@ -65,7 +71,8 @@ TokenArr_status token_arr_deinit(TokenArr **token_arr);
  *         TOKENARR_ERR_REALLOC if growth was needed and reallocation failed,
  *         TOKENARR_ERR_OVERFLOW if growing would overflow size_t.
  */
-TokenArr_status token_arr_append(TokenArr *token_arr, const Token *item);
+TokenArr_status token_arr_append(TokenArr *token_arr,
+                                 const Token *item) WARN_UNUSED;
 
 /**
  * @brief Swap the Tokens at two indices in place.
@@ -77,6 +84,9 @@ TokenArr_status token_arr_append(TokenArr *token_arr, const Token *item);
  * @return TOKENARR_OK on success, TOKENARR_WRONG_PTR if @p token_arr is NULL,
  *         TOKENARR_IDX_OUT_OF_BOUNDS if either index is >= length.
  */
+static inline TokenArr_status token_arr_swap(TokenArr *token_arr, size_t index1,
+                                             size_t index2) WARN_UNUSED;
+
 static inline TokenArr_status token_arr_swap(TokenArr *token_arr, size_t index1,
                                              size_t index2) {
     if (!token_arr) {
@@ -104,7 +114,7 @@ static inline TokenArr_status token_arr_swap(TokenArr *token_arr, size_t index1,
  * @return TOKENARR_OK on success, TOKENARR_WRONG_PTR if @p token_arr is NULL,
  *         TOKENARR_IDX_OUT_OF_BOUNDS if @p idx >= length.
  */
-TokenArr_status token_arr_remove(TokenArr *token_arr, size_t idx);
+TokenArr_status token_arr_remove(TokenArr *token_arr, size_t idx) WARN_UNUSED;
 
 /**
  * @brief Print the contents of the array to stdout for debugging.
@@ -113,7 +123,7 @@ TokenArr_status token_arr_remove(TokenArr *token_arr, size_t idx);
  *
  * @return TOKENARR_OK on success, TOKENARR_WRONG_PTR if @p token_arr is NULL.
  */
-TokenArr_status token_arr_println(TokenArr *token_arr);
+TokenArr_status token_arr_println(TokenArr *token_arr) WARN_UNUSED;
 
 /**
  * @brief Copy the Token at a given index into a caller-provided buffer.
@@ -125,6 +135,9 @@ TokenArr_status token_arr_println(TokenArr *token_arr);
  * @return TOKENARR_OK on success, TOKENARR_WRONG_PTR if @p token_arr or
  *         @p buff is NULL, TOKENARR_IDX_OUT_OF_BOUNDS if @p idx >= length.
  */
+static inline TokenArr_status token_arr_get(TokenArr *token_arr, size_t index,
+                                            Token *buff) WARN_UNUSED;
+
 static inline TokenArr_status token_arr_get(TokenArr *token_arr, size_t index,
                                             Token *buff) {
     if (!token_arr || !buff) {
