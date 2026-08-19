@@ -4,7 +4,6 @@ int some_fn(void *some_param) {
     int integer = 3;
     double dec = 3.3l;
 
-    strcut.data;
     // puts("do some code");
     // int var = 134u + 12345U;
     // const float PI = 3.1415f;
