@@ -7,6 +7,7 @@
 
 int main(int argc, char **argv) {
     const char *path = (argc == 2) ? argv[1] : DEFAULT_PATH;
+    TokenArr_status status = TOKENARR_OK;
 
     Lexer *lexer = lexer_lex(path);
     if (!lexer) {
@@ -14,7 +15,10 @@ int main(int argc, char **argv) {
         return EXIT_FAILURE;
     }
 
-    token_arr_println(lexer->tokens);
+    if ((status = token_arr_println(lexer->tokens)) != TOKENARR_OK) {
+        fprintf(stderr, "Failed to print tokens, status: %d", status);
+        return EXIT_FAILURE;
+    }
 
     lexer_deinit(&lexer);
 

@@ -71,7 +71,10 @@ static void handle_identifier(Lexer *l) {
 }
 
 static void emit_token(Lexer *l, Token *token) {
-    token_arr_append(l->tokens, token);
+    TokenArr_status status = TOKENARR_OK;
+    if ((status = token_arr_append(l->tokens, token)) != TOKENARR_OK) {
+        fprintf(stderr, "Failed to append token, status: %d", status);
+    }
 }
 
 static void scan_str(Lexer *l) {

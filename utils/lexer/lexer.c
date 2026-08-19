@@ -54,8 +54,13 @@ void lexer_deinit(Lexer **l) {
         return;
     }
 
+    TokenArr_status status = TOKENARR_OK;
+
     if ((*l)->tokens) {
-        token_arr_deinit(&(*l)->tokens);
+        if ((status = token_arr_deinit(&(*l)->tokens)) != TOKENARR_OK) {
+            fprintf(stderr, "Failed to deinitialize tokens, status: %d",
+                    status);
+        }
     }
 
     if ((*l)->file) {
