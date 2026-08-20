@@ -3,6 +3,8 @@
 int some_fn(void *some_param) {
     int integer = 3;
     double dec = 3.3l;
+    char *word = "hello";
+    char c = 'h';
 
     // puts("do some code");
     // int var = 134u + 12345U;
