@@ -162,6 +162,7 @@ static void scan_identifier(Lexer *l) {
     token_init(&t, &l->cur_word, l->line, l->col);
 
     emit_token(l, &t);
+    printf("before clearing cur_word buff: %s\n", l->cur_word.items);
     strbuf_clear(&l->cur_word);
 }
 
@@ -170,6 +171,7 @@ void scan_token(Lexer *l) {
         case ' ':
             return;
 
+        // TODO: add cases for \t, \r
         case '\n':
             return;
 
