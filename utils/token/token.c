@@ -164,7 +164,7 @@ void token_init_type(Token *t, const char *type, const StrBuf *word,
 }
 
 bool is_reserved_token(const char *word) {
-    if (_is_hash(word) || is_keyword(word, NULL) || is_operator(word, NULL)
+    if (_is_hash(word) || is_operator(word, NULL)
         || _is_delimeter(word, NULL)) {
         return true;
     }

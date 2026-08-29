@@ -159,10 +159,15 @@ static void scan_identifier(Lexer *l) {
 
     handle_identifier(l);
 
-    token_init(&t, &l->cur_word, l->line, l->col);
+    size_t found = 0;
+    if (is_keyword(l->cur_word.items, &found)) {
+        token_init_type(&t, exp_keywords[found].tok_type_str, &l->cur_word,
+                        l->line, l->col);
+    } else {
+        token_init(&t, &l->cur_word, l->line, l->col);
+    }
 
     emit_token(l, &t);
-    printf("before clearing cur_word buff: %s\n", l->cur_word.items);
     strbuf_clear(&l->cur_word);
 }
 
