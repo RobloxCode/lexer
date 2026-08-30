@@ -11,10 +11,6 @@ inline void token_println(const Token *t) {
     printf("[ %d:%d ]    %s(%s)\n", t->line, t->col, t->type, t->value);
 }
 
-static bool _is_hash(const char *s) {
-    return strcmp(s, "#") == 0;
-}
-
 bool is_keyword(const char *s, size_t *idx) {
     for (size_t i = 0; i < exp_keywords_len; ++i) {
         if (strcmp(s, exp_keywords[i].val) == 0) {
@@ -132,7 +128,7 @@ void token_init(Token *t, const StrBuf *word, const int line, const int col) {
 
     size_t idx = 0;
 
-    if (_is_hash(word->items)) {
+    if (strcmp(word->items, "#") == 0) {
         strcpy(t->type, "HASH");
     }
 
@@ -164,7 +160,7 @@ void token_init_type(Token *t, const char *type, const StrBuf *word,
 }
 
 bool is_reserved_token(const char *word) {
-    if (_is_hash(word) || is_operator(word, NULL)
+    if (strcmp(word, "#") == 0 || is_operator(word, NULL)
         || _is_delimeter(word, NULL)) {
         return true;
     }
