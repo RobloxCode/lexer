@@ -126,34 +126,39 @@ void token_init(Token *t, const StrBuf *word, const int line, const int col) {
     t->line = line;
     t->col = col;
 
-    size_t idx = 0;
+    size_t found = 0;
 
-    // TODO: made that the t->tok_type also get initialized
     if (strcmp(word->items, "#") == 0) {
+        t->tok_type = TOK_HASH;
         strcpy(t->type, "HASH");
     }
 
-    else if (is_operator(word->items, &idx)) {
-        strcpy(t->type, exp_operators[idx].tok_type_str);
+    else if (is_operator(word->items, &found)) {
+        t->tok_type = exp_operators[found].tok_type;
+        strcpy(t->type, exp_operators[found].tok_type_str);
     }
 
     else if (_is_identifier(word->items)) {
+        t->tok_type = TOK_IDENTIFIER;
         strcpy(t->type, "IDENTIFIER");
     }
 
-    else if (_is_delimeter(word->items, &idx)) {
-        strcpy(t->type, exp_delimeters[idx].tok_type_str);
+    else if (_is_delimeter(word->items, &found)) {
+        t->tok_type = exp_delimeters[found].tok_type;
+        strcpy(t->type, exp_delimeters[found].tok_type_str);
     }
 
     else {
+        t->tok_type = TOK_INVALID;
         strcpy(t->type, "INVALID");
     }
 
     strcpy(t->value, word->items);
 }
 
-void token_init_type(Token *t, const char *type, const StrBuf *word,
-                     const int line, const int col) {
+void token_init_type(Token *t, TokType tok_type, const char *type,
+                     const StrBuf *word, const int line, const int col) {
+    t->tok_type = tok_type;
     strcpy(t->type, type);
     strcpy(t->value, word->items);
     t->line = line;

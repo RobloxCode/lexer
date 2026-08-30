@@ -131,6 +131,8 @@ typedef enum {
     TOK_NUMBER,
     TOK_INVALID_NUMBER,
     TOK_ARROW,
+
+    TOK_HASH
 } TokType;
 
 /**
@@ -168,8 +170,8 @@ void token_init(Token *t, const StrBuf *word, const int line, const int col);
  * @param line Line where the token was found at
  * @param col Column where the token was found at
  */
-void token_init_type(Token *t, const char *type, const StrBuf *word,
-                     const int line, const int col);
+void token_init_type(Token *t, TokType tok_type, const char *type,
+                     const StrBuf *word, const int line, const int col);
 
 /**
  * @brief Prints the elements of a Token

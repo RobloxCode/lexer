@@ -81,8 +81,8 @@ static void scan_str(Lexer *l) {
     Token t;
 
     handle_str(l);
-    token_init_type(&t, token_type_str(TOK_STRING), &l->cur_word, l->line,
-                    l->col);
+    token_init_type(&t, TOK_STRING, token_type_str(TOK_STRING), &l->cur_word,
+                    l->line, l->col);
     emit_token(l, &t);
     strbuf_clear(&l->cur_word);
 
@@ -104,7 +104,7 @@ static void scan_comment_or_op(Lexer *l) {
         return;
     } else {
         strbuf_push(&l->cur_word, '/');
-        token_init_type(&t, "SLASH", &l->cur_word, l->line, l->col);
+        token_init_type(&t, TOK_SLASH, "SLASH", &l->cur_word, l->line, l->col);
         emit_token(l, &t);
         strbuf_clear(&l->cur_word);
         return;
@@ -113,7 +113,7 @@ static void scan_comment_or_op(Lexer *l) {
 
 static void scan_double_char_ops(Lexer *l) {
     Token t;
-    size_t idx = 0;
+    size_t found = 0;
 
     strbuf_push(&l->cur_word, l->peek);
 
@@ -121,8 +121,9 @@ static void scan_double_char_ops(Lexer *l) {
 
     advance(l);
 
-    is_operator(l->cur_word.items, &idx);
-    token_init_type(&t, exp_operators[idx].tok_type_str, &l->cur_word, l->line,
+    is_operator(l->cur_word.items, &found);
+    token_init_type(&t, exp_operators[found].tok_type,
+                    exp_operators[found].tok_type_str, &l->cur_word, l->line,
                     l->col);
     emit_token(l, &t);
     strbuf_clear(&l->cur_word);
@@ -132,13 +133,14 @@ static void scan_number(Lexer *l) {
     Token t;
 
     if (handle_number(l) == 0) {
-        token_init_type(&t, token_type_str(TOK_NUMBER), &l->cur_word, l->line,
-                        l->col);
+        token_init_type(&t, TOK_NUMBER, token_type_str(TOK_NUMBER),
+                        &l->cur_word, l->line, l->col);
         emit_token(l, &t);
         strbuf_clear(&l->cur_word);
         return;
     } else {
-        token_init_type(&t, token_type_str(TOK_INVALID_NUMBER), &l->cur_word,
+        token_init_type(&t, TOK_INVALID_NUMBER,
+                        token_type_str(TOK_INVALID_NUMBER), &l->cur_word,
                         l->line, l->col);
         emit_token(l, &t);
         strbuf_clear(&l->cur_word);
@@ -161,8 +163,9 @@ static void scan_identifier(Lexer *l) {
 
     size_t found = 0;
     if (is_keyword(l->cur_word.items, &found)) {
-        token_init_type(&t, exp_keywords[found].tok_type_str, &l->cur_word,
-                        l->line, l->col);
+        token_init_type(&t, exp_keywords[found].tok_type,
+                        exp_keywords[found].tok_type_str, &l->cur_word, l->line,
+                        l->col);
     } else {
         token_init(&t, &l->cur_word, l->line, l->col);
     }
