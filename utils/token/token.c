@@ -128,6 +128,7 @@ void token_init(Token *t, const StrBuf *word, const int line, const int col) {
 
     size_t idx = 0;
 
+    // TODO: made that the t->tok_type also get initialized
     if (strcmp(word->items, "#") == 0) {
         strcpy(t->type, "HASH");
     }
