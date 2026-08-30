@@ -176,8 +176,13 @@ void scan_token(Lexer *l) {
         case ' ':
             return;
 
-        // TODO: add cases for \t, \r
         case '\n':
+            return;
+
+        case '\t':
+            return;
+
+        case '\r':
             return;
 
         case '"':
