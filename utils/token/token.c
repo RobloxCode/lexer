@@ -8,7 +8,9 @@
 #include <string.h>
 
 inline void token_println(const Token *t) {
-    printf("[ %d:%d ]    %s(%s)\n", t->line, t->col, t->type, t->value);
+    // TODO: remove the TOKTYPE
+    printf("[ %d:%d ]    %s(%s) TOKTYPE: %d\n", t->line, t->col, t->type_name,
+           t->value, t->tok_type);
 }
 
 bool is_keyword(const char *s, size_t *idx) {
@@ -130,27 +132,27 @@ void token_init(Token *t, const StrBuf *word, const int line, const int col) {
 
     if (strcmp(word->items, "#") == 0) {
         t->tok_type = TOK_HASH;
-        strcpy(t->type, "HASH");
+        strcpy(t->type_name, "HASH");
     }
 
     else if (is_operator(word->items, &found)) {
         t->tok_type = exp_operators[found].tok_type;
-        strcpy(t->type, exp_operators[found].tok_type_str);
+        strcpy(t->type_name, exp_operators[found].tok_type_str);
     }
 
     else if (_is_identifier(word->items)) {
         t->tok_type = TOK_IDENTIFIER;
-        strcpy(t->type, "IDENTIFIER");
+        strcpy(t->type_name, "IDENTIFIER");
     }
 
     else if (_is_delimeter(word->items, &found)) {
         t->tok_type = exp_delimeters[found].tok_type;
-        strcpy(t->type, exp_delimeters[found].tok_type_str);
+        strcpy(t->type_name, exp_delimeters[found].tok_type_str);
     }
 
     else {
         t->tok_type = TOK_INVALID;
-        strcpy(t->type, "INVALID");
+        strcpy(t->type_name, "INVALID");
     }
 
     strcpy(t->value, word->items);
@@ -159,7 +161,7 @@ void token_init(Token *t, const StrBuf *word, const int line, const int col) {
 void token_init_type(Token *t, TokType tok_type, const char *type,
                      const StrBuf *word, const int line, const int col) {
     t->tok_type = tok_type;
-    strcpy(t->type, type);
+    strcpy(t->type_name, type);
     strcpy(t->value, word->items);
     t->line = line;
     t->col = col;

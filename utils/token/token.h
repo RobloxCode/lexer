@@ -139,10 +139,13 @@ typedef enum {
  * @brief Single Token
  */
 typedef struct {
-    TokType tok_type;
-    char type[TOKEN_BUF_MAX_CAP];  /* < String representation of the token
-                                       type   (ID, PLUS, RPAR, ...) */
-    char value[TOKEN_BUF_MAX_CAP]; /* < Value foind in source code */
+    TokType tok_type; /* < Number of the token from the TokType enum */
+
+    // TODO: remove this and create a function that takes tok_type and
+    // prints that in the terminal from there like 'tok_type_to_str(tok_type)'
+    char type_name[TOKEN_BUF_MAX_CAP]; /* < String representation of the token
+                                      type   (ID, PLUS, RPAR, ...) */
+    char value[TOKEN_BUF_MAX_CAP];     /* < Value foind in source code */
     int line; /* < Number of line where token was found at */
     int col;  /* < Number of colun where token was found at*/
 } Token;
