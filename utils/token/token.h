@@ -1,8 +1,7 @@
 #ifndef TOKEN_H
 #define TOKEN_H
 
-#define TOKEN_VALUE_MAX_CAP 255
-#define TOKEN_TYPE_MAX_CAP  255
+#define TOKEN_BUF_MAX_CAP 255
 
 #include "../../utils/str_buf/str_buf.h"
 
@@ -138,9 +137,10 @@ typedef enum {
  * @brief Single Token
  */
 typedef struct {
-    char type[TOKEN_TYPE_MAX_CAP]; /* < String representation of the token type
-                                      (ID, PLUS, RPAR, ...) */
-    char value[TOKEN_VALUE_MAX_CAP]; /* < Value foind in source code */
+    TokType tok_type;
+    char type[TOKEN_BUF_MAX_CAP];  /* < String representation of the token
+                                       type   (ID, PLUS, RPAR, ...) */
+    char value[TOKEN_BUF_MAX_CAP]; /* < Value foind in source code */
     int line; /* < Number of line where token was found at */
     int col;  /* < Number of colun where token was found at*/
 } Token;
