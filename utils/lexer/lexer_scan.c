@@ -81,7 +81,7 @@ static void scan_str(Lexer *l) {
     Token t;
 
     handle_str(l);
-    token_init_type(&t, TOK_STRING, token_type_str(TOK_STRING), &l->cur_word,
+    token_init_type(&t, TOK_STRING, token_type_to_str(TOK_STRING), &l->cur_word,
                     l->line, l->col);
     emit_token(l, &t);
     strbuf_clear(&l->cur_word);
@@ -133,14 +133,14 @@ static void scan_number(Lexer *l) {
     Token t;
 
     if (handle_number(l) == 0) {
-        token_init_type(&t, TOK_NUMBER, token_type_str(TOK_NUMBER),
+        token_init_type(&t, TOK_NUMBER, token_type_to_str(TOK_NUMBER),
                         &l->cur_word, l->line, l->col);
         emit_token(l, &t);
         strbuf_clear(&l->cur_word);
         return;
     } else {
         token_init_type(&t, TOK_INVALID_NUMBER,
-                        token_type_str(TOK_INVALID_NUMBER), &l->cur_word,
+                        token_type_to_str(TOK_INVALID_NUMBER), &l->cur_word,
                         l->line, l->col);
         emit_token(l, &t);
         strbuf_clear(&l->cur_word);

@@ -226,7 +226,7 @@ bool is_operator(const char *s, size_t *found_idx);
  *
  * @return String literal containing the type of token
  */
-const char *token_type_str(TokType t);
+const char *token_type_to_str(TokType t);
 
 /**
  * @brief Checks if a given character (as int) is a letter
