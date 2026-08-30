@@ -297,7 +297,6 @@ const char *token_type_to_str(TokType type) {
 }
 
 inline void token_println(const Token *t) {
-    // TODO: remove the TOKTYPE
-    printf("[ %d:%d ]    %s(%s) TOKTYPE: %d\n", t->line, t->col,
-           token_type_to_str(t->tok_type), t->value, t->tok_type);
+    printf("[ %d:%d ]    %s(%s)\n", t->line, t->col,
+           token_type_to_str(t->tok_type), t->value);
 }
