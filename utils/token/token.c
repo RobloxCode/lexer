@@ -1,7 +1,7 @@
 #include "token.h"
 
-#include "../../utils/exp/exp.h"
 #include "../../utils/str_buf/str_buf.h"
+#include "../../utils/token_def/token_def.h"
 
 #include <stdbool.h>
 #include <stdio.h>

@@ -1,5 +1,5 @@
-#ifndef EXP_H
-#define EXP_H
+#ifndef TOKEN_DEF_H
+#define TOKEN_DEF_H
 
 #include "../../utils/token/token.h"
 
@@ -11,7 +11,7 @@
 typedef struct {
     char *val;        /* < The elements that the expression has */
     TokType tok_type; /* < Actuall token type*/
-} Exp;
+} TokenDef;
 
 /**
  * @brief indexes of the operators in the exp_operators array
@@ -52,13 +52,13 @@ typedef enum {
 } exp_operators_idxs;
 
 /* Array of Exp containing all the operators (+, -, =, ...) */
-extern Exp exp_operators[];
+extern TokenDef exp_operators[];
 
 /* Array of Exp containing all the delimeters ( [, (, }, ;, ...) */
-extern Exp exp_delimeters[];
+extern TokenDef exp_delimeters[];
 
 /* Array of Exp containing all the keywords (for, auto, if, ...) */
-extern Exp exp_keywords[];
+extern TokenDef exp_keywords[];
 
 /* Number of elements of each array */
 extern size_t exp_keywords_len;
