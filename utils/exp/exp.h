@@ -9,9 +9,8 @@
  * @brief Individual expression from the C language
  */
 typedef struct {
-    char *val;          /* < The elements that the expression has */
-    char *tok_type_str; /* < String text of the token type */
-    TokType tok_type;   /* < Actuall token type*/
+    char *val;        /* < The elements that the expression has */
+    TokType tok_type; /* < Actuall token type*/
 } Exp;
 
 /**
