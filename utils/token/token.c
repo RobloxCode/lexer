@@ -9,7 +9,7 @@
 
 bool is_keyword(const char *s, size_t *idx) {
     for (size_t i = 0; i < exp_keywords_len; ++i) {
-        if (strcmp(s, exp_keywords[i].val) == 0) {
+        if (strcmp(s, exp_keywords[i].lexeme) == 0) {
             if (idx) {
                 *idx = i;
             }
@@ -22,7 +22,7 @@ bool is_keyword(const char *s, size_t *idx) {
 
 bool is_operator(const char *s, size_t *idx) {
     for (size_t i = 0; i < exp_operators_len; ++i) {
-        if (strcmp(s, exp_operators[i].val) == 0) {
+        if (strcmp(s, exp_operators[i].lexeme) == 0) {
             if (idx) {
                 *idx = i;
             }
@@ -35,7 +35,7 @@ bool is_operator(const char *s, size_t *idx) {
 
 static bool _is_delimeter(const char *s, size_t *idx) {
     for (size_t i = 0; i < exp_delimeters_len; ++i) {
-        if (strcmp(s, exp_delimeters[i].val) == 0) {
+        if (strcmp(s, exp_delimeters[i].lexeme) == 0) {
             if (idx) {
                 *idx = i;
             }

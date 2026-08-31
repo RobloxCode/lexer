@@ -1,5 +1,6 @@
 #include "token_def.h"
 
+// TODO: merge this list with the one from token.c
 TokenDef exp_operators[] = {
     {"+", TOK_PLUS},           {"-", TOK_MINUS},
     {"*", TOK_STAR},           {"/", TOK_SLASH},
