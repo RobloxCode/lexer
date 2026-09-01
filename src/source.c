@@ -7,4 +7,5 @@ int main() {
         x++;
     }
     return x;
+    double integer = 2 >= 8 ? 3 : 22;
 }

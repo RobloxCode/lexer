@@ -1,7 +1,7 @@
 #include "../../utils/str_buf/str_buf.h"
 #include "../../utils/token/token.h"
-#include "../exp/exp.h"
 #include "../str_buf/str_buf.h"
+#include "../token_def/token_def.h"
 #include "lexer.h"
 
 #include <stdio.h>
@@ -121,7 +121,7 @@ static void scan_double_char_ops(Lexer *l) {
     advance(l);
 
     is_operator(l->cur_word.items, &found);
-    token_init_type(&t, exp_operators[found].tok_type, &l->cur_word, l->line,
+    token_init_type(&t, tok_definitions[found].tok_type, &l->cur_word, l->line,
                     l->col);
     emit_token(l, &t);
     strbuf_clear(&l->cur_word);
@@ -158,8 +158,8 @@ static void scan_identifier(Lexer *l) {
 
     size_t found = 0;
     if (is_keyword(l->cur_word.items, &found)) {
-        token_init_type(&t, exp_keywords[found].tok_type, &l->cur_word, l->line,
-                        l->col);
+        token_init_type(&t, tok_definitions[found].tok_type, &l->cur_word,
+                        l->line, l->col);
     } else {
         token_init(&t, &l->cur_word, l->line, l->col);
     }
