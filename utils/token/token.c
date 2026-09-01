@@ -168,8 +168,7 @@ void token_init_type(Token *t, TokType tok_type, const StrBuf *word,
 }
 
 bool is_reserved_token(const char *word) {
-    if (strcmp(word, "#") == 0 || is_operator(word, NULL)
-        || _is_delimeter(word, NULL)) {
+    if (is_operator(word, NULL) || _is_delimeter(word, NULL)) {
         return true;
     }
 
