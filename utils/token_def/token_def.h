@@ -9,6 +9,7 @@
  * @brief Individual expression from the C language
  */
 typedef struct {
+    char *display_name;
     char *lexeme;     /* < The elements that the expression has */
     TokType tok_type; /* < Actuall token type*/
 } TokenDef;
