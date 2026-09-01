@@ -122,7 +122,6 @@ const TokenDef tok_definitions[] = {
     [TOK_INVALID_NUMBER] = {"INVALID_NUMBER", NULL, TOK_INVALID_NUMBER},
     [TOK_ARROW] = {"ARROW", "->", TOK_ARROW},
     [TOK_HASH] = {"HASH", "#", TOK_HASH},
-
     [TOK_CONDITIONAL] = {"CONDITIONAL", "?", TOK_CONDITIONAL},
 };
 
