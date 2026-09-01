@@ -123,33 +123,54 @@
 //     [TOK_HASH] = "HASH",
 // };
 
-TokenDef exp_operators[] = {
-    {"+", TOK_PLUS},           {"-", TOK_MINUS},
-    {"*", TOK_STAR},           {"/", TOK_SLASH},
-    {"%", TOK_MODULO},         {"=", TOK_ASSIGN},
-    {"+=", TOK_ADD_ASSIGN},    {"-=", TOK_SUB_ASSIGN},
-    {"*=", TOK_MUL_ASSIGN},    {"/=", TOK_DIV_ASSIGN},
-    {"%=", TOK_MOD_ASSIGN},    {"&=", TOK_BIT_AND_ASSIGN},
-    {"|=", TOK_BIT_OR_ASSIGN}, {"^=", TOK_BIT_XOR_ASSIGN},
-    {"<<", TOK_LSHIFT},        {">>", TOK_RSHIFT},
-    {"&", TOK_BIT_AND},        {"|", TOK_BIT_OR},
-    {"~", TOK_BIT_NOT},        {"^", TOK_BIT_XOR},
-    {"&&", TOK_AND},           {"||", TOK_OR},
-    {"!=", TOK_NOT_EQ},        {"==", TOK_EQ},
-    {"<", TOK_LESS},           {">", TOK_GREATER},
-    {"<=", TOK_LESS_EQ},       {">=", TOK_GREATER_EQ},
-    {"++", TOK_INCREMENT},     {"--", TOK_DECREMENT},
-    {"!", TOK_BANG},           {"->", TOK_ARROW},
-};
+const TokenDef tok_definitions[] = {
+    // operators
+    {"+", TOK_PLUS},
+    {"-", TOK_MINUS},
+    {"*", TOK_STAR},
+    {"/", TOK_SLASH},
+    {"%", TOK_MODULO},
+    {"=", TOK_ASSIGN},
+    {"+=", TOK_ADD_ASSIGN},
+    {"-=", TOK_SUB_ASSIGN},
+    {"*=", TOK_MUL_ASSIGN},
+    {"/=", TOK_DIV_ASSIGN},
+    {"%=", TOK_MOD_ASSIGN},
+    {"&=", TOK_BIT_AND_ASSIGN},
+    {"|=", TOK_BIT_OR_ASSIGN},
+    {"^=", TOK_BIT_XOR_ASSIGN},
+    {"<<", TOK_LSHIFT},
+    {">>", TOK_RSHIFT},
+    {"&", TOK_BIT_AND},
+    {"|", TOK_BIT_OR},
+    {"~", TOK_BIT_NOT},
+    {"^", TOK_BIT_XOR},
+    {"&&", TOK_AND},
+    {"||", TOK_OR},
+    {"!=", TOK_NOT_EQ},
+    {"==", TOK_EQ},
+    {"<", TOK_LESS},
+    {">", TOK_GREATER},
+    {"<=", TOK_LESS_EQ},
+    {">=", TOK_GREATER_EQ},
+    {"++", TOK_INCREMENT},
+    {"--", TOK_DECREMENT},
+    {"!", TOK_BANG},
+    {"->", TOK_ARROW},
 
-TokenDef exp_delimeters[] = {
-    {"(", TOK_LPAREN},    {")", TOK_RPAREN},   {"{", TOK_LBRACE},
-    {"}", TOK_RBRACE},    {"[", TOK_LBRACKET}, {"]", TOK_RBRACKET},
-    {",", TOK_COMMA},     {".", TOK_DOT},      {":", TOK_COLON},
+    // delimeters
+    {"(", TOK_LPAREN},
+    {")", TOK_RPAREN},
+    {"{", TOK_LBRACE},
+    {"}", TOK_RBRACE},
+    {"[", TOK_LBRACKET},
+    {"]", TOK_RBRACKET},
+    {",", TOK_COMMA},
+    {".", TOK_DOT},
+    {":", TOK_COLON},
     {";", TOK_SEMICOLON},
-};
 
-TokenDef exp_keywords[] = {
+    // keywords
     {"auto", TOK_KW_AUTO},
     {"break", TOK_KW_BREAK},
     {"case", TOK_KW_CASE},
@@ -198,6 +219,5 @@ TokenDef exp_keywords[] = {
     {"_Thread_local", TOK_KW_THREAD_LOCAL},
 };
 
-size_t exp_operators_len = sizeof exp_operators / sizeof exp_operators[0];
-size_t exp_delimeters_len = sizeof exp_delimeters / sizeof exp_delimeters[0];
-size_t exp_keywords_len = sizeof exp_keywords / sizeof exp_keywords[0];
+const size_t tok_definitions_len =
+    sizeof tok_definitions / sizeof tok_definitions[0];

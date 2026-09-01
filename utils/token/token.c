@@ -8,8 +8,8 @@
 #include <string.h>
 
 bool is_keyword(const char *s, size_t *idx) {
-    for (size_t i = 0; i < exp_keywords_len; ++i) {
-        if (strcmp(s, exp_keywords[i].lexeme) == 0) {
+    for (size_t i = 0; i < tok_definitions_len; ++i) {
+        if (strcmp(s, tok_definitions[i].lexeme) == 0) {
             if (idx) {
                 *idx = i;
             }
@@ -21,8 +21,8 @@ bool is_keyword(const char *s, size_t *idx) {
 }
 
 bool is_operator(const char *s, size_t *idx) {
-    for (size_t i = 0; i < exp_operators_len; ++i) {
-        if (strcmp(s, exp_operators[i].lexeme) == 0) {
+    for (size_t i = 0; i < tok_definitions_len; ++i) {
+        if (strcmp(s, tok_definitions[i].lexeme) == 0) {
             if (idx) {
                 *idx = i;
             }
@@ -34,8 +34,8 @@ bool is_operator(const char *s, size_t *idx) {
 }
 
 static bool _is_delimeter(const char *s, size_t *idx) {
-    for (size_t i = 0; i < exp_delimeters_len; ++i) {
-        if (strcmp(s, exp_delimeters[i].lexeme) == 0) {
+    for (size_t i = 0; i < tok_definitions_len; ++i) {
+        if (strcmp(s, tok_definitions[i].lexeme) == 0) {
             if (idx) {
                 *idx = i;
             }
@@ -129,7 +129,7 @@ void token_init(Token *t, const StrBuf *word, const int line, const int col) {
     }
 
     else if (is_operator(word->items, &found)) {
-        t->tok_type = exp_operators[found].tok_type;
+        t->tok_type = tok_definitions[found].tok_type;
     }
 
     else if (_is_identifier(word->items)) {
@@ -137,7 +137,7 @@ void token_init(Token *t, const StrBuf *word, const int line, const int col) {
     }
 
     else if (_is_delimeter(word->items, &found)) {
-        t->tok_type = exp_delimeters[found].tok_type;
+        t->tok_type = tok_definitions[found].tok_type;
     }
 
     else {

@@ -51,18 +51,7 @@ typedef enum {
     EXP_OPERATORS_COUNT
 } exp_operators_idxs;
 
-/* Array of Exp containing all the operators (+, -, =, ...) */
-extern TokenDef exp_operators[];
-
-/* Array of Exp containing all the delimeters ( [, (, }, ;, ...) */
-extern TokenDef exp_delimeters[];
-
-/* Array of Exp containing all the keywords (for, auto, if, ...) */
-extern TokenDef exp_keywords[];
-
-/* Number of elements of each array */
-extern size_t exp_keywords_len;
-extern size_t exp_delimeters_len;
-extern size_t exp_operators_len;
+extern const TokenDef tok_definitions[];
+extern const size_t tok_definitions_len;
 
 #endif
