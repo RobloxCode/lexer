@@ -131,8 +131,8 @@ typedef enum {
     TOK_NUMBER,
     TOK_INVALID_NUMBER,
     TOK_ARROW,
-
-    TOK_HASH
+    TOK_HASH,
+    TOK_CONDITIONAL,
 } TokType;
 
 /**
