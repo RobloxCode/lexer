@@ -50,7 +50,7 @@ typedef enum {
     DECREMENT_IDX,
 
     EXP_OPERATORS_COUNT
-} exp_operators_idxs;
+} token_definitions_idxs;
 
 extern const TokenDef tok_definitions[];
 extern const size_t tok_definitions_len;
