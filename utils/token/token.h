@@ -140,9 +140,9 @@ typedef enum {
  */
 typedef struct {
     TokType tok_type;              /* < Token type from the enum TokType */
-    char value[TOKEN_BUF_MAX_CAP]; /* < Value foind in source code */
+    char value[TOKEN_BUF_MAX_CAP]; /* < Value found in source code */
     int line; /* < Number of line where token was found at */
-    int col;  /* < Number of colun where token was found at*/
+    int col;  /* < Number of column where token was found at */
 } Token;
 
 /**
@@ -155,8 +155,6 @@ typedef struct {
  * @param col Column where the token was found at
  */
 void token_init(Token *t, const StrBuf *word, const int line, const int col);
-// void token_init(Token *t, const StrBuf *word, const int line, const int col,
-//                 Lexer *l);
 
 /**
  * @brief Sets the values of a given Token and sets the type to the
