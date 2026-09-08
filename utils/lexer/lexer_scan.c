@@ -127,23 +127,22 @@ static void _scan_double_char_ops(Lexer *l) {
     strbuf_clear(&l->cur_word);
 }
 
-static void scan_number(Lexer *l) {
+static void _scan_number(Lexer *l) {
     Token t;
+    TokType type;
 
     if (_handle_number(l) == 0) {
-        token_init_type(&t, TOK_NUMBER, &l->cur_word, l->line, l->col);
-        _emit_token(l, &t);
-        strbuf_clear(&l->cur_word);
-        return;
+        type = TOK_NUMBER;
     } else {
-        token_init_type(&t, TOK_INVALID_NUMBER, &l->cur_word, l->line, l->col);
-        _emit_token(l, &t);
-        strbuf_clear(&l->cur_word);
-        return;
+        type = TOK_INVALID_NUMBER;
     }
+
+    token_init_type(&t, type, &l->cur_word, l->line, l->col);
+    _emit_token(l, &t);
+    strbuf_clear(&l->cur_word);
 }
 
-static void scan_sintax_element(Lexer *l) {
+static void _scan_sintax_element(Lexer *l) {
     Token t;
 
     token_init(&t, &l->cur_word, l->line, l->col);
@@ -151,7 +150,7 @@ static void scan_sintax_element(Lexer *l) {
     strbuf_clear(&l->cur_word);
 }
 
-static void scan_identifier(Lexer *l) {
+static void _scan_identifier(Lexer *l) {
     Token t;
 
     _handle_identifier(l);
@@ -192,7 +191,7 @@ void scan_token(Lexer *l) {
 
         default:
             if (is_letter(l->cur) || l->cur == '_') {
-                scan_identifier(l);
+                _scan_identifier(l);
                 return;
             }
 
@@ -209,12 +208,12 @@ void scan_token(Lexer *l) {
     }
 
     if (is_digit(l->cur)) {
-        scan_number(l);
+        _scan_number(l);
         return;
     }
 
     if (is_reserved_token(l->cur_word.items)) {
-        scan_sintax_element(l);
+        _scan_sintax_element(l);
         return;
     }
 }
