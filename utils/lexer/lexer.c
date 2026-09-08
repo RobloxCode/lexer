@@ -22,7 +22,7 @@ void advance(Lexer *l) {
     }
 }
 
-static Lexer *lexer_init(const char *path) {
+static Lexer *_lexer_init(const char *path) {
     Lexer *l = xmalloc(sizeof *l);
 
     l->file = fopen(path, "r");
@@ -78,7 +78,7 @@ Lexer *lexer_lex(const char *path) {
         return l;
     }
 
-    l = lexer_init(path);
+    l = _lexer_init(path);
     if (!l) {
         return l;
     }
