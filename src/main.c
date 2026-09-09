@@ -6,7 +6,12 @@
 #define DEFAULT_PATH "src/source.c"
 
 int main(int argc, char **argv) {
-    const char *path = (argc == 2) ? argv[1] : DEFAULT_PATH;
+    const char *path = DEFAULT_PATH;
+
+    if (argc == 2) {
+        path = argv[1];
+    }
+
     TokenArr_status status = TOKENARR_OK;
 
     Lexer *lexer = lexer_lex(path);
