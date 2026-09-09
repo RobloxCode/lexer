@@ -112,6 +112,7 @@ static void _scan_comment_or_op(Lexer *l) {
 
 static void _scan_double_char_ops(Lexer *l) {
     Token t;
+    TokType type;
     size_t found = 0;
 
     strbuf_push(&l->cur_word, l->peek);
@@ -120,9 +121,13 @@ static void _scan_double_char_ops(Lexer *l) {
 
     advance(l);
 
-    is_operator(l->cur_word.items, &found);
-    token_init_type(&t, tok_definitions[found].tok_type, &l->cur_word, l->line,
-                    l->col);
+    if (!is_operator(l->cur_word.items, &found)) {
+        type = TOK_INVALID;
+    } else {
+        type = tok_definitions[found].tok_type;
+    }
+
+    token_init_type(&t, type, &l->cur_word, l->line, l->col);
     _emit_token(l, &t);
     strbuf_clear(&l->cur_word);
 }

@@ -9,4 +9,7 @@ int main() {
     return x;
     double integer = 2 >= 8 ? 3 : 22;
     int invalid = 3.3.1;
+    if (1 <- 3) {
+        return 1;
+    }
 }
