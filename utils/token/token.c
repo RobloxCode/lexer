@@ -137,31 +137,31 @@ void token_init(Token *t, const StrBuf *word, const int line, const int col) {
     size_t found = 0;
 
     if (strcmp(word->items, "#") == 0) {
-        t->tok_type = TOK_HASH;
+        t->type = TOK_HASH;
     }
 
     else if (is_operator(word->items, &found)) {
-        t->tok_type = tok_definitions[found].tok_type;
+        t->type = tok_definitions[found].tok_type;
     }
 
     else if (_is_identifier(word->items)) {
-        t->tok_type = TOK_IDENTIFIER;
+        t->type = TOK_IDENTIFIER;
     }
 
     else if (_is_delimeter(word->items, &found)) {
-        t->tok_type = tok_definitions[found].tok_type;
+        t->type = tok_definitions[found].tok_type;
     }
 
     else {
-        t->tok_type = TOK_INVALID;
+        t->type = TOK_INVALID;
     }
 
     strcpy(t->value, word->items);
 }
 
-void token_init_type(Token *t, TokType tok_type, const StrBuf *word,
+void token_init_type(Token *t, TokenType tok_type, const StrBuf *word,
                      const int line, const int col) {
-    t->tok_type = tok_type;
+    t->type = tok_type;
     strcpy(t->value, word->items);
     t->line = line;
     t->col = col;
@@ -175,7 +175,7 @@ bool is_reserved_token(const char *word) {
     return false;
 }
 
-const char *token_type_to_str(TokType type) {
+const char *token_type_to_str(TokenType type) {
     if (type >= tok_definitions_len
         || tok_definitions[type].display_name == NULL) {
         return "UNKNOWN";
@@ -185,6 +185,6 @@ const char *token_type_to_str(TokType type) {
 }
 
 inline void token_println(const Token *t) {
-    printf("[ %d:%d ]    %s(%s)\n", t->line, t->col,
-           token_type_to_str(t->tok_type), t->value);
+    printf("[ %d:%d ]    %s(%s)\n", t->line, t->col, token_type_to_str(t->type),
+           t->value);
 }
