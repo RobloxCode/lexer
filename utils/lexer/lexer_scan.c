@@ -112,7 +112,7 @@ static void _scan_comment_or_op(Lexer *l) {
 
 static void _scan_double_char_ops(Lexer *l) {
     Token t;
-    TokType type;
+    TokenType type;
     size_t found = 0;
 
     strbuf_push(&l->cur_word, l->peek);
@@ -134,7 +134,7 @@ static void _scan_double_char_ops(Lexer *l) {
 
 static void _scan_number(Lexer *l) {
     Token t;
-    TokType type;
+    TokenType type;
 
     if (_handle_number(l) == 0) {
         type = TOK_NUMBER;

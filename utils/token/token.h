@@ -133,13 +133,13 @@ typedef enum {
     TOK_ARROW,
     TOK_HASH,
     TOK_CONDITIONAL,
-} TokType;
+} TokenType;
 
 /**
  * @brief Single Token
  */
 typedef struct {
-    TokType tok_type;              /* < Token type from the enum TokType */
+    TokenType type;                /* < Token type from the enum TokenType */
     char value[TOKEN_BUF_MAX_CAP]; /* < Value found in source code */
     int line; /* < Number of line where token was found at */
     int col;  /* < Number of column where token was found at */
@@ -166,7 +166,7 @@ void token_init(Token *t, const StrBuf *word, const int line, const int col);
  * @param line Line where the token was found at
  * @param col Column where the token was found at
  */
-void token_init_type(Token *t, TokType tok_type, const StrBuf *word,
+void token_init_type(Token *t, TokenType tok_type, const StrBuf *word,
                      const int line, const int col);
 
 /**
@@ -219,7 +219,7 @@ bool is_operator(const char *s, size_t *found_idx);
  *
  * @return String literal containing the type of token
  */
-const char *token_type_to_str(TokType t);
+const char *token_type_to_str(TokenType t);
 
 /**
  * @brief Checks if a given character (as int) is a letter

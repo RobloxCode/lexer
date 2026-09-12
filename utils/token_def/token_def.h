@@ -13,8 +13,8 @@
 typedef struct {
     char *display_name; /* < word that will go alongside when printing
                            (INCREMENT, LPAREN, ...) */
-    char *lexeme;     /* < The elements that the expression has (++, ), ...) */
-    TokType tok_type; /* < Actuall token type*/
+    char *lexeme; /* < The elements that the expression has (++, ), ...) */
+    TokenType tok_type; /* < Actuall token type*/
 } TokenDef;
 
 /**
