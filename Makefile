@@ -2,15 +2,7 @@ CC = gcc
 CFLAGS = -std=c11 -Wall -Wextra -Wconversion -pedantic -g \
          -fsanitize=address -fno-omit-frame-pointer
 
-SRC = src/main.c \
-	  utils/token_arr/token_arr.c \
-	  utils/token/token.c \
-	  utils/token_def/token_def.c \
-	  utils/str_buf/str_buf.c \
-	  utils/lexer/lexer.c \
-	  utils/lexer/lexer_scan.c \
-	  utils/alloc/alloc.c
-
+SRC = $(wildcard */c)
 OUT = bin/out
 
 $(OUT): $(SRC)
