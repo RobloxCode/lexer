@@ -3,7 +3,7 @@ CFLAGS = -std=c11 -Wall -Wextra -Wconversion -pedantic -g \
          -fsanitize=address -fno-omit-frame-pointer -Iinclude
 
 SRC_DIR = src
-BIN_DIR = bin
+BIN_DIR = build
 
 SRC = $(shell find $(SRC_DIR) -name '*.c')
 OBJ = $(SRC:$(SRC_DIR)/%.c=$(BIN_DIR)/%.o)
@@ -20,6 +20,6 @@ run: $(OUT)
 	./$(OUT)
 
 clean:
-	rm -rf bin/
+	rm -rf build/
 
 .PHONY: clean run
