@@ -1,7 +1,7 @@
 #include "lexer/lexer/lexer.h"
 
 #include "lexer/alloc/alloc.h"
-#include "lexer/lexer_scan/lexer_scan.h"
+#include "lexer/lexer/lexer_scan.h"
 #include "lexer/str_buf/str_buf.h"
 #include "lexer/token_arr/token_arr.h"
 
