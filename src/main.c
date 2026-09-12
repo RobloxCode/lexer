@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define DEFAULT_PATH "src/source.c"
+#define DEFAULT_PATH "examples/source.c"
 
 int main(int argc, char **argv) {
     const char *path = DEFAULT_PATH;
