@@ -1,4 +1,4 @@
-#include "token_def.h"
+#include "lexer/token_def/token_def.h"
 
 const TokenDef tok_definitions[] = {
     // delimiters

@@ -1,8 +1,7 @@
-#include "../../utils/str_buf/str_buf.h"
-#include "../../utils/token/token.h"
-#include "../str_buf/str_buf.h"
-#include "../token_def/token_def.h"
-#include "lexer.h"
+#include "lexer/lexer/lexer.h"
+#include "lexer/str_buf/str_buf.h"
+#include "lexer/token/token.h"
+#include "lexer/token_def/token_def.h"
 
 #include <stdio.h>
 #include <stdlib.h>

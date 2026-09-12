@@ -1,13 +1,20 @@
 CC = gcc
 CFLAGS = -std=c11 -Wall -Wextra -Wconversion -pedantic -g \
-         -fsanitize=address -fno-omit-frame-pointer
+         -fsanitize=address -fno-omit-frame-pointer -Iinclude
 
-SRC = $(wildcard */c)
-OUT = bin/out
+SRC_DIR = src
+BIN_DIR = bin
 
-$(OUT): $(SRC)
-	mkdir -p bin
+SRC = $(shell find $(SRC_DIR) -name '*.c')
+OBJ = $(SRC:$(SRC_DIR)/%.c=$(BIN_DIR)/%.o)
+OUT = $(BIN_DIR)/out
+
+$(OUT): $(OBJ)
 	$(CC) $(CFLAGS) $^ -o $@
+
+$(BIN_DIR)/%.o: $(SRC_DIR)/%.c
+	mkdir -p $(dir $@)
+	$(CC) $(CFLAGS) -c $< -o $@
 
 run: $(OUT)
 	./$(OUT)

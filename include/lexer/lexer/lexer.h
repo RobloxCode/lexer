@@ -1,8 +1,8 @@
 #ifndef LEXER_H
 #define LEXER_H
 
-#include "../str_buf/str_buf.h"
-#include "../token_arr/token_arr.h"
+#include "lexer/str_buf/str_buf.h"
+#include "lexer/token_arr/token_arr.h"
 
 #define INIT_TOKEN_CAP 30
 
