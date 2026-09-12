@@ -1,9 +1,9 @@
-#include "lexer.h"
+#include "lexer/lexer/lexer.h"
 
-#include "../alloc/alloc.h"
-#include "../str_buf/str_buf.h"
-#include "../token_arr/token_arr.h"
-#include "lexer_scan.h"
+#include "lexer/alloc/alloc.h"
+#include "lexer/lexer/lexer_scan.h"
+#include "lexer/str_buf/str_buf.h"
+#include "lexer/token_arr/token_arr.h"
 
 #include <stdbool.h>
 #include <stdio.h>

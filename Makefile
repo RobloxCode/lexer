@@ -1,26 +1,25 @@
 CC = gcc
 CFLAGS = -std=c11 -Wall -Wextra -Wconversion -pedantic -g \
-         -fsanitize=address -fno-omit-frame-pointer
+         -fsanitize=address -fno-omit-frame-pointer -Iinclude
 
-SRC = src/main.c \
-	  utils/token_arr/token_arr.c \
-	  utils/token/token.c \
-	  utils/token_def/token_def.c \
-	  utils/str_buf/str_buf.c \
-	  utils/lexer/lexer.c \
-	  utils/lexer/lexer_scan.c \
-	  utils/alloc/alloc.c
+SRC_DIR = src
+BIN_DIR = build
 
-OUT = bin/out
+SRC = $(shell find $(SRC_DIR) -name '*.c')
+OBJ = $(SRC:$(SRC_DIR)/%.c=$(BIN_DIR)/%.o)
+OUT = $(BIN_DIR)/out
 
-$(OUT): $(SRC)
-	mkdir -p bin
+$(OUT): $(OBJ)
 	$(CC) $(CFLAGS) $^ -o $@
+
+$(BIN_DIR)/%.o: $(SRC_DIR)/%.c
+	mkdir -p $(dir $@)
+	$(CC) $(CFLAGS) -c $< -o $@
 
 run: $(OUT)
 	./$(OUT)
 
 clean:
-	rm -rf bin/
+	rm -rf build/
 
 .PHONY: clean run

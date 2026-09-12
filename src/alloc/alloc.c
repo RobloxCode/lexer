@@ -1,4 +1,4 @@
-#include "alloc.h"
+#include "lexer/alloc/alloc.h"
 
 #include <stdio.h>
 #include <stdlib.h>

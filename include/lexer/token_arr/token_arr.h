@@ -7,7 +7,7 @@
     #define WARN_UNUSED
 #endif
 
-#include "../token/token.h"
+#include "lexer/token/token.h"
 
 #include <stddef.h>
 

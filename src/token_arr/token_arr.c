@@ -1,7 +1,7 @@
-#include "token_arr.h"
+#include "lexer/token_arr/token_arr.h"
 
-#include "../../utils/token/token.h"
-#include "../alloc/alloc.h"
+#include "lexer/alloc/alloc.h"
+#include "lexer/token/token.h"
 
 #include <inttypes.h>
 #include <stdio.h>

@@ -3,7 +3,7 @@
 
 #define TOKEN_BUF_MAX_CAP 255
 
-#include "../../utils/str_buf/str_buf.h"
+#include "lexer/str_buf/str_buf.h"
 
 #include <stdbool.h>
 #include <stddef.h>
