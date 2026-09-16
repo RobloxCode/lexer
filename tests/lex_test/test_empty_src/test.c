@@ -1,5 +1,5 @@
-#include "../../../utils/lexer/lexer.h"
 #include "../assert_macro.h"
+#include "lexer/lexer/lexer.h"
 
 #include <stdlib.h>
 
