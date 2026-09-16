@@ -1,4 +1,4 @@
-#include "../../utils/str_buf/str_buf.h"
+#include "lexer/str_buf/str_buf.h"
 
 #include <stdio.h>
 

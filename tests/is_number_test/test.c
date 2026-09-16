@@ -1,4 +1,4 @@
-#include "../../utils/token/token.h"
+#include "lexer/token/token.h"
 
 #include <stdio.h>
 #include <stdlib.h>

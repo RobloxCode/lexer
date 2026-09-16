@@ -1,16 +1,16 @@
 CC = gcc
 
 CFLAGS = -std=c11 -Wall -Wextra -Wconversion -pedantic -g \
-         -fsanitize=address -fno-omit-frame-pointer
+         -fsanitize=address -fno-omit-frame-pointer -Iinclude
 
 SRC = test.c \
-	  ../../utils/token_arr/token_arr.c \
-	  ../../utils/token/token.c \
-	  ../../utils/exp/exp.c \
-	  ../../utils/str_buf/str_buf.c \
-	  ../../utils/lexer/lexer.c \
-	  ../../utils/lexer/lexer_scan.c \
-	  ../../utils/alloc/alloc.c
+	  lexer/token_arr/token_arr.c \
+	  lexer/token/token.c \
+	  lexer/exp/exp.c \
+	  lexer/str_buf/str_buf.c \
+	  lexer/lexer/lexer.c \
+	  lexer/lexer/lexer_scan.c \
+	  lexer/alloc/alloc.c
 OUT = test
 
 $(OUT): $(SRC)
