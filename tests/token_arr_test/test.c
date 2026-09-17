@@ -3,7 +3,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-static int tests_run = 0, tests_failed = 0;
+static int tests_run = 0;
+static int fail = 0;
 
 #define ASSERT_EQ(a, b)                                                        \
     do {                                                                       \
@@ -23,44 +24,37 @@ int main() {
 
     // TODO: fix the tests
     // int number = 3 + 2;
-    status = token_arr_append(token_arr,
-                              &(Token){.type = "KEYWORD", .value = "int"});
+    status = token_arr_append(token_arr, &(Token){.type = TOK_KW_INT});
     if (status != TOKENARR_OK) {
         goto cleanup;
     }
 
-    status =
-        token_arr_append(token_arr, &(Token){.type = "ID", .value = "number"});
+    status = token_arr_append(token_arr, &(Token){.type = TOK_IDENTIFIER});
     if (status != TOKENARR_OK) {
         goto cleanup;
     }
 
-    status =
-        token_arr_append(token_arr, &(Token){.type = "ASSIGN", .value = "="});
+    status = token_arr_append(token_arr, &(Token){.type = TOK_ASSIGN});
     if (status != TOKENARR_OK) {
         goto cleanup;
     }
 
-    status =
-        token_arr_append(token_arr, &(Token){.type = "NUMBER", .value = "3"});
+    status = token_arr_append(token_arr, &(Token){.type = TOK_NUMBER});
     if (status != TOKENARR_OK) {
         goto cleanup;
     }
 
-    status =
-        token_arr_append(token_arr, &(Token){.type = "PLUS", .value = "+"});
+    status = token_arr_append(token_arr, &(Token){.type = TOK_ADD_ASSIGN});
     if (status != TOKENARR_OK) {
         goto cleanup;
     }
 
-    status =
-        token_arr_append(token_arr, &(Token){.type = "NUMBER", .value = "2"});
+    status = token_arr_append(token_arr, &(Token){.type = TOK_NUMBER});
     if (status != TOKENARR_OK) {
         goto cleanup;
     }
 
-    status = token_arr_append(token_arr,
-                              &(Token){.type = "SEMICOLON", .value = ";"});
+    status = token_arr_append(token_arr, &(Token){.type = TOK_SEMICOLON});
     if (status != TOKENARR_OK) {
         goto cleanup;
     }
@@ -93,7 +87,10 @@ int main() {
 
 cleanup:
     if (token_arr) {
-        token_arr_deinit(&token_arr);
+        if ((status = token_arr_deinit(&token_arr)) != TOKENARR_OK) {
+            fprintf(stderr, "could not deinitialize the token array\n");
+            exit(1);
+        }
     }
 
     if (status != TOKENARR_OK) {
