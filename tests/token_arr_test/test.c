@@ -22,8 +22,6 @@ int main() {
         return 1;
     }
 
-    // TODO: fix the tests
-    // int number = 3 + 2;
     status = token_arr_append(token_arr, &(Token){.type = TOK_KW_INT});
     if (status != TOKENARR_OK) {
         goto cleanup;
