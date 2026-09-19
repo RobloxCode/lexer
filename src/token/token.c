@@ -41,7 +41,7 @@ bool is_operator(const char *s, size_t *idx) {
     return false;
 }
 
-static bool _is_delimeter(const char *s, size_t *idx) {
+static bool _is_delimiter(const char *s, size_t *idx) {
     for (size_t i = 0; i < tok_definitions_len; ++i) {
         if (tok_definitions[i].lexeme == NULL) {
             continue;
@@ -148,7 +148,7 @@ void token_init(Token *t, const StrBuf *word, const int line, const int col) {
         t->type = TOK_IDENTIFIER;
     }
 
-    else if (_is_delimeter(word->items, &found)) {
+    else if (_is_delimiter(word->items, &found)) {
         t->type = tok_definitions[found].tok_type;
     }
 
@@ -168,7 +168,7 @@ void token_init_type(Token *t, TokenType tok_type, const StrBuf *word,
 }
 
 bool is_reserved_token(const char *word) {
-    if (is_operator(word, NULL) || _is_delimeter(word, NULL)) {
+    if (is_operator(word, NULL) || _is_delimiter(word, NULL)) {
         return true;
     }
 
