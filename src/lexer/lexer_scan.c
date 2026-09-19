@@ -146,7 +146,7 @@ static void _scan_number(Lexer *l) {
     strbuf_clear(&l->cur_word);
 }
 
-static void _scan_sintax_element(Lexer *l) {
+static void _scan_syntax_element(Lexer *l) {
     Token t;
 
     token_init(&t, &l->cur_word, l->line, l->col);
@@ -217,7 +217,7 @@ void scan_token(Lexer *l) {
     }
 
     if (is_reserved_token(l->cur_word.items)) {
-        _scan_sintax_element(l);
+        _scan_syntax_element(l);
         return;
     }
 }
