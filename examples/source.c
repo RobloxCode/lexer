@@ -10,7 +10,7 @@ int main(void) {
     int valid_int = 42;
     float valid_float = 3.14159;
     float suffixed = 10.5f;
-    float invalid_num = 1.2.3;
+    // float invalid_num = 1.2.3;
 
     count = count + 1;
     count = count - 1;
@@ -31,5 +31,9 @@ int main(void) {
 
     int arr[3] = {1, 2, 3};
 
-    return 0;
+    int *first = arr;
+
+    ()
+
+        return 0;
 }
