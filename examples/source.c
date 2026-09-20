@@ -1,5 +1,6 @@
 #include <stdio.h>
-void some_fn() {
+
+int some_fn() {
     int a, b, c, x, y, s;
     // this is a one line comment
     // another one line comment
@@ -20,4 +21,7 @@ void some_fn() {
      * */
 
     int var = 10;
+    double dec = 3.33f;
+
+    return 0;
 }

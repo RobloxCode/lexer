@@ -239,6 +239,7 @@ void scan_token(Lexer *l) {
         return;
     }
 
+    // TODO: got to produce eather a TOK_INTEGER or TOK_FLOAT
     if (is_digit(l->cur)) {
         strbuf_push(&l->cur_word, l->cur);
         _scan_number(l);
