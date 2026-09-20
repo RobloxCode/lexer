@@ -12,10 +12,17 @@
 #define INVALID_NUM_TOK_TYPE "INVALID NUMBER"
 #define C_LONGEST_OP_LEN     3
 
+// TODO: add check for return value on strbuf_push
+
 static void _handle_str(Lexer *l) {
     advance(l);
 
     while (l->cur != EOF && l->cur != '"') {
+        if (l->cur == '\\') {
+            strbuf_push(&l->cur_word, l->cur);
+            advance(l);
+        }
+
         strbuf_push(&l->cur_word, l->cur);
         advance(l);
     }
@@ -41,7 +48,7 @@ static int _handle_number(Lexer *l) {
         strbuf_push(&l->cur_word, l->cur);
     }
 
-    return count_dot > 1;
+    return count_dot;
 }
 
 static void _handle_one_line_comment(Lexer *l) {
@@ -163,8 +170,12 @@ static void _scan_number(Lexer *l) {
     Token t;
     TokenType type;
 
-    if (_handle_number(l) == 0) {
-        type = TOK_NUMBER;
+    int dots = _handle_number(l);
+
+    if (dots == 0) {
+        type = TOK_INTEGER;
+    } else if (dots == 1) {
+        type = TOK_FLOAT;
     } else {
         type = TOK_INVALID_NUMBER;
     }
@@ -202,6 +213,31 @@ static void _scan_invalid_char(Lexer *l) {
     _emit_token(l, &t);
 }
 
+static void _handle_char(Lexer *l) {
+    advance(l);
+
+    while (l->cur != EOF && l->cur != '\'') {
+        if (l->cur == '\\') {
+            strbuf_push(&l->cur_word, l->cur);
+            advance(l);
+        }
+
+        strbuf_push(&l->cur_word, l->cur);
+        advance(l);
+    }
+}
+
+static void _scan_char(Lexer *l) {
+    Token t;
+
+    _handle_char(l);
+    token_init_type(&t, TOK_CHAR, &l->cur_word, l->line, l->col);
+    _emit_token(l, &t);
+    strbuf_clear(&l->cur_word);
+
+    advance(l);
+}
+
 void scan_token(Lexer *l) {
     switch (l->cur) {
         case ' ':
@@ -216,12 +252,14 @@ void scan_token(Lexer *l) {
         case '\r':
             return;
 
-        // TODO: add a scan for character
+        case '\'':
+            _scan_char(l);
+            return;
+
         case '"':
             _scan_str(l);
             return;
 
-        // TODO: add a case for \ (\n, \"
         case '/':
             _scan_comment_or_op(l);
             return;
@@ -239,7 +277,6 @@ void scan_token(Lexer *l) {
         return;
     }
 
-    // TODO: got to produce eather a TOK_INTEGER or TOK_FLOAT
     if (is_digit(l->cur)) {
         strbuf_push(&l->cur_word, l->cur);
         _scan_number(l);
