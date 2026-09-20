@@ -41,7 +41,7 @@ static int _handle_number(Lexer *l) {
         strbuf_push(&l->cur_word, l->cur);
     }
 
-    return count_dot > 1;
+    return count_dot;
 }
 
 static void _handle_one_line_comment(Lexer *l) {
@@ -163,8 +163,12 @@ static void _scan_number(Lexer *l) {
     Token t;
     TokenType type;
 
-    if (_handle_number(l) == 0) {
-        type = TOK_NUMBER;
+    int dots = _handle_number(l);
+
+    if (dots == 0) {
+        type = TOK_INTEGER;
+    } else if (dots == 1) {
+        type = TOK_FLOAT;
     } else {
         type = TOK_INVALID_NUMBER;
     }
