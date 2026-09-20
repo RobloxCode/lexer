@@ -174,14 +174,6 @@ static void _scan_number(Lexer *l) {
     strbuf_clear(&l->cur_word);
 }
 
-static void _scan_syntax_element(Lexer *l) {
-    Token t;
-
-    token_init(&t, &l->cur_word, l->line, l->col);
-    _emit_token(l, &t);
-    strbuf_clear(&l->cur_word);
-}
-
 static void _scan_identifier(Lexer *l) {
     Token t;
 
@@ -229,6 +221,7 @@ void scan_token(Lexer *l) {
             _scan_str(l);
             return;
 
+        // TODO: add a case for \ (\n, \"
         case '/':
             _scan_comment_or_op(l);
             return;
@@ -249,11 +242,6 @@ void scan_token(Lexer *l) {
     if (is_digit(l->cur)) {
         strbuf_push(&l->cur_word, l->cur);
         _scan_number(l);
-        return;
-    }
-
-    if (is_reserved_token(l->cur_word.items)) {
-        _scan_syntax_element(l);
         return;
     }
 
