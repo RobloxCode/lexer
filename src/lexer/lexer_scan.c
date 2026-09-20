@@ -91,7 +91,7 @@ static void _scan_str(Lexer *l) {
     advance(l);
 }
 
-static size_t _match_operator(const char *p, size_t *idx) {
+static size_t _get_len_match_operator(const char *p, size_t *idx) {
     for (size_t len = C_LONGEST_OP_LEN; len > 0; --len) {
         char buf[C_LONGEST_OP_LEN + 1] = {0};
         size_t i = 0;
@@ -118,7 +118,7 @@ static bool _try_scan_operator(Lexer *l) {
     }
 
     size_t idx = 0;
-    size_t len = _match_operator(window, &idx);
+    size_t len = _get_len_match_operator(window, &idx);
 
     if (len == 0) {
         return false;
