@@ -3,6 +3,7 @@
 #include "lexer/alloc/alloc.h"
 #include "lexer/lexer/lexer_scan.h"
 #include "lexer/str_buf/str_buf.h"
+#include "lexer/token/token.h"
 #include "lexer/token_arr/token_arr.h"
 
 #include <stdbool.h>
@@ -90,6 +91,15 @@ Lexer *lexer_lex(const char *path) {
     while (l->cur != EOF) {
         scan_token(l);
         advance(l);
+    }
+
+    Token eof;
+    StrBuf empty;
+
+    strbuf_init(&empty);
+    token_init_type(&eof, TOK_EOF, &empty, l->line, l->col);
+    if ((token_arr_append(l->tokens, &eof)) != TOKENARR_OK) {
+        return NULL;
     }
 
     return l;

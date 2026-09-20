@@ -110,7 +110,6 @@ static void _handle_identifier(Lexer *l) {
 static void _scan_str(Lexer *l) {
     _handle_str(l);
     _emit_word(l, TOK_STRING);
-    advance(l);
 }
 
 static size_t _get_len_match_operator(const char *p, size_t *idx) {
@@ -145,9 +144,6 @@ static bool _try_scan_operator(Lexer *l) {
     if (len == 0) {
         return false;
     }
-
-    StrBuf tok_val;
-    strbuf_init(&tok_val);
 
     for (size_t i = 0; i < len; ++i) {
         _push(l, l->cur);
@@ -193,31 +189,21 @@ static void _scan_number(Lexer *l) {
 }
 
 static void _scan_identifier(Lexer *l) {
-    Token t;
-
     _handle_identifier(l);
 
     size_t found = 0;
+    TokenType type = TOK_IDENTIFIER;
+
     if (is_keyword(l->cur_word.items, &found)) {
-        token_init_type(&t, tok_definitions[found].tok_type, &l->cur_word,
-                        l->line, l->col);
-    } else {
-        token_init(&t, &l->cur_word, l->line, l->col);
+        type = tok_definitions[found].tok_type;
     }
 
-    _emit_token(l, &t);
-    strbuf_clear(&l->cur_word);
+    _emit_word(l, type);
 }
 
 static void _scan_invalid_char(Lexer *l) {
-    Token t;
-    StrBuf word;
-
-    strbuf_init(&word);
     _push(l, l->cur);
-
-    token_init_type(&t, TOK_INVALID, &word, l->line, l->col);
-    _emit_token(l, &t);
+    _emit_word(l, TOK_INVALID);
 }
 
 static void _handle_char(Lexer *l) {
@@ -237,7 +223,6 @@ static void _handle_char(Lexer *l) {
 static void _scan_char(Lexer *l) {
     _handle_char(l);
     _emit_word(l, TOK_CHAR);
-    advance(l);
 }
 
 void scan_token(Lexer *l) {
@@ -264,11 +249,6 @@ void scan_token(Lexer *l) {
 
         case '/':
             _scan_comment_or_op(l);
-            return;
-
-        // TODO: fix the EOF tokenization
-        case EOF:
-            _emit_word(l, TOK_EOF);
             return;
 
         default:
