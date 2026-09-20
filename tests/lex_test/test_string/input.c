@@ -8,4 +8,6 @@ void foo() {
     char *multiline = ""
                       "thi is a multi line"
                       "string text";
+
+    char *str2 = "this ' + 3 { \' \n \t \, \ \2";
 }

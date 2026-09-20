@@ -1,5 +1,5 @@
 CC = gcc
-ROOT := $(abspath $(dir $(lastword $(MAKEFILE_LIST)))/../../..)
+ROOT = $(abspath $(dir $(lastword $(MAKEFILE_LIST)))/../../..)
 
 CFLAGS = -std=c11 -Wall -Wextra -Wconversion -pedantic -g \
          -fsanitize=address -fno-omit-frame-pointer \
