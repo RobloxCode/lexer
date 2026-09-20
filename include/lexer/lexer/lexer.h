@@ -21,11 +21,12 @@ typedef struct {
     int line;         /* < Current number of lines */
     int col;          /* < Current number of columns */
 
+    bool overflow;    /* < Checks if 'cur_word' has exceeded STR_BUF_MAX_CAP */
+
     StrBuf cur_word;  /* < StrBuf storing the current word */
     char peek_buf[2]; /* < This is a buffer for peek_char since some
                        *   functions need to check for peek_char bet
-                       *   they must take a char *
-                       */
+                       *   they must take a char */
 
     TokenArr *tokens; /* < Pointer to a TokenArr */
 
