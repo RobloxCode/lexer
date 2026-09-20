@@ -1,6 +1,6 @@
 CC = gcc
 CFLAGS = -std=c11 -Wall -Wextra -Wconversion -pedantic -g \
-         -fsanitize=address -fno-omit-frame-pointer -Iinclude
+         -fsanitize=address -fno-omit-frame-pointer -Iinclude -MMD -MP
 
 SRC_DIR = src
 BIN_DIR = build

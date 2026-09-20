@@ -167,14 +167,6 @@ void token_init_type(Token *t, TokenType tok_type, const StrBuf *word,
     t->col = col;
 }
 
-bool is_reserved_token(const char *word) {
-    if (is_operator(word, NULL) || _is_delimiter(word, NULL)) {
-        return true;
-    }
-
-    return false;
-}
-
 const char *token_type_to_str(TokenType type) {
     if (type >= tok_definitions_len
         || tok_definitions[type].display_name == NULL) {

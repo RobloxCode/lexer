@@ -12,7 +12,8 @@
 
 void advance(Lexer *l) {
     l->cur = l->peek;
-    l->peek = fgetc(l->file);
+    l->peek = l->peek2;
+    l->peek2 = fgetc(l->file);
 
     if (l->cur == '\n') {
         l->line++;
@@ -40,9 +41,11 @@ static Lexer *_lexer_init(const char *path) {
 
     l->cur = fgetc(l->file);
     l->peek = fgetc(l->file);
+    l->peek2 = fgetc(l->file);
 
     l->line = 1;
     l->col = 1;
+
     strbuf_init(&l->cur_word);
     memset(l->peek_buf, 0, sizeof l->peek_buf);
 

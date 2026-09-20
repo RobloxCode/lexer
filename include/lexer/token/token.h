@@ -192,14 +192,6 @@ bool is_number(const char *s);
 bool is_digit(const int c);
 
 /**
- * @brief Checks is a given String is eather hash, a keyword, an operator
- *        or a delimeter
- *
- * @return eather true or false
- */
-bool is_reserved_token(const char *word);
-
-/**
  * @brief Checks if a given String is an operator, if so it saves the position
  *
  * @param s String to find in the list

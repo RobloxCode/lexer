@@ -1,39 +1,23 @@
-// single-line comment: should be skipped entirely, no token
-/* multi-line
-   comment: should also be skipped entirely, no token */
+#include <stdio.h>
+void some_fn() {
+    int a, b, c, x, y, s;
+    // this is a one line comment
+    // another one line comment
+    puts("hi");
+    a /= 2;
+    b = a / c;
+    x = 'a';
+    y = '"';
+    /*/ not a comment end */ int z;
+    s = "a\"b";
 
-int main(void) {
-    int count = 0;
-    float average = 3.14;
-    char *name = "hello world";
+    struct bar;
 
-    int valid_int = 42;
-    float valid_float = 3.14159;
-    float suffixed = 10.5f;
-    // float invalid_num = 1.2.3;
+    /*
+     *
+     *   5 lines comment
+     *
+     * */
 
-    count = count + 1;
-    count = count - 1;
-    count = count * 2;
-    count = count / 2;
-
-    if (count == 0) {
-        count += 1;
-    }
-
-    if (count != 0 && average <= 3.14) {
-        count -= 1;
-    }
-
-    if (count >= 0 || average >= 0) {
-        count++;
-    }
-
-    int arr[3] = {1, 2, 3};
-
-    int *first = arr;
-
-    ()
-
-        return 0;
+    int var = 10;
 }

@@ -15,7 +15,8 @@ typedef struct {
     FILE *file;       /* < Pointer to the file being lexed */
 
     int cur;          /* < Current character in the file */
-    int peek;         /* < Character after cur */
+    int peek;         /* < Second character lookahead (after cur) */
+    int peek2;        /* < Third character lookahead */
 
     int line;         /* < Current number of lines */
     int col;          /* < Current number of columns */
