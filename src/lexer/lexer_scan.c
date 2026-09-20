@@ -41,6 +41,8 @@ static void _emit_word(Lexer *l, TokenType type) {
     l->overflow = false;
 }
 
+// TODO: add tests for "abc -> EOF
+//                     "tuhe\n"
 static void _handle_str(Lexer *l) {
     advance(l);
 
