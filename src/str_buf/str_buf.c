@@ -12,7 +12,7 @@ void strbuf_init(StrBuf *sb) {
 }
 
 int strbuf_push(StrBuf *sb, const int c) {
-    if (sb->count >= STR_BUF_MAX_CAP) {
+    if (sb->count >= STR_BUF_MAX_CAP - 1) {
         return 1;
     }
 
@@ -22,7 +22,7 @@ int strbuf_push(StrBuf *sb, const int c) {
 }
 
 int strbuf_set(StrBuf *sb, char c, size_t i) {
-    if (i >= STR_BUF_MAX_CAP) {
+    if (i >= STR_BUF_MAX_CAP - 1) {
         return 1;
     }
 
@@ -31,9 +31,6 @@ int strbuf_set(StrBuf *sb, char c, size_t i) {
 }
 
 void strbuf_clear(StrBuf *sb) {
-    for (size_t i = 0; i < STR_BUF_MAX_CAP; ++i) {
-        sb->items[i] = 0;
-    }
-
+    memset(sb->items, 0, sizeof sb->items);
     sb->count = 0;
 }

@@ -3,6 +3,7 @@
 #include "lexer/alloc/alloc.h"
 #include "lexer/lexer/lexer_scan.h"
 #include "lexer/str_buf/str_buf.h"
+#include "lexer/token/token.h"
 #include "lexer/token_arr/token_arr.h"
 
 #include <stdbool.h>
@@ -45,6 +46,7 @@ static Lexer *_lexer_init(const char *path) {
 
     l->line = 1;
     l->col = 1;
+    l->overflow = false;
 
     strbuf_init(&l->cur_word);
     memset(l->peek_buf, 0, sizeof l->peek_buf);
@@ -61,7 +63,7 @@ void lexer_deinit(Lexer **l) {
 
     if ((*l)->tokens) {
         if ((status = token_arr_deinit(&(*l)->tokens)) != TOKENARR_OK) {
-            fprintf(stderr, "Failed to deinitialize tokens, status: %d",
+            fprintf(stderr, "Failed to deinitialize tokens, status: %d\n",
                     status);
         }
     }
@@ -89,6 +91,15 @@ Lexer *lexer_lex(const char *path) {
     while (l->cur != EOF) {
         scan_token(l);
         advance(l);
+    }
+
+    Token eof;
+    StrBuf empty;
+
+    strbuf_init(&empty);
+    token_init_type(&eof, TOK_EOF, &empty, l->line, l->col);
+    if ((token_arr_append(l->tokens, &eof)) != TOKENARR_OK) {
+        return NULL;
     }
 
     return l;

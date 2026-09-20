@@ -26,5 +26,11 @@ int some_fn() {
     char newline = '\'';
     char tab = '\t';
 
+    puts("hello");
+    puts("he\"llo");
+
+    somefn('t');
+    somefn('\t');
+
     return 0;
 }
