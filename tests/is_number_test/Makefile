@@ -1,22 +1,22 @@
 CC = gcc
+ROOT = $(abspath $(dir $(lastword $(MAKEFILE_LIST)))/../../..)
 
 CFLAGS = -std=c11 -Wall -Wextra -Wconversion -pedantic -g \
-         -fsanitize=address -fno-omit-frame-pointer -Iinclude
+         -fsanitize=address -fno-omit-frame-pointer \
+         -I$(ROOT)/include
 
-SRC = test.c \
-	  lexer/token_arr/token_arr.c \
-	  lexer/token/token.c \
-	  lexer/exp/exp.c \
-	  lexer/str_buf/str_buf.c \
-	  lexer/lexer/lexer.c \
-	  lexer/lexer/lexer_scan.c \
-	  lexer/alloc/alloc.c
+LIB_SRC = $(filter-out $(ROOT)/src/main.c, $(shell find $(ROOT)/src -name '*.c'))
+SRC = test.c $(LIB_SRC)
+HDRS = $(shell find $(ROOT)/include -name '*.h')
 OUT = test
 
-$(OUT): $(SRC)
-	$(CC) $(CFLAGS) $^ -o $@
+$(OUT): $(SRC) $(HDRS)
+	$(CC) $(CFLAGS) $(SRC) -o $@
+
+run: $(OUT)
+	./$(OUT)
 
 clean:
 	rm -f $(OUT)
 
-.PHONY: clean
+PHONY: clean
