@@ -12,6 +12,8 @@
 #define INVALID_NUM_TOK_TYPE "INVALID NUMBER"
 #define C_LONGEST_OP_LEN     3
 
+// TODO: add check for return value on strbuf_push
+
 static void _handle_str(Lexer *l) {
     advance(l);
 
@@ -258,7 +260,6 @@ void scan_token(Lexer *l) {
             _scan_str(l);
             return;
 
-        // TODO: add a case for \ (\n, \"
         case '/':
             _scan_comment_or_op(l);
             return;
