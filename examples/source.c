@@ -35,5 +35,9 @@ int main(void) {
 
     ()
 
-        return 0;
+        /=
+
+        some_fn();
+
+    return 0;
 }
