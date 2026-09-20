@@ -88,68 +88,6 @@ static void _scan_str(Lexer *l) {
     advance(l);
 }
 
-static void _scan_comment_or_op(Lexer *l) {
-    Token t;
-
-    if (l->peek == '/') {
-        _handle_one_line_comment(l);
-        strbuf_clear(&l->cur_word);
-        return;
-    }
-
-    if (l->peek == '*') {
-        _handle_multiline_comment(l);
-        strbuf_clear(&l->cur_word);
-        return;
-    } else {
-        strbuf_push(&l->cur_word, '/');
-        token_init_type(&t, TOK_SLASH, &l->cur_word, l->line, l->col);
-        _emit_token(l, &t);
-        strbuf_clear(&l->cur_word);
-        return;
-    }
-}
-
-static void _scan_number(Lexer *l) {
-    Token t;
-    TokenType type;
-
-    if (_handle_number(l) == 0) {
-        type = TOK_NUMBER;
-    } else {
-        type = TOK_INVALID_NUMBER;
-    }
-
-    token_init_type(&t, type, &l->cur_word, l->line, l->col);
-    _emit_token(l, &t);
-    strbuf_clear(&l->cur_word);
-}
-
-static void _scan_syntax_element(Lexer *l) {
-    Token t;
-
-    token_init(&t, &l->cur_word, l->line, l->col);
-    _emit_token(l, &t);
-    strbuf_clear(&l->cur_word);
-}
-
-static void _scan_identifier(Lexer *l) {
-    Token t;
-
-    _handle_identifier(l);
-
-    size_t found = 0;
-    if (is_keyword(l->cur_word.items, &found)) {
-        token_init_type(&t, tok_definitions[found].tok_type, &l->cur_word,
-                        l->line, l->col);
-    } else {
-        token_init(&t, &l->cur_word, l->line, l->col);
-    }
-
-    _emit_token(l, &t);
-    strbuf_clear(&l->cur_word);
-}
-
 static size_t _match_operator(const char *p, size_t *idx) {
     for (size_t len = C_LONGEST_OP_LEN; len > 0; --len) {
         char buf[C_LONGEST_OP_LEN + 1] = {0};
@@ -202,6 +140,60 @@ static bool _try_scan_operator(Lexer *l) {
     _emit_token(l, &t);
 
     return true;
+}
+
+static void _scan_comment_or_op(Lexer *l) {
+    if (l->peek == '/') {
+        _handle_one_line_comment(l);
+        return;
+    }
+
+    if (l->peek == '*') {
+        _handle_multiline_comment(l);
+        return;
+    }
+
+    _try_scan_operator(l);
+}
+
+static void _scan_number(Lexer *l) {
+    Token t;
+    TokenType type;
+
+    if (_handle_number(l) == 0) {
+        type = TOK_NUMBER;
+    } else {
+        type = TOK_INVALID_NUMBER;
+    }
+
+    token_init_type(&t, type, &l->cur_word, l->line, l->col);
+    _emit_token(l, &t);
+    strbuf_clear(&l->cur_word);
+}
+
+static void _scan_syntax_element(Lexer *l) {
+    Token t;
+
+    token_init(&t, &l->cur_word, l->line, l->col);
+    _emit_token(l, &t);
+    strbuf_clear(&l->cur_word);
+}
+
+static void _scan_identifier(Lexer *l) {
+    Token t;
+
+    _handle_identifier(l);
+
+    size_t found = 0;
+    if (is_keyword(l->cur_word.items, &found)) {
+        token_init_type(&t, tok_definitions[found].tok_type, &l->cur_word,
+                        l->line, l->col);
+    } else {
+        token_init(&t, &l->cur_word, l->line, l->col);
+    }
+
+    _emit_token(l, &t);
+    strbuf_clear(&l->cur_word);
 }
 
 static void _scan_invalid_char(Lexer *l) {
