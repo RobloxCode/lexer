@@ -266,6 +266,11 @@ void scan_token(Lexer *l) {
             _scan_comment_or_op(l);
             return;
 
+        // TODO: fix the EOF tokenization
+        case EOF:
+            _emit_word(l, TOK_EOF);
+            return;
+
         default:
             if (is_letter(l->cur) || l->cur == '_') {
                 _scan_identifier(l);
