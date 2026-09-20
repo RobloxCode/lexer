@@ -51,6 +51,9 @@ static void _handle_one_line_comment(Lexer *l) {
 }
 
 static void _handle_multiline_comment(Lexer *l) {
+    advance(l);
+    advance(l);
+
     while (l->cur != EOF) {
         if (l->cur == '*' && l->peek == '/') {
             advance(l);
@@ -221,6 +224,7 @@ void scan_token(Lexer *l) {
         case '\r':
             return;
 
+        // TODO: add a scan for character
         case '"':
             _scan_str(l);
             return;

@@ -4,13 +4,13 @@ CFLAGS = -std=c11 -Wall -Wextra -Wconversion -pedantic -g \
          -fsanitize=address -fno-omit-frame-pointer
 
 SRC = test.c \
-	  ../../../utils/token_arr/token_arr.c \
-	  ../../../utils/token/token.c \
-	  ../../../utils/exp/exp.c \
-	  ../../../utils/str_buf/str_buf.c \
-	  ../../../utils/lexer/lexer.c \
-	  ../../../utils/lexer/lexer_scan.c \
-	  ../../../utils/alloc/alloc.c
+	  src/token_arr/token_arr.c \
+	  src/utils/token/token.c \
+	  scr/utils/exp/exp.c \
+	  scr/utils/str_buf/str_buf.c \
+	  scr/utils/lexer/lexer.c \
+	  scr/utils/lexer/lexer_scan.c \
+	  scr/utils/alloc/alloc.c
 OUT = test
 
 $(OUT): $(SRC)
