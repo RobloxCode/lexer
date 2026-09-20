@@ -23,5 +23,8 @@ int some_fn() {
     int var = 10;
     double dec = 3.33f;
 
+    char newline = '\'';
+    char tab = '\t';
+
     return 0;
 }

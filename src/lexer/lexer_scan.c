@@ -16,6 +16,11 @@ static void _handle_str(Lexer *l) {
     advance(l);
 
     while (l->cur != EOF && l->cur != '"') {
+        if (l->cur == '\\') {
+            strbuf_push(&l->cur_word, l->cur);
+            advance(l);
+        }
+
         strbuf_push(&l->cur_word, l->cur);
         advance(l);
     }
@@ -208,7 +213,13 @@ static void _scan_invalid_char(Lexer *l) {
 
 static void _handle_char(Lexer *l) {
     advance(l);
+
     while (l->cur != EOF && l->cur != '\'') {
+        if (l->cur == '\\') {
+            strbuf_push(&l->cur_word, l->cur);
+            advance(l);
+        }
+
         strbuf_push(&l->cur_word, l->cur);
         advance(l);
     }
