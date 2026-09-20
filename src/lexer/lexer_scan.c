@@ -206,6 +206,25 @@ static void _scan_invalid_char(Lexer *l) {
     _emit_token(l, &t);
 }
 
+static void _handle_char(Lexer *l) {
+    advance(l);
+    while (l->cur != EOF && l->cur != '\'') {
+        strbuf_push(&l->cur_word, l->cur);
+        advance(l);
+    }
+}
+
+static void _scan_char(Lexer *l) {
+    Token t;
+
+    _handle_char(l);
+    token_init_type(&t, TOK_CHAR, &l->cur_word, l->line, l->col);
+    _emit_token(l, &t);
+    strbuf_clear(&l->cur_word);
+
+    advance(l);
+}
+
 void scan_token(Lexer *l) {
     switch (l->cur) {
         case ' ':
@@ -220,7 +239,10 @@ void scan_token(Lexer *l) {
         case '\r':
             return;
 
-        // TODO: add a scan for character
+        case '\'':
+            _scan_char(l);
+            return;
+
         case '"':
             _scan_str(l);
             return;
@@ -243,7 +265,6 @@ void scan_token(Lexer *l) {
         return;
     }
 
-    // TODO: got to produce eather a TOK_INTEGER or TOK_FLOAT
     if (is_digit(l->cur)) {
         strbuf_push(&l->cur_word, l->cur);
         _scan_number(l);
