@@ -13,6 +13,31 @@
 #define C_LONGEST_OP_LEN     3
 
 // TODO: add check for return value on strbuf_push
+static void _push(Lexer *l, int c) {
+    if (strbuf_push(&l->cur_word, l->cur) != 0) {
+        l->overflow = true;
+    }
+}
+
+static void _emit_token(Lexer *l, const Token *token) {
+    TokenArr_status status = TOKENARR_OK;
+    if ((status = token_arr_append(l->tokens, token)) != TOKENARR_OK) {
+        fprintf(stderr, "Failed to append token, status: %d", status);
+    }
+}
+
+static void _emit_word(Lexer *l, TokenType type) {
+    Token t;
+
+    if (l->overflow) {
+        fprintf(stderr, "%d:%d: token too long, truncated\n", l->line, l->col);
+        type = TOK_INVALID;
+    }
+
+    token_init_type(&t, type, &l->cur_word, l->line, l->col);
+    _emit_token(l, &t);
+    strbuf_clear(&l->cur_word);
+}
 
 static void _handle_str(Lexer *l) {
     advance(l);
@@ -78,13 +103,6 @@ static void _handle_identifier(Lexer *l) {
     }
 
     strbuf_push(&l->cur_word, l->cur);
-}
-
-static void _emit_token(Lexer *l, const Token *token) {
-    TokenArr_status status = TOKENARR_OK;
-    if ((status = token_arr_append(l->tokens, token)) != TOKENARR_OK) {
-        fprintf(stderr, "Failed to append token, status: %d", status);
-    }
 }
 
 static void _scan_str(Lexer *l) {
