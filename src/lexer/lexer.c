@@ -63,7 +63,7 @@ void lexer_deinit(Lexer **l) {
 
     if ((*l)->tokens) {
         if ((status = token_arr_deinit(&(*l)->tokens)) != TOKENARR_OK) {
-            fprintf(stderr, "Failed to deinitialize tokens, status: %d",
+            fprintf(stderr, "Failed to deinitialize tokens, status: %d\n",
                     status);
         }
     }

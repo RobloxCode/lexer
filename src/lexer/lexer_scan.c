@@ -22,7 +22,7 @@ static void _emit_token(Lexer *l, const Token *token) {
     TokenArr_status status = TOKENARR_OK;
 
     if ((status = token_arr_append(l->tokens, token)) != TOKENARR_OK) {
-        fprintf(stderr, "Failed to append token, status: %d", status);
+        fprintf(stderr, "Failed to append token, status: %d\n", status);
     }
 }
 
