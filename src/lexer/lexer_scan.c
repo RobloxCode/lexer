@@ -14,13 +14,14 @@
 
 // TODO: add check for return value on strbuf_push
 static void _push(Lexer *l, int c) {
-    if (strbuf_push(&l->cur_word, l->cur) != 0) {
+    if (strbuf_push(&l->cur_word, c) != 0) {
         l->overflow = true;
     }
 }
 
 static void _emit_token(Lexer *l, const Token *token) {
     TokenArr_status status = TOKENARR_OK;
+
     if ((status = token_arr_append(l->tokens, token)) != TOKENARR_OK) {
         fprintf(stderr, "Failed to append token, status: %d", status);
     }
@@ -36,7 +37,9 @@ static void _emit_word(Lexer *l, TokenType type) {
 
     token_init_type(&t, type, &l->cur_word, l->line, l->col);
     _emit_token(l, &t);
+
     strbuf_clear(&l->cur_word);
+    l->overflow = false;
 }
 
 static void _handle_str(Lexer *l) {
@@ -44,11 +47,11 @@ static void _handle_str(Lexer *l) {
 
     while (l->cur != EOF && l->cur != '"') {
         if (l->cur == '\\') {
-            strbuf_push(&l->cur_word, l->cur);
+            _push(l, l->cur);
             advance(l);
         }
 
-        strbuf_push(&l->cur_word, l->cur);
+        _push(l, l->cur);
         advance(l);
     }
 }
@@ -63,14 +66,14 @@ static int _handle_number(Lexer *l) {
             count_dot++;
         }
 
-        strbuf_push(&l->cur_word, l->cur);
+        _push(l, l->cur);
     }
 
     if (l->peek == 'F' || l->peek == 'f' || l->peek == 'L' || l->peek == 'l'
         || l->peek == 'U' || l->peek == 'u' || l->peek == 'D'
         || l->peek == 'd') {
         advance(l);
-        strbuf_push(&l->cur_word, l->cur);
+        _push(l, l->cur);
     }
 
     return count_dot;
@@ -98,21 +101,16 @@ static void _handle_multiline_comment(Lexer *l) {
 
 static void _handle_identifier(Lexer *l) {
     while (is_digit(l->peek) || is_letter(l->peek) || l->peek == '_') {
-        strbuf_push(&l->cur_word, l->cur);
+        _push(l, l->cur);
         advance(l);
     }
 
-    strbuf_push(&l->cur_word, l->cur);
+    _push(l, l->cur);
 }
 
 static void _scan_str(Lexer *l) {
-    Token t;
-
     _handle_str(l);
-    token_init_type(&t, TOK_STRING, &l->cur_word, l->line, l->col);
-    _emit_token(l, &t);
-    strbuf_clear(&l->cur_word);
-
+    _emit_word(l, TOK_STRING);
     advance(l);
 }
 
@@ -149,23 +147,18 @@ static bool _try_scan_operator(Lexer *l) {
         return false;
     }
 
-    int line = l->line;
-    int col = l->col;
-
     StrBuf tok_val;
     strbuf_init(&tok_val);
 
     for (size_t i = 0; i < len; ++i) {
-        strbuf_push(&tok_val, l->cur);
+        _push(l, l->cur);
 
         if (i + 1 < len) {
             advance(l);
         }
     }
 
-    Token t;
-    token_init_type(&t, tok_definitions[idx].tok_type, &tok_val, line, col);
-    _emit_token(l, &t);
+    _emit_word(l, tok_definitions[idx].tok_type);
 
     return true;
 }
@@ -185,7 +178,6 @@ static void _scan_comment_or_op(Lexer *l) {
 }
 
 static void _scan_number(Lexer *l) {
-    Token t;
     TokenType type;
 
     int dots = _handle_number(l);
@@ -198,9 +190,7 @@ static void _scan_number(Lexer *l) {
         type = TOK_INVALID_NUMBER;
     }
 
-    token_init_type(&t, type, &l->cur_word, l->line, l->col);
-    _emit_token(l, &t);
-    strbuf_clear(&l->cur_word);
+    _emit_word(l, type);
 }
 
 static void _scan_identifier(Lexer *l) {
@@ -225,7 +215,7 @@ static void _scan_invalid_char(Lexer *l) {
     StrBuf word;
 
     strbuf_init(&word);
-    strbuf_push(&word, l->cur);
+    _push(l, l->cur);
 
     token_init_type(&t, TOK_INVALID, &word, l->line, l->col);
     _emit_token(l, &t);
@@ -236,22 +226,18 @@ static void _handle_char(Lexer *l) {
 
     while (l->cur != EOF && l->cur != '\'') {
         if (l->cur == '\\') {
-            strbuf_push(&l->cur_word, l->cur);
+            _push(l, l->cur);
             advance(l);
         }
 
-        strbuf_push(&l->cur_word, l->cur);
+        _push(l, l->cur);
         advance(l);
     }
 }
 
 static void _scan_char(Lexer *l) {
-    Token t;
-
     _handle_char(l);
-    token_init_type(&t, TOK_CHAR, &l->cur_word, l->line, l->col);
-    _emit_token(l, &t);
-    strbuf_clear(&l->cur_word);
+    _emit_word(l, TOK_CHAR);
 
     advance(l);
 }
@@ -296,7 +282,7 @@ void scan_token(Lexer *l) {
     }
 
     if (is_digit(l->cur)) {
-        strbuf_push(&l->cur_word, l->cur);
+        _push(l, l->cur);
         _scan_number(l);
         return;
     }

@@ -152,6 +152,8 @@ void token_init(Token *t, const StrBuf *word, const int line, const int col) {
         t->type = tok_definitions[found].tok_type;
     }
 
+    // TODO: check for invalid tokens in tests
+    // i think we can remove this
     else {
         t->type = TOK_INVALID;
     }

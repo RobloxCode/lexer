@@ -26,5 +26,7 @@ int some_fn() {
     char newline = '\'';
     char tab = '\t';
 
-    return 0;
+    8thueaoth
+
+        return 0;
 }
