@@ -41,9 +41,7 @@ static void _emit_word(Lexer *l, TokenType type) {
     l->overflow = false;
 }
 
-// TODO: add tests for "abc -> EOF
-//                     "tuhe\n"
-static void _handle_str(Lexer *l) {
+static int _handle_str(Lexer *l) {
     advance(l);
 
     while (l->cur != EOF && l->cur != '"') {
@@ -55,6 +53,12 @@ static void _handle_str(Lexer *l) {
         _push(l, l->cur);
         advance(l);
     }
+
+    if (l->cur == EOF) {
+        return 1;
+    }
+
+    return 0;
 }
 
 static int _handle_number(Lexer *l) {
@@ -110,8 +114,14 @@ static void _handle_identifier(Lexer *l) {
 }
 
 static void _scan_str(Lexer *l) {
-    _handle_str(l);
-    _emit_word(l, TOK_STRING);
+    TokenType type = TOK_STRING;
+
+    if (_handle_str(l) != 0) {
+        type = TOK_INVALID_STR;
+    }
+
+    strbuf_clear(&l->cur_word);
+    _emit_word(l, type);
 }
 
 static size_t _get_len_match_operator(const char *p, size_t *idx) {
@@ -208,7 +218,7 @@ static void _scan_invalid_char(Lexer *l) {
     _emit_word(l, TOK_INVALID);
 }
 
-static void _handle_char(Lexer *l) {
+static int _handle_char(Lexer *l) {
     advance(l);
 
     while (l->cur != EOF && l->cur != '\'') {
@@ -220,11 +230,23 @@ static void _handle_char(Lexer *l) {
         _push(l, l->cur);
         advance(l);
     }
+
+    if (l->cur == EOF) {
+        return 1;
+    }
+
+    return 0;
 }
 
 static void _scan_char(Lexer *l) {
-    _handle_char(l);
-    _emit_word(l, TOK_CHAR);
+    TokenType type = TOK_CHAR;
+
+    if (_handle_char(l) != 0) {
+        type = TOK_INVALID_CHAR;
+    }
+
+    strbuf_clear(&l->cur_word);
+    _emit_word(l, type);
 }
 
 void scan_token(Lexer *l) {

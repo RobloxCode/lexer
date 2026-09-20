@@ -133,6 +133,8 @@ typedef enum {
     TOK_ARROW,
     TOK_HASH,
     TOK_CONDITIONAL,
+    TOK_INVALID_STR,
+    TOK_INVALID_CHAR,
 } TokenType;
 
 /**
