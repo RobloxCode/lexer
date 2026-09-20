@@ -178,6 +178,7 @@ static bool _try_scan_operator(Lexer *l) {
 
     size_t idx = 0;
     size_t len = _match_operator(window, &idx);
+
     if (len == 0) {
         return false;
     }
@@ -185,11 +186,11 @@ static bool _try_scan_operator(Lexer *l) {
     int line = l->line;
     int col = l->col;
 
-    StrBuf word;
-    strbuf_init(&word);
+    StrBuf tok_val;
+    strbuf_init(&tok_val);
 
     for (size_t i = 0; i < len; ++i) {
-        strbuf_push(&word, l->cur);
+        strbuf_push(&tok_val, l->cur);
 
         if (i + 1 < len) {
             advance(l);
@@ -197,8 +198,9 @@ static bool _try_scan_operator(Lexer *l) {
     }
 
     Token t;
-    token_init_type(&t, tok_definitions[idx].tok_type, &word, line, col);
+    token_init_type(&t, tok_definitions[idx].tok_type, &tok_val, line, col);
     _emit_token(l, &t);
+
     return true;
 }
 
