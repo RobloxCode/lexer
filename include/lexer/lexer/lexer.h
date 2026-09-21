@@ -25,9 +25,6 @@ typedef struct {
     int tok_start_col;  /* < Column where the current token began */
 
     StrBuf cur_word;    /* < current word/text of the token being built */
-    char peek_buf[2];   /* < This is a buffer for peek_char since some
-                         *   functions need to check for peek_char bet
-                         *   they must take a char */
 
     bool overflow;      /* < Checks if 'cur_word' has exceeded STR_BUF_MAX_CAP
                              true if 'cur_word' hit STR_BUF_MAX_CAP,

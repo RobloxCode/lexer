@@ -52,7 +52,6 @@ static Lexer *_lexer_init(const char *path) {
     l->overflow = false;
 
     strbuf_init(&l->cur_word);
-    memset(l->peek_buf, 0, sizeof l->peek_buf);
 
     return l;
 }
