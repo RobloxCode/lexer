@@ -17,10 +17,10 @@ void advance(Lexer *l) {
     l->peek2 = fgetc(l->file);
 
     if (l->cur == '\n') {
-        l->line++;
-        l->col = 0;
+        l->cur_line++;
+        l->cur_col = 0;
     } else {
-        l->col++;
+        l->cur_col++;
     }
 }
 
@@ -44,8 +44,8 @@ static Lexer *_lexer_init(const char *path) {
     l->peek = fgetc(l->file);
     l->peek2 = fgetc(l->file);
 
-    l->line = 1;
-    l->col = 1;
+    l->cur_line = 1;
+    l->cur_col = 1;
     l->tok_start_line = 1;
     l->tok_start_col = 1;
 
@@ -100,7 +100,8 @@ Lexer *lexer_lex(const char *path) {
     StrBuf empty;
 
     strbuf_init(&empty);
-    token_init_type(&eof, TOK_EOF, &empty, l->line, l->col);
+    token_init_type(&eof, TOK_EOF, &empty, l->cur_line, l->cur_col);
+
     if ((token_arr_append(l->tokens, &eof)) != TOKENARR_OK) {
         return NULL;
     }

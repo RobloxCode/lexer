@@ -258,8 +258,8 @@ static void _scan_char(Lexer *l) {
 }
 
 void scan_token(Lexer *l) {
-    l->tok_start_line = l->line;
-    l->tok_start_col = l->col;
+    l->tok_start_line = l->cur_line;
+    l->tok_start_col = l->cur_col;
 
     switch (l->cur) {
         case ' ':
