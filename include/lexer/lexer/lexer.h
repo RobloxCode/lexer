@@ -18,8 +18,8 @@ typedef struct {
     int peek;           /* < Second character lookahead (after cur) */
     int peek2;          /* < Third character lookahead */
 
-    int cur_line;       /* < Current number of line (1 based) */
-    int cur_col;        /* < Current number of column (1 based) */
+    int cur_line;       /* < Current line where 'cur' is at (1 based) */
+    int cur_col;        /* < Current column where 'cur' is at (1 based) */
 
     int tok_start_line; /* < Line where the current token began */
     int tok_start_col;  /* < Column where the current token began */
