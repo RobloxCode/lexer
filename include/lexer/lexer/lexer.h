@@ -12,14 +12,17 @@
  * @brief Lexer state holding data to help the lexeme
  */
 typedef struct {
-    FILE *file;       /* < Pointer to the file being lexed */
+    FILE *file;         /* < Pointer to the file being lexed */
 
-    int cur;          /* < Current character in the file */
-    int peek;         /* < Second character lookahead (after cur) */
-    int peek2;        /* < Third character lookahead */
+    int cur;            /* < Current character in the file */
+    int peek;           /* < Second character lookahead (after cur) */
+    int peek2;          /* < Third character lookahead */
 
-    int line;         /* < Current number of lines */
-    int col;          /* < Current number of columns */
+    int tok_start_line; /* < Where the token currently being scanned started */
+    int tok_start_col;  /* < Where tho token currently being scanned started */
+
+    int line;           /* < Current number of lines */
+    int col;            /* < Current number of columns */
 
     bool overflow;    /* < Checks if 'cur_word' has exceeded STR_BUF_MAX_CAP */
 

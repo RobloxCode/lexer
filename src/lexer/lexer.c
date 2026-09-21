@@ -46,6 +46,9 @@ static Lexer *_lexer_init(const char *path) {
 
     l->line = 1;
     l->col = 1;
+    l->tok_start_line = 1;
+    l->tok_start_col = 1;
+
     l->overflow = false;
 
     strbuf_init(&l->cur_word);

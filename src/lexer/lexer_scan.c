@@ -30,11 +30,13 @@ static void _emit_word(Lexer *l, TokenType type) {
     Token t;
 
     if (l->overflow) {
-        fprintf(stderr, "%d:%d: token too long, truncated\n", l->line, l->col);
+        fprintf(stderr, "%d:%d: token too long, truncated\n", l->tok_start_line,
+                l->tok_start_col);
         type = TOK_INVALID;
     }
 
-    token_init_type(&t, type, &l->cur_word, l->line, l->col);
+    token_init_type(&t, type, &l->cur_word, l->tok_start_line,
+                    l->tok_start_col);
     _emit_token(l, &t);
 
     strbuf_clear(&l->cur_word);
@@ -48,6 +50,10 @@ static int _handle_str(Lexer *l) {
         if (l->cur == '\\') {
             _push(l, l->cur);
             advance(l);
+        }
+
+        if (l->cur == EOF) {
+            return 1;
         }
 
         _push(l, l->cur);
@@ -120,7 +126,6 @@ static void _scan_str(Lexer *l) {
         type = TOK_INVALID_STR;
     }
 
-    strbuf_clear(&l->cur_word);
     _emit_word(l, type);
 }
 
@@ -227,6 +232,10 @@ static int _handle_char(Lexer *l) {
             advance(l);
         }
 
+        if (l->cur == EOF) {
+            return 1;
+        }
+
         _push(l, l->cur);
         advance(l);
     }
@@ -245,11 +254,13 @@ static void _scan_char(Lexer *l) {
         type = TOK_INVALID_CHAR;
     }
 
-    strbuf_clear(&l->cur_word);
     _emit_word(l, type);
 }
 
 void scan_token(Lexer *l) {
+    l->tok_start_line = l->line;
+    l->tok_start_col = l->col;
+
     switch (l->cur) {
         case ' ':
             return;
