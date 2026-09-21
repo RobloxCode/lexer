@@ -12,23 +12,25 @@
  * @brief Lexer state holding data to help the lexeme
  */
 typedef struct {
-    FILE *file;       /* < Pointer to the file being lexed */
+    FILE *file;         /* < Pointer to the file being lexed */
 
-    int cur;          /* < Current character in the file */
-    int peek;         /* < Second character lookahead (after cur) */
-    int peek2;        /* < Third character lookahead */
+    int cur;            /* < Current character in the file */
+    int peek;           /* < Second character lookahead (after cur) */
+    int peek2;          /* < Third character lookahead */
 
-    int line;         /* < Current number of lines */
-    int col;          /* < Current number of columns */
+    int cur_line;       /* < Current line where 'cur' is at (1 based) */
+    int cur_col;        /* < Current column where 'cur' is at (1 based) */
 
-    bool overflow;    /* < Checks if 'cur_word' has exceeded STR_BUF_MAX_CAP */
+    int tok_start_line; /* < Line where the current token began */
+    int tok_start_col;  /* < Column where the current token began */
 
-    StrBuf cur_word;  /* < StrBuf storing the current word */
-    char peek_buf[2]; /* < This is a buffer for peek_char since some
-                       *   functions need to check for peek_char bet
-                       *   they must take a char */
+    StrBuf cur_word;    /* < current word/text of the token being built */
 
-    TokenArr *tokens; /* < Pointer to a TokenArr */
+    bool overflow;      /* < Checks if 'cur_word' has exceeded STR_BUF_MAX_CAP
+                             true if 'cur_word' hit STR_BUF_MAX_CAP,
+                             otherwise false */
+
+    TokenArr *tokens;   /* < Tokens produced so far */
 
 } Lexer;
 
