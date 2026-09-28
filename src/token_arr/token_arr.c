@@ -8,7 +8,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-TokenArr *token_arr_init(size_t cap) {
+TokenArr *token_arr_init(const size_t cap) {
     if (cap == 0) {
         return NULL;
     }
@@ -59,7 +59,7 @@ TokenArrStatus token_arr_append(TokenArr *token_arr, const Token *item) {
     return TOKENARR_OK;
 }
 
-TokenArrStatus token_arr_remove(TokenArr *token_arr, size_t index) {
+TokenArrStatus token_arr_remove(TokenArr *token_arr, const size_t index) {
     if (!token_arr) {
         return TOKENARR_WRONG_PTR;
     }
@@ -81,7 +81,7 @@ TokenArrStatus token_arr_remove(TokenArr *token_arr, size_t index) {
     return TOKENARR_OK;
 }
 
-TokenArrStatus token_arr_println(TokenArr *token_arr) {
+TokenArrStatus token_arr_println(const TokenArr *token_arr) {
     if (!token_arr) {
         return TOKENARR_WRONG_PTR;
     }

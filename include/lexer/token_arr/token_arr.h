@@ -47,7 +47,7 @@ typedef struct TokenArr {
  * @return Pointer to a heap-allocated TokenArr, or NULL on allocation failure
  *         or if @p cap is invalid.
  */
-TokenArr *token_arr_init(size_t cap);
+TokenArr *token_arr_init(const size_t cap);
 
 /**
  * @brief Free a TokenArr and its backing buffer.
@@ -114,7 +114,8 @@ static inline TokenArrStatus token_arr_swap(TokenArr *token_arr, size_t index1,
  * @return TOKENARR_OK on success, TOKENARR_WRONG_PTR if @p token_arr is NULL,
  *         TOKENARR_IDX_OUT_OF_BOUNDS if @p idx >= length.
  */
-TokenArrStatus token_arr_remove(TokenArr *token_arr, size_t idx) WARN_UNUSED;
+TokenArrStatus token_arr_remove(TokenArr *token_arr,
+                                const size_t idx) WARN_UNUSED;
 
 /**
  * @brief Print the contents of the array to stdout for debugging.
@@ -123,7 +124,7 @@ TokenArrStatus token_arr_remove(TokenArr *token_arr, size_t idx) WARN_UNUSED;
  *
  * @return TOKENARR_OK on success, TOKENARR_WRONG_PTR if @p token_arr is NULL.
  */
-TokenArrStatus token_arr_println(TokenArr *token_arr) WARN_UNUSED;
+TokenArrStatus token_arr_println(const TokenArr *token_arr) WARN_UNUSED;
 
 /**
  * @brief Copy the Token at a given index into a caller-provided buffer.
