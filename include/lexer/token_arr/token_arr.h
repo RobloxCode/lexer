@@ -152,4 +152,12 @@ static inline TokenArr_status token_arr_get(TokenArr *token_arr, size_t index,
     return TOKENARR_OK;
 }
 
+static inline size_t token_arr_len(TokenArr *ta) {
+    if (!ta) {
+        return 0;
+    }
+
+    return ta->length;
+}
+
 #endif
