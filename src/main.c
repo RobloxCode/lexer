@@ -12,7 +12,7 @@ int main(int argc, char **argv) {
         path = argv[1];
     }
 
-    TokenArr_status status = TOKENARR_OK;
+    TokenArrStatus status = TOKENARR_OK;
 
     Lexer *lexer = lexer_lex(path);
     if (!lexer) {

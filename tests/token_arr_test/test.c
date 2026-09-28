@@ -9,7 +9,7 @@ static int tests_failed = 0;
 
 #define RUN_TEST(test)                                                         \
     do {                                                                       \
-        TokenArr_status status = (test);                                       \
+        TokenArrStatus status = (test);                                        \
         tests_run++;                                                           \
                                                                                \
         if (status != TOKENARR_OK) {                                           \
@@ -48,7 +48,7 @@ static int tests_failed = 0;
 
 #define ASSERT_STATUS(expression, expected)                                    \
     do {                                                                       \
-        TokenArr_status status = (expression);                                 \
+        TokenArrStatus status = (expression);                                  \
         tests_run++;                                                           \
                                                                                \
         if (status != (expected)) {                                            \

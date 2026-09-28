@@ -23,7 +23,7 @@ TokenArr *token_arr_init(size_t cap) {
     return token_arr;
 }
 
-TokenArr_status token_arr_deinit(TokenArr **token_arr) {
+TokenArrStatus token_arr_deinit(TokenArr **token_arr) {
     if (!token_arr || !*token_arr) {
         return TOKENARR_WRONG_PTR;
     }
@@ -35,7 +35,7 @@ TokenArr_status token_arr_deinit(TokenArr **token_arr) {
     return TOKENARR_OK;
 }
 
-TokenArr_status token_arr_append(TokenArr *token_arr, const Token *item) {
+TokenArrStatus token_arr_append(TokenArr *token_arr, const Token *item) {
     if (!token_arr || !item) {
         return TOKENARR_WRONG_PTR;
     }
@@ -59,7 +59,7 @@ TokenArr_status token_arr_append(TokenArr *token_arr, const Token *item) {
     return TOKENARR_OK;
 }
 
-TokenArr_status token_arr_remove(TokenArr *token_arr, size_t index) {
+TokenArrStatus token_arr_remove(TokenArr *token_arr, size_t index) {
     if (!token_arr) {
         return TOKENARR_WRONG_PTR;
     }
@@ -68,7 +68,7 @@ TokenArr_status token_arr_remove(TokenArr *token_arr, size_t index) {
         return TOKENARR_IDX_OUT_OF_BOUNDS;
     }
 
-    TokenArr_status status = TOKENARR_OK;
+    TokenArrStatus status = TOKENARR_OK;
     for (size_t i = index; i < token_arr->length - 1; ++i) {
         status = token_arr_swap(token_arr, i, i + 1);
         if (status != TOKENARR_OK) {
@@ -81,7 +81,7 @@ TokenArr_status token_arr_remove(TokenArr *token_arr, size_t index) {
     return TOKENARR_OK;
 }
 
-TokenArr_status token_arr_println(TokenArr *token_arr) {
+TokenArrStatus token_arr_println(TokenArr *token_arr) {
     if (!token_arr) {
         return TOKENARR_WRONG_PTR;
     }

@@ -36,7 +36,7 @@
 
 #define ASSERT_STATUS(expression, expected)                                    \
     do {                                                                       \
-        TokenArr_status status = (expression);                                 \
+        TokenArrStatus status = (expression);                                  \
         tests_run++;                                                           \
                                                                                \
         if (status != (expected)) {                                            \
