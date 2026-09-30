@@ -28,15 +28,11 @@ typedef enum {
 
 /**
  * @brief Dynamic, growable array of Token values.
- *
- * @var items    Pointer to the heap-allocated backing buffer.
- * @var capacity Number of Token slots currently allocated.
- * @var length   Number of Token slots currently in use.
  */
 typedef struct TokenArr {
-    Token *items;
-    size_t capacity;
-    size_t length;
+    Token *items;    /* < Pointer to heap-allocated backing buffer */
+    size_t capacity; /* < Number of Token slots currently allocated */
+    size_t length;   /* < Number of Token slots currently in use */
 } TokenArr;
 
 /**
