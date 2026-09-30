@@ -36,7 +36,7 @@ int strbuf_push(StrBuf *sb, const int c);
  * @param c  Character to be set
  * @param i  Index of the character being set
  */
-int strbuf_set(StrBuf *sb, char c, size_t i);
+int strbuf_set(StrBuf *sb, const char c, const size_t i);
 
 /**
  * @brief Sets all the characters to 0

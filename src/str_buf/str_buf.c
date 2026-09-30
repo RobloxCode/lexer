@@ -21,7 +21,7 @@ int strbuf_push(StrBuf *sb, const int c) {
     return 0;
 }
 
-int strbuf_set(StrBuf *sb, char c, size_t i) {
+int strbuf_set(StrBuf *sb, const char c, const size_t i) {
     if (i >= STR_BUF_MAX_CAP - 1) {
         return 1;
     }
