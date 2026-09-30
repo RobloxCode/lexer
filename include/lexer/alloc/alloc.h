@@ -11,7 +11,7 @@
  *
  * @return Pointer to allocated memory
  */
-void *xmalloc(size_t size);
+void *xmalloc(const size_t size);
 
 /**
  * @brief Safe wrapper around calloc, terminates the program if
@@ -22,7 +22,7 @@ void *xmalloc(size_t size);
  *
  * @return Pointer to allocated, zero-initialized memory
  */
-void *xcalloc(size_t nmemb, size_t size);
+void *xcalloc(const size_t nmemb, const size_t size);
 
 /**
  * @brief Safe wrapper arond realloc, terminates the program if
@@ -33,6 +33,6 @@ void *xcalloc(size_t nmemb, size_t size);
  *
  * @return Pointer to the resized memory
  */
-void *xrealloc(void *src, size_t size);
+void *xrealloc(void *src, const size_t size);
 
 #endif

@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void *xmalloc(size_t size) {
+void *xmalloc(const size_t size) {
     void *ptr = malloc(size);
 
     if (!ptr) {
@@ -14,7 +14,7 @@ void *xmalloc(size_t size) {
     return ptr;
 }
 
-void *xcalloc(size_t nmemb, size_t size) {
+void *xcalloc(const size_t nmemb, const size_t size) {
     void *ptr = calloc(nmemb, size);
 
     if (!ptr) {
@@ -25,7 +25,7 @@ void *xcalloc(size_t nmemb, size_t size) {
     return ptr;
 }
 
-void *xrealloc(void *src, size_t size) {
+void *xrealloc(void *src, const size_t size) {
     if (size == 0) {
         free(src);
         return NULL;
