@@ -156,13 +156,13 @@ void token_init(Token *t, const StrBuf *word, const int line, const int col) {
         t->type = TOK_INVALID;
     }
 
-    strcpy(t->value, word->items);
+    strcpy(t->lexeme, word->items);
 }
 
 void token_init_type(Token *t, TokenType tok_type, const StrBuf *word,
                      const int line, const int col) {
     t->type = tok_type;
-    strcpy(t->value, word->items);
+    strcpy(t->lexeme, word->items);
     t->line = line;
     t->col = col;
 }
@@ -178,5 +178,5 @@ const char *token_type_to_str(TokenType type) {
 
 inline void token_println(const Token *t) {
     printf("[ %d:%d ]    %s(%s)\n", t->line, t->col, token_type_to_str(t->type),
-           t->value);
+           t->lexeme);
 }

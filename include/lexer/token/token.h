@@ -141,10 +141,8 @@ typedef enum {
  * @brief Single Token
  */
 typedef struct {
-    TokenType type; /* < Token type from the enum TokenType */
-
-    // TODO: prolly should rename this to lexeme
-    char value[TOKEN_BUF_MAX_CAP]; /* < Value found in source code */
+    TokenType type;                 /* < Token type from the enum TokenType */
+    char lexeme[TOKEN_BUF_MAX_CAP]; /* < Value found in source code */
     int line; /* < Number of line where token was found at */
     int col;  /* < Number of column where token was found at */
 } Token;
