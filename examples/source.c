@@ -32,6 +32,10 @@ int some_fn() {
     somefn('t');
     somefn('\t');
 
+    if (!0) {
+        puts("hello");
+    }
+
     return 0;
 }
 
