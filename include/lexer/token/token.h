@@ -166,7 +166,7 @@ void token_init(Token *t, const StrBuf *word, const int line, const int col);
  *
  * @param t Pointer to Token
  * @param type String to the type to be stored
- * @param word Srring storing the word being tokenized
+ * @param word String storing the word being tokenized
  * @param line Line where the token was found at
  * @param col Column where the token was found at
  */
