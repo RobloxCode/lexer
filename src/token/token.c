@@ -159,9 +159,9 @@ void token_init(Token *t, const StrBuf *word, const int line, const int col) {
     strcpy(t->lexeme, word->items);
 }
 
-void token_init_type(Token *t, TokenType tok_type, const StrBuf *word,
+void token_init_type(Token *t, TokenType type, const StrBuf *word,
                      const int line, const int col) {
-    t->type = tok_type;
+    t->type = type;
     strcpy(t->lexeme, word->items);
     t->line = line;
     t->col = col;

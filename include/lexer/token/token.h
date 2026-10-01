@@ -168,7 +168,7 @@ void token_init(Token *t, const StrBuf *word, const int line, const int col);
  * @param line Line where the token was found at
  * @param col Column where the token was found at
  */
-void token_init_type(Token *t, TokenType tok_type, const StrBuf *word,
+void token_init_type(Token *t, TokenType type, const StrBuf *word,
                      const int line, const int col);
 
 /**
