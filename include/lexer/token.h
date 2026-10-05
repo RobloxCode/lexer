@@ -3,6 +3,10 @@
 
 #define TOKEN_BUF_MAX_CAP 255
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /**
  * @brief Enumerator for all the token types available
  * */
@@ -156,5 +160,9 @@ void token_println(const Token *t);
  * @return String literal containing the type of token
  */
 const char *token_type_to_str(TokenType t);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
