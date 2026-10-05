@@ -22,6 +22,11 @@ Lexer *lexer_lex(const char *path);
  */
 void lexer_deinit(Lexer **l);
 
+/**
+ * @brief retrieves the tokens from the Lexer
+ *
+ * @param l Pointer to a heap allocated Lexer
+ */
 const TokenArr *lexer_tokens(const Lexer *l);
 
 #endif
