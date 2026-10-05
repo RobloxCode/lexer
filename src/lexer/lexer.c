@@ -1,6 +1,6 @@
 #include "lexer/lexer/lexer.h"
 
-#include "lexer/alloc/alloc.h"
+#include "../alloc/alloc.h"
 #include "lexer/str_buf/str_buf.h"
 #include "lexer/token/token.h"
 #include "lexer/token_arr/token_arr.h"
