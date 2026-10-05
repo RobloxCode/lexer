@@ -10,6 +10,7 @@
 
 #define INIT_TOKEN_CAP 30
 
+// TODO: ask why this is not typedef
 struct Lexer {
     FILE *file;         /* < Pointer to the file being lexed */
 
