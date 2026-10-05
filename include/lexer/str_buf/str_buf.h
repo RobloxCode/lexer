@@ -1,3 +1,7 @@
+// TODO: have to make this 'private' for users, just make
+// this visible in the src directory, however some files in the inculde
+// directory need this though
+
 #ifndef STR_BUF_H
 #define STR_BUF_H
 

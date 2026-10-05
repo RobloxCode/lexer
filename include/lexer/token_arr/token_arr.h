@@ -1,3 +1,7 @@
+// TODO: have to make this 'private' for users, just make
+// this visible in the src directory, however some files in the inculde
+// directory need this though
+
 #ifndef TOKEN_ARR_H
 #define TOKEN_ARR_H
 
