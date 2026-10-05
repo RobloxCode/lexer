@@ -1,7 +1,7 @@
 #ifndef TOKEN_DEF_H
 #define TOKEN_DEF_H
 
-#include "lexer/token/token.h"
+#include "lexer/token.h"
 
 #include <stddef.h>
 

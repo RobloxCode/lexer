@@ -1,4 +1,4 @@
-#include "lexer/token_def/token_def.h"
+#include "token_def.h"
 
 const TokenDef tok_definitions[] = {
     // delimiters
@@ -117,8 +117,6 @@ const TokenDef tok_definitions[] = {
     // special tokens
     [TOK_EOF] = {"EOF", NULL, TOK_EOF},
     [TOK_INVALID] = {"INVALID", NULL, TOK_INVALID},
-    [TOK_BANG] = {"BANG", "!", TOK_BANG},
-    [TOK_NUMBER] = {"NUMBER", NULL, TOK_NUMBER},
     [TOK_INVALID_NUMBER] = {"INVALID_NUMBER", NULL, TOK_INVALID_NUMBER},
     [TOK_ARROW] = {"ARROW", "->", TOK_ARROW},
     [TOK_HASH] = {"HASH", "#", TOK_HASH},

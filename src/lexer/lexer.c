@@ -1,17 +1,15 @@
-#include "lexer/lexer/lexer.h"
-
-#include "../alloc/alloc.h"
-#include "lexer/str_buf/str_buf.h"
-#include "lexer/token/token.h"
-#include "lexer/token_arr/token_arr.h"
+#include "alloc/alloc.h"
+#include "lexer_internal.h"
 #include "lexer_scan.h"
+#include "str_buf/str_buf.h"
+#include "token/token_internal.h"
 
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-void advance(Lexer *l) {
+void lexer_advance(Lexer *l) {
     l->cur = l->peek;
     l->peek = l->peek2;
     l->peek2 = fgetc(l->file);
@@ -92,7 +90,7 @@ Lexer *lexer_lex(const char *path) {
 
     while (l->cur != EOF) {
         scan_token(l);
-        advance(l);
+        lexer_advance(l);
     }
 
     Token eof;
@@ -106,4 +104,8 @@ Lexer *lexer_lex(const char *path) {
     }
 
     return l;
+}
+
+const TokenArr *lexer_tokens(const Lexer *l) {
+    return l ? l->tokens : NULL;
 }

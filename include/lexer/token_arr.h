@@ -1,17 +1,13 @@
-// TODO: have to make this 'private' for users, just make
-// this visible in the src directory, however some files in the inculde
-// directory need this though
-
-#ifndef TOKEN_ARR_H
-#define TOKEN_ARR_H
+#ifndef LEXER_TOKEN_ARR_H
+#define LEXER_TOKEN_ARR_H
 
 #if defined(__GNUC__) || defined(__clang__)
-    #define WARN_UNUSED __attribute__((warn_unused_result))
+    #define LEXER_WARN_UNUSED __attribute__((warn_unused_result))
 #else
-    #define WARN_UNUSED
+    #define LEXER_WARN_UNUSED
 #endif
 
-#include "lexer/token/token.h"
+#include "lexer/token.h"
 
 #include <stddef.h>
 
@@ -59,7 +55,7 @@ TokenArr *token_arr_init(const size_t cap);
  * @return TOKENARR_OK on success, TOKENARR_WRONG_PTR if @p token_arr
  *         or *token_arr is NULL.
  */
-TokenArrStatus token_arr_deinit(TokenArr **token_arr) WARN_UNUSED;
+TokenArrStatus token_arr_deinit(TokenArr **token_arr) LEXER_WARN_UNUSED;
 
 /**
  * @brief Append a Token to the end of the array, growing capacity if needed.
@@ -72,7 +68,7 @@ TokenArrStatus token_arr_deinit(TokenArr **token_arr) WARN_UNUSED;
  *         TOKENARR_ERR_OVERFLOW if growing would overflow size_t.
  */
 TokenArrStatus token_arr_append(TokenArr *token_arr,
-                                const Token *item) WARN_UNUSED;
+                                const Token *item) LEXER_WARN_UNUSED;
 
 /**
  * @brief Swap the Tokens at two indices in place.
@@ -85,7 +81,7 @@ TokenArrStatus token_arr_append(TokenArr *token_arr,
  *         TOKENARR_IDX_OUT_OF_BOUNDS if either index is >= length.
  */
 static inline TokenArrStatus token_arr_swap(TokenArr *token_arr, size_t index1,
-                                            size_t index2) WARN_UNUSED;
+                                            size_t index2) LEXER_WARN_UNUSED;
 
 static inline TokenArrStatus token_arr_swap(TokenArr *token_arr, size_t index1,
                                             size_t index2) {
@@ -115,7 +111,7 @@ static inline TokenArrStatus token_arr_swap(TokenArr *token_arr, size_t index1,
  *         TOKENARR_IDX_OUT_OF_BOUNDS if @p idx >= length.
  */
 TokenArrStatus token_arr_remove(TokenArr *token_arr,
-                                const size_t idx) WARN_UNUSED;
+                                const size_t idx) LEXER_WARN_UNUSED;
 
 /**
  * @brief Print the contents of the array to stdout for debugging.
@@ -124,7 +120,7 @@ TokenArrStatus token_arr_remove(TokenArr *token_arr,
  *
  * @return TOKENARR_OK on success, TOKENARR_WRONG_PTR if @p token_arr is NULL.
  */
-TokenArrStatus token_arr_println(const TokenArr *token_arr) WARN_UNUSED;
+TokenArrStatus token_arr_println(const TokenArr *token_arr) LEXER_WARN_UNUSED;
 
 /**
  * @brief Copy the Token at a given index into a caller-provided buffer.
@@ -136,11 +132,12 @@ TokenArrStatus token_arr_println(const TokenArr *token_arr) WARN_UNUSED;
  * @return TOKENARR_OK on success, TOKENARR_WRONG_PTR if @p token_arr or
  *         @p buff is NULL, TOKENARR_IDX_OUT_OF_BOUNDS if @p idx >= length.
  */
-static inline TokenArrStatus token_arr_get(TokenArr *token_arr, size_t index,
-                                           Token *buff) WARN_UNUSED;
+static inline TokenArrStatus token_arr_get(const TokenArr *token_arr,
+                                           size_t index,
+                                           Token *buff) LEXER_WARN_UNUSED;
 
-static inline TokenArrStatus token_arr_get(TokenArr *token_arr, size_t index,
-                                           Token *buff) {
+static inline TokenArrStatus token_arr_get(const TokenArr *token_arr,
+                                           size_t index, Token *buff) {
     if (!token_arr || !buff) {
         return TOKENARR_WRONG_PTR;
     }
@@ -153,7 +150,7 @@ static inline TokenArrStatus token_arr_get(TokenArr *token_arr, size_t index,
     return TOKENARR_OK;
 }
 
-static inline size_t token_arr_len(TokenArr *ta) {
+static inline size_t token_arr_len(const TokenArr *ta) {
     if (!ta) {
         return 0;
     }

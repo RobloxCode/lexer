@@ -1,25 +1,50 @@
 CC = gcc
-CFLAGS = -std=c11 -Wall -Wextra -Wconversion -pedantic -g \
-         -fsanitize=address -fno-omit-frame-pointer -Iinclude -MMD -MP
+AR = ar
+
+WARN     = -Wall -Wextra -Wconversion -pedantic
+CFLAGS   = -std=c11 $(WARN) -O2
+CPPFLAGS = -Iinclude -Isrc -MMD -MP
+
+# make DEBUG=1 builds with AddressSanitizer and debug info
+ifeq ($(DEBUG),1)
+    CFLAGS = -std=c11 $(WARN) -g -fsanitize=address -fno-omit-frame-pointer
+endif
 
 SRC_DIR = src
-BIN_DIR = build
+BUILD   = build
+LIB     = $(BUILD)/liblexer.a
+DEMO    = $(BUILD)/demo
 
 SRC = $(shell find $(SRC_DIR) -name '*.c')
-OBJ = $(SRC:$(SRC_DIR)/%.c=$(BIN_DIR)/%.o)
-OUT = $(BIN_DIR)/out
+OBJ = $(SRC:$(SRC_DIR)/%.c=$(BUILD)/%.o)
 
-$(OUT): $(OBJ)
-	$(CC) $(CFLAGS) $^ -o $@
+PREFIX ?= /usr/local
 
-$(BIN_DIR)/%.o: $(SRC_DIR)/%.c
-	mkdir -p $(dir $@)
-	$(CC) $(CFLAGS) -c $< -o $@
+all: $(LIB)
 
-run: $(OUT)
-	./$(OUT)
+$(LIB): $(OBJ)
+	$(AR) rcs $@ $^
+
+$(BUILD)/%.o: $(SRC_DIR)/%.c
+	@mkdir -p $(dir $@)
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
+
+$(DEMO): examples/demo.c $(LIB)
+	$(CC) $(CPPFLAGS) $(CFLAGS) $< $(LIB) -o $@
+
+demo: $(DEMO)
+
+run: $(DEMO)
+	./$(DEMO) examples/source.c
+
+install: $(LIB)
+	install -d $(PREFIX)/lib $(PREFIX)/include/lexer
+	install -m 644 $(LIB) $(PREFIX)/lib
+	install -m 644 include/lexer/*.h $(PREFIX)/include/lexer
 
 clean:
-	rm -rf build/
+	rm -rf $(BUILD)
 
-.PHONY: clean run
+-include $(OBJ:.o=.d)
+
+.PHONY: all demo run install clean

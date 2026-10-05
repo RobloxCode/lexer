@@ -1,7 +1,9 @@
-#include "lexer/lexer/lexer.h"
-#include "lexer/str_buf/str_buf.h"
-#include "lexer/token/token.h"
-#include "lexer/token_def/token_def.h"
+#include "lexer_scan.h"
+
+#include "lexer_internal.h"
+#include "str_buf/str_buf.h"
+#include "token/token_internal.h"
+#include "token_def/token_def.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -44,12 +46,12 @@ static void _emit_word(Lexer *l, TokenType type) {
 }
 
 static int _handle_str(Lexer *l) {
-    advance(l);
+    lexer_advance(l);
 
     while (l->cur != EOF && l->cur != '"') {
         if (l->cur == '\\') {
             _push(l, l->cur);
-            advance(l);
+            lexer_advance(l);
         }
 
         if (l->cur == EOF) {
@@ -57,7 +59,7 @@ static int _handle_str(Lexer *l) {
         }
 
         _push(l, l->cur);
-        advance(l);
+        lexer_advance(l);
     }
 
     if (l->cur == EOF) {
@@ -71,7 +73,7 @@ static int _handle_number(Lexer *l) {
     int count_dot = 0;
 
     while (is_digit(l->peek) || l->peek == '.') {
-        advance(l);
+        lexer_advance(l);
 
         if (l->cur == '.') {
             count_dot++;
@@ -83,7 +85,7 @@ static int _handle_number(Lexer *l) {
     if (l->peek == 'F' || l->peek == 'f' || l->peek == 'L' || l->peek == 'l'
         || l->peek == 'U' || l->peek == 'u' || l->peek == 'D'
         || l->peek == 'd') {
-        advance(l);
+        lexer_advance(l);
         _push(l, l->cur);
     }
 
@@ -92,28 +94,28 @@ static int _handle_number(Lexer *l) {
 
 static void _handle_one_line_comment(Lexer *l) {
     while (l->cur != EOF && l->cur != '\n') {
-        advance(l);
+        lexer_advance(l);
     }
 }
 
 static void _handle_multiline_comment(Lexer *l) {
-    advance(l);
-    advance(l);
+    lexer_advance(l);
+    lexer_advance(l);
 
     while (l->cur != EOF) {
         if (l->cur == '*' && l->peek == '/') {
-            advance(l);
+            lexer_advance(l);
             break;
         }
 
-        advance(l);
+        lexer_advance(l);
     }
 }
 
 static void _handle_identifier(Lexer *l) {
     while (is_digit(l->peek) || is_letter(l->peek) || l->peek == '_') {
         _push(l, l->cur);
-        advance(l);
+        lexer_advance(l);
     }
 
     _push(l, l->cur);
@@ -166,7 +168,7 @@ static bool _try_scan_operator(Lexer *l) {
         _push(l, l->cur);
 
         if (i + 1 < len) {
-            advance(l);
+            lexer_advance(l);
         }
     }
 
@@ -224,12 +226,12 @@ static void _scan_invalid_char(Lexer *l) {
 }
 
 static int _handle_char(Lexer *l) {
-    advance(l);
+    lexer_advance(l);
 
     while (l->cur != EOF && l->cur != '\'') {
         if (l->cur == '\\') {
             _push(l, l->cur);
-            advance(l);
+            lexer_advance(l);
         }
 
         if (l->cur == EOF) {
@@ -237,7 +239,7 @@ static int _handle_char(Lexer *l) {
         }
 
         _push(l, l->cur);
-        advance(l);
+        lexer_advance(l);
     }
 
     if (l->cur == EOF) {

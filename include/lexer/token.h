@@ -1,12 +1,7 @@
-#ifndef TOKEN_H
-#define TOKEN_H
+#ifndef LEXER_TOKEN_H
+#define LEXER_TOKEN_H
 
 #define TOKEN_BUF_MAX_CAP 255
-
-#include "lexer/str_buf/str_buf.h"
-
-#include <stdbool.h>
-#include <stddef.h>
 
 /**
  * @brief Enumerator for all the token types available
@@ -146,62 +141,11 @@ typedef struct {
 } Token;
 
 /**
- * @brief Sets the values of a given Token, it determines what
- *        type to give to each token, clasifies the resulting lexeme
- *
- * @param t Pointer to a stack allocated Token
- * @param word String storing the word being tokenized
- * @param line Line where the token was found at
- * @param col Column where the token was found at
- */
-void token_init(Token *t, const StrBuf *word, const int line, const int col);
-
-/**
- * @brief Sets the values of a given Token and sets the type to the
- *        given value by the caller
- *
- * @param t Pointer to Token
- * @param type String to the type to be stored
- * @param word String storing the word being tokenized
- * @param line Line where the token was found at
- * @param col Column where the token was found at
- */
-void token_init_type(Token *t, TokenType type, const StrBuf *word,
-                     const int line, const int col);
-
-/**
  * @brief Prints the elements of a Token
  *
  * @param t Pointer to Token
  */
 void token_println(const Token *t);
-
-/**
- * @brief helper function to check if the characters of a
- *        String make a number
- *
- * @return eather true or false
- */
-bool is_number(const char *s);
-
-/**
- * @brief helper function to check if a single character is a number
- *
- * @return eather true or false
- */
-bool is_digit(const int c);
-
-/**
- * @brief Checks if a given String is an operator, if so it saves the position
- *
- * @param s String to find in the list
- * @param found_idx Buffer to store the position if found, the variable
- *                  is not modified if not found
- *
- * @return true if word is an operator
- *         false on owrd not found in operators list
- */
-bool is_operator(const char *s, size_t *found_idx);
 
 /**
  * @brief Returns a string literal of the string type based on a given token
@@ -212,28 +156,5 @@ bool is_operator(const char *s, size_t *found_idx);
  * @return String literal containing the type of token
  */
 const char *token_type_to_str(TokenType t);
-
-/**
- * @brief Checks if a given character (as int) is a letter
- *        checs for capital and lower case
- *
- * @param c Character to check
- *
- * @return true if c is letter, false otherwise
- */
-bool is_letter(const int c);
-
-/**
- * @brief Checks if a given string is a keyword from the c language
- *        and also saves its index in the exp_keywords array
- *        from the file utils/exp/exp.c
- *
- * @param s String to check
- * @param idx Pointer to buffer holding the position if found, it can
- *            be NULL if you don't need the position
- *
- * @return true if s is a keyword, false otherwise
- */
-bool is_keyword(const char *s, size_t *idx);
 
 #endif
