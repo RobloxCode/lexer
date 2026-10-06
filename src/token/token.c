@@ -1,7 +1,8 @@
-#include "lexer/token/token.h"
+#include "lexer/token.h"
 
-#include "lexer/str_buf/str_buf.h"
-#include "lexer/token_def/token_def.h"
+#include "str_buf/str_buf.h"
+#include "token_def/token_def.h"
+#include "token_internal.h"
 
 #include <stdbool.h>
 #include <stdio.h>

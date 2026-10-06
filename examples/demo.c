@@ -1,4 +1,5 @@
-#include "lexer/lexer/lexer.h"
+#include "lexer/lexer.h"
+#include "lexer/token_arr.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -20,8 +21,9 @@ int main(int argc, char **argv) {
         return EXIT_FAILURE;
     }
 
-    if ((status = token_arr_println(lexer->tokens)) != TOKENARR_OK) {
-        fprintf(stderr, "Failed to print tokens, status: %d", status);
+    if ((status = token_arr_println(lexer_tokens(lexer))) != TOKENARR_OK) {
+        fprintf(stderr, "Failed to print tokens, status: %d\n", status);
+        lexer_deinit(&lexer);
         return EXIT_FAILURE;
     }
 

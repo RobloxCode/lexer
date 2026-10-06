@@ -1,6 +1,3 @@
-// TODO: add some macros to make testing easier, like "ASSERT_MSG", or
-// "RUN_TEST"
-
 /* You have to create the variables tests_run, tests_failed
  * in the file that use this macros
  *
@@ -46,4 +43,10 @@
         } else {                                                               \
             printf("[PASS] %s == %s\n", #expression, #expected);               \
         }                                                                      \
+    } while (0)
+
+#define RUN_TEST(test)                                                         \
+    do {                                                                       \
+        printf("\n[TEST] %s\n", #test);                                        \
+        test();                                                                \
     } while (0)
