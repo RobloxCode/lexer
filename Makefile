@@ -5,6 +5,7 @@ WARN     = -Wall -Wextra -Wconversion -pedantic
 CFLAGS   = -std=c11 $(WARN) -O2
 CPPFLAGS = -Iinclude -Isrc -MMD -MP
 
+# make clean && make DEBUG=1 run
 # make DEBUG=1 builds with AddressSanitizer and debug info
 ifeq ($(DEBUG),1)
     CFLAGS = -std=c11 $(WARN) -g -fsanitize=address -fno-omit-frame-pointer
