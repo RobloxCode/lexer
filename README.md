@@ -5,13 +5,18 @@ A simple, modular lexical analyzer built to tokenize source code into structured
 # build
 
 you can just simply clone the repo into your machine with 
--`git clone github.com/RobloxCode/lexer`
+-`git clone github.com/RobloxCode/lexer lexer`
 
 you can just compile the program
-- `make`
+- `make -C lexer`
 
-to compile and execute right away
-- `make run`
+you also have to include
+- `#include "lexer/lexer.h"`
+- `#include "lexer/token_arr.h"`
+
+
+compile your program 
+- `gcc file.c -Ilexer/include lexer/build/liblexer.a -o app`
   
 the output binary will be placed in bin/out
 
