@@ -100,6 +100,7 @@ Lexer *lexer_lex(const char *path) {
     token_init_type(&eof, TOK_EOF, &empty, l->cur_line, l->cur_col);
 
     if ((token_arr_append(l->tokens, &eof)) != TOKENARR_OK) {
+        lexer_deinit(&l);
         return NULL;
     }
 

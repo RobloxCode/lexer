@@ -10,16 +10,17 @@ extern "C" {
 typedef struct Lexer Lexer;
 
 /**
- * @brief Lexes a file at a given path
+ * @brief Lexes a file at a given path.
  *
- * @param Path Path of the file to be lexed
+ * @param path Path of the file to be lexed.
  *
- * @return Pointer to a heap allocated Lexer
+ * @return A heap-allocated Lexer, or NULL if the path cannot be opened or
+ *         tokenization cannot complete. Release it with lexer_deinit().
  */
 Lexer *lexer_lex(const char *path);
 
 /**
- * @brief Frees the memory of a Lexer
+ * @brief Frees a Lexer and its tokens.
  *
  * @param l Double pointer to a Lexer, sets to NULL
  *          the pointer after freeing
@@ -27,11 +28,12 @@ Lexer *lexer_lex(const char *path);
 void lexer_deinit(Lexer **l);
 
 /**
- * @brief retrieves the tokens from the Lexer
+ * @brief Retrieves the tokens owned by a Lexer.
  *
  * @param l Pointer to a heap allocated Lexer
  *
- * @return Pointer to the TokenArr, NULL on l == NULL
+ * @return Read-only pointer to the TokenArr, or NULL if l is NULL. The pointer
+ *         remains valid only until lexer_deinit() is called for l.
  */
 const TokenArr *lexer_tokens(const Lexer *l);
 
