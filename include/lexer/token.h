@@ -135,29 +135,53 @@ typedef enum {
 } TokenType;
 
 /**
- * @brief Single Token
+ * @brief A single lexical unit found in the source file
  */
 typedef struct {
-    TokenType type;                 /* < Token type from the enum TokenType */
-    char lexeme[TOKEN_BUF_MAX_CAP]; /* < Value found in source code */
-    int line; /* < Number of line where token was found at */
-    int col;  /* < Number of column where token was found at */
+    /** Kind of token, one of the values of TokenType. */
+    TokenType type;
+
+    /**
+     * Text of the token as written in the source, always NUL-terminated.
+     *
+     * - Quotes are not included: the string "hi" is stored as hi, and the
+     *   character 'a' is stored as a.
+     * - Escape sequences are kept as written: a backslash followed by n is
+     *   stored as two characters, not as a newline.
+     * - The TOK_EOF token has an empty lexeme.
+     * - Text longer than TOKEN_BUF_MAX_CAP - 1 characters is truncated and the
+     *   token is reported as TOK_INVALID.
+     */
+    char lexeme[TOKEN_BUF_MAX_CAP];
+
+    /** Line where the token starts, counting from 1. */
+    int line;
+
+    /** Column of the first character of the token, counting from 1. */
+    int col;
 } Token;
 
 /**
- * @brief Prints the elements of a Token
+ * @brief Prints a token to stdout on a single line.
  *
- * @param t Pointer to Token
+ * The output looks like "[ 3:7 ]    KW_INT(int)": the line and column, the type
+ * name given by token_type_to_str(), and the lexeme between parentheses.
+ *
+ * @param t Token to print. Must not be NULL.
  */
 void token_println(const Token *t);
 
 /**
- * @brief Returns a string literal of the string type based on a given token
- * type
+ * @brief Gives the printable name of a token type.
  *
- * @param t Token type
+ * The name is the enumerator without its TOK_ prefix, for example "PLUS",
+ * "KW_INT" or "EOF". It is meant for printing and debugging.
  *
- * @return String literal containing the type of token
+ * @param t Token type to look up.
+ *
+ * @return A string literal with the name of the type, or "UNKNOWN" if t is not
+ *         a valid TokenType value. The string is owned by the library: do not
+ *         modify it or free it.
  */
 const char *token_type_to_str(TokenType t);
 
