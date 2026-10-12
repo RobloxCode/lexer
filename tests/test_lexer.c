@@ -10,7 +10,7 @@
 #include <unistd.h>
 
 /*
- * Writes `source` to a temporary file, lexes it and returns the Lexer
+ * Writes source to a temporary file, lexes it and returns the Lexer
  * (NULL on failure). The temporary file is removed before returning.
  */
 static Lexer *_lex_string(const char *source) {
@@ -48,8 +48,8 @@ static Token _token_at(const Lexer *l, size_t idx) {
 }
 
 /*
- * Lexes `source` and checks the exact sequence of token types.
- * `line` is the line of the assertion in this file, used in failure messages.
+ * Lexes 'source' and checks the exact sequence of token types.
+ * 'line' is the line of the assertion in this file, used in failure messages.
  */
 static void _check_types(const char *source, const TokenType *want, size_t n,
                          int line) {

@@ -109,7 +109,7 @@ static int tests_failed = 0;
         TEST_PASS(#ptr " != NULL");                                            \
     } while (0)
 
-/* Runs a `static void name(void)` test function. */
+/* Runs a 'static void name(void)' test function. */
 #define RUN_TEST(test)                                                         \
     do {                                                                       \
         printf("[TEST] %s\n", #test);                                          \
