@@ -7,12 +7,21 @@ whitespace and comments.
 The library is built as a static archive (`liblexer.a`) with a small public
 API, so you can clone it, build it, and use it from your own `main.c`.
 
-## Requirements
+you can just simply clone the repo into your machine with 
+-`git clone github.com/RobloxCode/lexer lexer`
 
-- GCC or Clang with C11 support
-- GNU make
+you can just compile the program
+- `make -C lexer`
 
-## Clone and build
+you also have to include
+- `#include "lexer/lexer.h"`
+- `#include "lexer/token_arr.h"`
+
+
+compile your program 
+- `gcc file.c -Ilexer/include lexer/build/liblexer.a -o app`
+  
+the output binary will be placed in bin/out
 
 ```sh
 git clone https://github.com/RobloxCode/lexer.git
