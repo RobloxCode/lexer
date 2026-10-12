@@ -43,6 +43,10 @@ install: $(LIB)
 	install -m 644 $(LIB) $(PREFIX)/lib
 	install -m 644 include/lexer/*.h $(PREFIX)/include/lexer
 
+uninstall:
+	rm -f $(PREFIX)/lib/liblexer.a
+	rm -rf $(PREFIX)/include/lexer
+
 clean:
 	rm -rf $(BUILD)
 
