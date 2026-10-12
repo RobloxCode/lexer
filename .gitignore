@@ -1,1 +1,20 @@
+# Build output (covers build/ at the repo root and tests/build/)
 build/
+
+# Object files, dependency files and libraries, in case they land elsewhere
+*.o
+*.d
+*.a
+
+# Sanitizer and debugger leftovers
+core
+*.dSYM/
+
+# clangd index and generated compilation database
+.cache/
+compile_commands.json
+
+# Editor and OS files
+*.swp
+*~
+.DS_Store
