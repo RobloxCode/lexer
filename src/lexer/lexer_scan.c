@@ -93,16 +93,13 @@ static int _handle_number(Lexer *l) {
         window[i] = (char)look[i];
     }
 
-    printf("window: %s\n", window);
-
-    for (size_t i = 0; i < C_LONGEST_INT_SUFFIX; ++i) {
+    for (size_t i = 0;
+         i < sizeof possible_suffixes / sizeof possible_suffixes[0]; ++i) {
         if (strcmp(window, possible_suffixes[i]) == 0) {
-            printf("window is a suffix: %s\n", window);
-            // for (size_t i = 0; i < C_LONGEST_INT_SUFFIX; ++i) {
-            //     printf("char %c\n", window[i]);
-            //     lexer_advance(l);
-            //     _push(l, l->cur);
-            // }
+            for (size_t i = 0; i < C_LONGEST_INT_SUFFIX; ++i) {
+                lexer_advance(l);
+                _push(l, l->cur);
+            }
         }
     }
 
