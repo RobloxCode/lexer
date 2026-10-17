@@ -69,6 +69,7 @@ static int _handle_str(Lexer *l) {
     return 0;
 }
 
+// TODO: add support for hex, octal, and binary numbers
 static int _handle_number(Lexer *l) {
     int count_dot = 0;
 
