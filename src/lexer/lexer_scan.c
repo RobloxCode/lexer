@@ -13,6 +13,7 @@
 #define NUM_TOK_TYPE         "NUMBER"
 #define INVALID_NUM_TOK_TYPE "INVALID NUMBER"
 #define C_LONGEST_OP_LEN     3
+#define C_LONGEST_INT_SUFFIX 3
 
 static void _push(Lexer *l, int c) {
     if (strbuf_push(&l->cur_word, c) != 0) {
@@ -71,6 +72,8 @@ static int _handle_str(Lexer *l) {
 
 // TODO: add support for hex, octal, and binary numbers
 static int _handle_number(Lexer *l) {
+    char *possible_suffixes[] = {"U", "L", "UL", "LU", "LL", "ULL", "LLU",
+                                 "u", "l", "ul", "lu", "ll", "ull", "llu"};
     int count_dot = 0;
 
     while (is_digit(l->peek) || l->peek == '.') {
@@ -83,11 +86,24 @@ static int _handle_number(Lexer *l) {
         _push(l, l->cur);
     }
 
-    if (l->peek == 'F' || l->peek == 'f' || l->peek == 'L' || l->peek == 'l'
-        || l->peek == 'U' || l->peek == 'u' || l->peek == 'D'
-        || l->peek == 'd') {
-        lexer_advance(l);
-        _push(l, l->cur);
+    int look[C_LONGEST_INT_SUFFIX] = {l->peek, l->peek2, l->peek3};
+    char window[C_LONGEST_INT_SUFFIX + 1] = {0};
+
+    for (size_t i = 0; i < C_LONGEST_INT_SUFFIX && look[i] != EOF; ++i) {
+        window[i] = (char)look[i];
+    }
+
+    printf("window: %s\n", window);
+
+    for (size_t i = 0; i < C_LONGEST_INT_SUFFIX; ++i) {
+        if (strcmp(window, possible_suffixes[i]) == 0) {
+            printf("window is a suffix: %s\n", window);
+            // for (size_t i = 0; i < C_LONGEST_INT_SUFFIX; ++i) {
+            //     printf("char %c\n", window[i]);
+            //     lexer_advance(l);
+            //     _push(l, l->cur);
+            // }
+        }
     }
 
     return count_dot;
