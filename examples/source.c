@@ -3,10 +3,8 @@
 int main(void) {
     puts("hello");
     int num = 23ull;
-    int num2 = 34ULL;
-    int num3 = 34UL;
-    int num4 = 34ll;
-    int num5 = 34lL;
-    int num6 = 34uLl;
+    int num2 = 3ULL;
+    int num3 = 3LLu;
+    int num4 = 3Ull;
     return 0;
 }

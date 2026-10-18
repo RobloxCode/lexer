@@ -1,5 +1,6 @@
 #include "lexer_scan.h"
 
+#include "lexer/token.h"
 #include "lexer_internal.h"
 #include "str_buf/str_buf.h"
 #include "token/token_internal.h"
@@ -15,6 +16,14 @@
 #define INVALID_NUM_TOK_TYPE "INVALID NUMBER"
 #define C_LONGEST_OP_LEN     3
 #define C_LONGEST_INT_SUFFIX 3
+
+typedef enum {
+    INTEGER,
+    FLOAT,
+    INCORRECT_FLOAT_NUMBER,
+    INCORRECT_INTEGER_SUFFIX,
+    WRONG_NUMBER,
+} HandleNumberStatus;
 
 static void _push(Lexer *l, int c) {
     if (strbuf_push(&l->cur_word, c) != 0) {
@@ -71,10 +80,11 @@ static int _handle_str(Lexer *l) {
     return 0;
 }
 
-static int _handle_number(Lexer *l) {
-    char *correct_suffixes[] = {
-        "U",  "u",  "L",  "l",   "UL",  "Ul",  "uL",  "ul",  "LU",  "Lu", "lU",
-        "lu", "LL", "ll", "ULL", "uLL", "Ull", "LLU", "LLu", "llU", "llu"};
+static HandleNumberStatus _handle_number(Lexer *l) {
+    char *correct_suffixes[] = {"U",   "u",   "L",   "l",   "UL",  "Ul",
+                                "uL",  "ul",  "LU",  "Lu",  "lU",  "ull",
+                                "lu",  "LL",  "ll",  "ULL", "uLL", "Ull",
+                                "LLU", "LLu", "llU", "llu"};
 
     char *incorrect_suffixes[] = {
         "lL", "Ll", "UlL", "ULl", "ulL", "uLl", "Llu", "lLu", "LlU",
@@ -124,12 +134,18 @@ static int _handle_number(Lexer *l) {
                     _push(l, l->cur);
                 }
 
-                return 2;
+                return INCORRECT_INTEGER_SUFFIX;
             }
         }
     }
 
-    return count_dot;
+    if (count_dot > 1) {
+        return INCORRECT_FLOAT_NUMBER;
+    } else if (count_dot == 1) {
+        return FLOAT;
+    }
+
+    return INTEGER;
 }
 
 static void _handle_one_line_comment(Lexer *l) {
@@ -234,14 +250,30 @@ static void _scan_comment_or_op(Lexer *l) {
 static void _scan_number(Lexer *l) {
     TokenType type;
 
-    int dots = _handle_number(l);
+    HandleNumberStatus status = _handle_number(l);
 
-    if (dots == 0) {
-        type = TOK_INTEGER;
-    } else if (dots == 1) {
-        type = TOK_FLOAT;
-    } else {
-        type = TOK_INVALID_NUMBER;
+    switch (status) {
+        case INTEGER:
+            type = TOK_INTEGER;
+            break;
+
+        case FLOAT:
+            type = TOK_FLOAT;
+            break;
+
+        case INCORRECT_FLOAT_NUMBER:
+            // TODO: create token TO_MANY_DECIMAL_POINTS
+            type = TOK_INVALID_NUMBER;
+            break;
+
+        case INCORRECT_INTEGER_SUFFIX:
+            // TODO: create token INVALID_SUFFIX
+            type = TOK_INVALID_NUMBER;
+            break;
+
+        case WRONG_NUMBER:
+            type = TOK_INVALID_NUMBER;
+            break;
     }
 
     _emit_word(l, type);
