@@ -6,6 +6,6 @@ int main(void) {
     int num2 = 34ULL;
     int num3 = 34UL;
     int num4 = 34ll;
-    int num5 = 34Ull;
+    int num5 = 34ull;
     return 0;
 }

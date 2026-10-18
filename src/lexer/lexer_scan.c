@@ -74,6 +74,12 @@ static int _handle_str(Lexer *l) {
 static int _handle_number(Lexer *l) {
     char *possible_suffixes[] = {"U", "L", "UL", "LU", "LL", "ULL", "LLU",
                                  "u", "l", "ul", "lu", "ll", "ull", "llu"};
+
+    // TODO: complete the list
+    // in c11 we can only have LL or ll at the same time
+    char *incorrect_suffixes[] = {"uL",  "Ul",  "lU",  "Lu",  "lL",  "Ll",
+                                  "uLL", "UlL", "ULl", "ulL", "uLl", "ULl"};
+
     int count_dot = 0;
 
     while (is_digit(l->peek) || l->peek == '.') {
@@ -111,6 +117,18 @@ static int _handle_number(Lexer *l) {
                 }
             }
         }
+
+        // for (size_t i = 0;
+        //      i < sizeof incorrect_suffixes / sizeof incorrect_suffixes[0];
+        //      ++i) {
+        //     if (strcmp(tmp_buf, incorrect_suffixes[i]) == 0) {
+        //         for (size_t i = 0; i < suffix_len; ++i) {
+        //             lexer_advance(l);
+        //             _push(l, l->cur);
+        //             return 2;
+        //         }
+        //     }
+        // }
     }
 
     return count_dot;
