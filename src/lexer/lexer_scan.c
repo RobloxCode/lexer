@@ -9,6 +9,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define ARRAY_LENGTH(a)      (sizeof(a) / sizeof((a)[0]))
 #define STR_TOK_TYPE         "STRING"
 #define NUM_TOK_TYPE         "NUMBER"
 #define INVALID_NUM_TOK_TYPE "INVALID NUMBER"
@@ -70,15 +71,14 @@ static int _handle_str(Lexer *l) {
     return 0;
 }
 
-// TODO: add support for hex, octal, and binary numbers
 static int _handle_number(Lexer *l) {
-    char *possible_suffixes[] = {"U", "L", "UL", "LU", "LL", "ULL", "LLU",
-                                 "u", "l", "ul", "lu", "ll", "ull", "llu"};
+    char *correct_suffixes[] = {
+        "U",  "u",  "L",  "l",   "UL",  "Ul",  "uL",  "ul",  "LU",  "Lu", "lU",
+        "lu", "LL", "ll", "ULL", "uLL", "Ull", "LLU", "LLu", "llU", "llu"};
 
-    // TODO: complete the list
-    // in c11 we can only have LL or ll at the same time
-    char *incorrect_suffixes[] = {"uL",  "Ul",  "lU",  "Lu",  "lL",  "Ll",
-                                  "uLL", "UlL", "ULl", "ulL", "uLl", "ULl"};
+    char *incorrect_suffixes[] = {
+        "lL", "Ll", "UlL", "ULl", "ulL", "uLl", "Llu", "lLu", "LlU",
+    };
 
     int count_dot = 0;
 
@@ -107,9 +107,8 @@ static int _handle_number(Lexer *l) {
             tmp_buf[i] = window[i];
         }
 
-        for (size_t i = 0;
-             i < sizeof possible_suffixes / sizeof possible_suffixes[0]; ++i) {
-            if (strcmp(tmp_buf, possible_suffixes[i]) == 0) {
+        for (size_t i = 0; i < ARRAY_LENGTH(correct_suffixes); ++i) {
+            if (strcmp(tmp_buf, correct_suffixes[i]) == 0) {
                 for (size_t i = 0; i < suffix_len; ++i) {
                     lexer_advance(l);
                     _push(l, l->cur);
@@ -118,17 +117,16 @@ static int _handle_number(Lexer *l) {
             }
         }
 
-        // for (size_t i = 0;
-        //      i < sizeof incorrect_suffixes / sizeof incorrect_suffixes[0];
-        //      ++i) {
-        //     if (strcmp(tmp_buf, incorrect_suffixes[i]) == 0) {
-        //         for (size_t i = 0; i < suffix_len; ++i) {
-        //             lexer_advance(l);
-        //             _push(l, l->cur);
-        //             return 2;
-        //         }
-        //     }
-        // }
+        for (size_t i = 0; i < ARRAY_LENGTH(incorrect_suffixes); ++i) {
+            if (strcmp(tmp_buf, incorrect_suffixes[i]) == 0) {
+                for (size_t i = 0; i < suffix_len; ++i) {
+                    lexer_advance(l);
+                    _push(l, l->cur);
+                }
+
+                return 2;
+            }
+        }
     }
 
     return count_dot;
