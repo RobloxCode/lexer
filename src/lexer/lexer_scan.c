@@ -85,16 +85,6 @@ static int _handle_str(Lexer *l) {
     return 0;
 }
 
-static bool _all_letters(const char *items, const size_t len) {
-    for (size_t i = 0; i < len; ++i) {
-        if (!is_letter(items[i])) {
-            return false;
-        }
-    }
-
-    return true;
-}
-
 static bool _is_suffix(const char *s) {
     for (size_t i = 0; i < ARRAY_LENGTH(correct_suffixes); ++i) {
         if (strcmp(s, correct_suffixes[i]) == 0) {
@@ -133,7 +123,7 @@ static HandleNumberStatus _handle_number(Lexer *l) {
             tmp_buf[i] = window[i];
         }
 
-        if (_all_letters(tmp_buf, suffix_len) && !_is_suffix(tmp_buf)) {
+        if (all_letters(tmp_buf, suffix_len) && !_is_suffix(tmp_buf)) {
             for (size_t i = 0; i < suffix_len; ++i) {
                 lexer_advance(l);
                 _push(l, l->cur);

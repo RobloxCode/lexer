@@ -16,5 +16,6 @@ bool is_digit(const int c);
 bool is_letter(const int c);
 bool is_operator(const char *s, size_t *found_idx);
 bool is_keyword(const char *s, size_t *idx);
+bool all_letters(const char *items, const size_t len);
 
 #endif

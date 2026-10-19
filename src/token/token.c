@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <string.h>
 
+// TODO: is_keyword, is_operator and is_delimeter are all the same
 bool is_keyword(const char *s, size_t *idx) {
     for (size_t i = 0; i < tok_definitions_len; ++i) {
         if (tok_definitions[i].lexeme == NULL) {
@@ -103,6 +104,16 @@ bool is_number(const char *s) {
 
 bool is_letter(const int c) {
     return (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z');
+}
+
+bool all_letters(const char *items, const size_t len) {
+    for (size_t i = 0; i < len; ++i) {
+        if (!is_letter(items[i])) {
+            return false;
+        }
+    }
+
+    return true;
 }
 
 static bool _is_identifier(const char *s) {
