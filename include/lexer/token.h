@@ -132,6 +132,7 @@ typedef enum {
     TOK_CONDITIONAL,
     TOK_INVALID_STR,
     TOK_INVALID_CHAR,
+    TOK_INVALID_SUFFIX,
 } TokenType;
 
 /**

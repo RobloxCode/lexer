@@ -25,6 +25,10 @@ typedef enum {
     WRONG_NUMBER,
 } HandleNumberStatus;
 
+static const char *correct_suffixes[] = {
+    "U",   "u",  "L",  "l",  "UL",  "Ul",  "uL",  "ul",  "LU",  "Lu",  "lU",
+    "ull", "lu", "LL", "ll", "ULL", "uLL", "Ull", "LLU", "LLu", "llU", "llu"};
+
 static void _push(Lexer *l, int c) {
     if (strbuf_push(&l->cur_word, c) != 0) {
         l->overflow = true;
@@ -80,16 +84,27 @@ static int _handle_str(Lexer *l) {
     return 0;
 }
 
+static bool _all_letters(const char *items, const size_t len) {
+    for (size_t i = 0; i < len; ++i) {
+        if (!is_letter(items[i])) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+static bool _is_suffix(const char *s) {
+    for (size_t i = 0; i < ARRAY_LENGTH(correct_suffixes); ++i) {
+        if (strcmp(s, correct_suffixes[i]) == 0) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 static HandleNumberStatus _handle_number(Lexer *l) {
-    char *correct_suffixes[] = {"U",   "u",   "L",   "l",   "UL",  "Ul",
-                                "uL",  "ul",  "LU",  "Lu",  "lU",  "ull",
-                                "lu",  "LL",  "ll",  "ULL", "uLL", "Ull",
-                                "LLU", "LLu", "llU", "llu"};
-
-    char *incorrect_suffixes[] = {
-        "lL", "Ll", "UlL", "ULl", "ulL", "uLl", "Llu", "lLu", "LlU",
-    };
-
     int count_dot = 0;
 
     while (is_digit(l->peek) || l->peek == '.') {
@@ -117,24 +132,20 @@ static HandleNumberStatus _handle_number(Lexer *l) {
             tmp_buf[i] = window[i];
         }
 
-        for (size_t i = 0; i < ARRAY_LENGTH(correct_suffixes); ++i) {
-            if (strcmp(tmp_buf, correct_suffixes[i]) == 0) {
-                for (size_t i = 0; i < suffix_len; ++i) {
-                    lexer_advance(l);
-                    _push(l, l->cur);
-                    break;
-                }
+        if (_all_letters(tmp_buf, suffix_len) && !_is_suffix(tmp_buf)) {
+            for (size_t i = 0; i < suffix_len; ++i) {
+                lexer_advance(l);
+                _push(l, l->cur);
             }
+
+            return INCORRECT_INTEGER_SUFFIX;
         }
 
-        for (size_t i = 0; i < ARRAY_LENGTH(incorrect_suffixes); ++i) {
-            if (strcmp(tmp_buf, incorrect_suffixes[i]) == 0) {
-                for (size_t i = 0; i < suffix_len; ++i) {
-                    lexer_advance(l);
-                    _push(l, l->cur);
-                }
-
-                return INCORRECT_INTEGER_SUFFIX;
+        if (_is_suffix(tmp_buf)) {
+            for (size_t i = 0; i < suffix_len; ++i) {
+                lexer_advance(l);
+                _push(l, l->cur);
+                break;
             }
         }
     }
@@ -248,7 +259,7 @@ static void _scan_comment_or_op(Lexer *l) {
 }
 
 static void _scan_number(Lexer *l) {
-    TokenType type;
+    TokenType type = TOK_INVALID_NUMBER;
 
     HandleNumberStatus status = _handle_number(l);
 
@@ -267,8 +278,7 @@ static void _scan_number(Lexer *l) {
             break;
 
         case INCORRECT_INTEGER_SUFFIX:
-            // TODO: create token INVALID_SUFFIX
-            type = TOK_INVALID_NUMBER;
+            type = TOK_INVALID_SUFFIX;
             break;
 
         case WRONG_NUMBER:

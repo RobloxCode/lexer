@@ -123,6 +123,7 @@ const TokenDef tok_definitions[] = {
     [TOK_CONDITIONAL] = {"CONDITIONAL", "?", TOK_CONDITIONAL},
     [TOK_INVALID_STR] = {"INVALID_STR", NULL, TOK_INVALID_STR},
     [TOK_INVALID_CHAR] = {"INVALID_CHAR", NULL, TOK_INVALID_CHAR},
+    [TOK_INVALID_SUFFIX] = {"INVALID_SUFFIX", NULL, TOK_INVALID_SUFFIX},
 };
 
 const size_t tok_definitions_len =
