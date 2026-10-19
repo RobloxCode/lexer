@@ -25,7 +25,7 @@ typedef enum {
     WRONG_NUMBER,
 } HandleNumberStatus;
 
-static const char *correct_suffixes[] = {
+static const char *possible_suffixes[] = {
     "U",   "u",   "L",   "l",   "UL",  "Ul",  "uL", "ul",
     "LU",  "Lu",  "lU",  "ull", "lu",  "LL",  "ll", "ULL",
     "uLL", "Ull", "LLU", "LLu", "llU", "llu", "f",  "F"};
@@ -86,8 +86,8 @@ static int _handle_str(Lexer *l) {
 }
 
 static bool _is_suffix(const char *s) {
-    for (size_t i = 0; i < ARRAY_LENGTH(correct_suffixes); ++i) {
-        if (strcmp(s, correct_suffixes[i]) == 0) {
+    for (size_t i = 0; i < ARRAY_LENGTH(possible_suffixes); ++i) {
+        if (strcmp(s, possible_suffixes[i]) == 0) {
             return true;
         }
     }
