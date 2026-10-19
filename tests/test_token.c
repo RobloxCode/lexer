@@ -172,7 +172,7 @@ static void test_token_init_classifies_the_word(void) {
  * lookups silently return the wrong data. This catches that.
  */
 static void test_definition_table_matches_the_enum(void) {
-    ASSERT_EQ_SIZE(tok_definitions_len, (size_t)TOK_INVALID_CHAR + 1);
+    ASSERT_EQ_SIZE(tok_definitions_len, (size_t)TOK_INVALID_SUFFIX + 1);
 
     for (size_t i = 0; i < tok_definitions_len; ++i) {
         tests_run++;

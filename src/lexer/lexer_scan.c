@@ -26,8 +26,9 @@ typedef enum {
 } HandleNumberStatus;
 
 static const char *correct_suffixes[] = {
-    "U",   "u",  "L",  "l",  "UL",  "Ul",  "uL",  "ul",  "LU",  "Lu",  "lU",
-    "ull", "lu", "LL", "ll", "ULL", "uLL", "Ull", "LLU", "LLu", "llU", "llu"};
+    "U",   "u",   "L",   "l",   "UL",  "Ul",  "uL", "ul",
+    "LU",  "Lu",  "lU",  "ull", "lu",  "LL",  "ll", "ULL",
+    "uLL", "Ull", "LLU", "LLu", "llU", "llu", "f",  "F"};
 
 static void _push(Lexer *l, int c) {
     if (strbuf_push(&l->cur_word, c) != 0) {
