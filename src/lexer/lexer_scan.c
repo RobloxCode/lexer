@@ -95,6 +95,8 @@ static bool _is_suffix(const char *s) {
     return false;
 }
 
+// TODO: this works but only with 3 digit suffixes.
+// Image the user types 3ulllll
 static HandleNumberStatus _handle_number(Lexer *l) {
     int count_dot = 0;
 
