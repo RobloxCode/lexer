@@ -96,7 +96,8 @@ static bool _is_suffix(const char *s) {
 }
 
 // TODO: this works but only with 3 digit suffixes.
-// Image the user types 3ulllll
+// Image the user types 3ulllll, it would check for
+// max 3 digits after the whole number
 static HandleNumberStatus _handle_number(Lexer *l) {
     int count_dot = 0;
 
