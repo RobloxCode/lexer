@@ -88,6 +88,13 @@ static void test_clear_resets_and_allows_reuse(void) {
     ASSERT_STR_EQ(sb.items, "c");
 }
 
+static void test_push_str(void) {
+    StrBuf sb;
+    strbuf_init(&sb);
+
+    ASSERT_EQ_INT(strbuf_push_str(&sb, "this text is added"), 0);
+}
+
 int main(void) {
     RUN_TEST(test_init_zeroes_everything);
     RUN_TEST(test_init_null_is_safe);
@@ -95,6 +102,7 @@ int main(void) {
     RUN_TEST(test_push_stops_before_the_terminator);
     RUN_TEST(test_set_writes_and_checks_bounds);
     RUN_TEST(test_clear_resets_and_allows_reuse);
+    RUN_TEST(test_push_str);
 
     return test_summary();
 }
