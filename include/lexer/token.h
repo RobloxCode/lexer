@@ -1,7 +1,7 @@
 #ifndef LEXER_TOKEN_H
 #define LEXER_TOKEN_H
 
-#define TOKEN_BUF_MAX_CAP 255
+#define TOKEN_BUF_MAX_CAP 300
 
 #ifdef __cplusplus
 extern "C" {
@@ -132,6 +132,7 @@ typedef enum {
     TOK_CONDITIONAL,
     TOK_INVALID_STR,
     TOK_INVALID_CHAR,
+    TOK_INVALID_SUFFIX,
 } TokenType;
 
 /**
@@ -152,6 +153,9 @@ typedef struct {
      * - Text longer than TOKEN_BUF_MAX_CAP - 1 characters is truncated and the
      *   token is reported as TOK_INVALID.
      */
+
+    // TODO: change this to char *lexeme
+    // and also could add a size_t len
     char lexeme[TOKEN_BUF_MAX_CAP];
 
     /** Line where the token starts, counting from 1. */

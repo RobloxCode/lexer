@@ -1,5 +1,6 @@
 #include "lexer_scan.h"
 
+#include "lexer/token.h"
 #include "lexer_internal.h"
 #include "str_buf/str_buf.h"
 #include "token/token_internal.h"
@@ -9,10 +10,25 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define ARRAY_LENGTH(a)      (sizeof(a) / sizeof((a)[0]))
 #define STR_TOK_TYPE         "STRING"
 #define NUM_TOK_TYPE         "NUMBER"
 #define INVALID_NUM_TOK_TYPE "INVALID NUMBER"
 #define C_LONGEST_OP_LEN     3
+#define C_LONGEST_INT_SUFFIX 3
+
+typedef enum {
+    INTEGER,
+    FLOAT,
+    INCORRECT_FLOAT_NUMBER,
+    INCORRECT_INTEGER_SUFFIX,
+    WRONG_NUMBER,
+} HandleNumberStatus;
+
+static const char *possible_suffixes[] = {
+    "U",   "u",   "L",   "l",   "UL",  "Ul",  "uL", "ul",
+    "LU",  "Lu",  "lU",  "ull", "lu",  "LL",  "ll", "ULL",
+    "uLL", "Ull", "LLU", "LLu", "llU", "llu", "f",  "F"};
 
 static void _push(Lexer *l, int c) {
     if (strbuf_push(&l->cur_word, c) != 0) {
@@ -69,8 +85,17 @@ static int _handle_str(Lexer *l) {
     return 0;
 }
 
-// TODO: add support for hex, octal, and binary numbers
-static int _handle_number(Lexer *l) {
+static bool _is_suffix(const char *s) {
+    for (size_t i = 0; i < ARRAY_LENGTH(possible_suffixes); ++i) {
+        if (strcmp(s, possible_suffixes[i]) == 0) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+static HandleNumberStatus _handle_number(Lexer *l) {
     int count_dot = 0;
 
     while (is_digit(l->peek) || l->peek == '.') {
@@ -83,14 +108,53 @@ static int _handle_number(Lexer *l) {
         _push(l, l->cur);
     }
 
-    if (l->peek == 'F' || l->peek == 'f' || l->peek == 'L' || l->peek == 'l'
-        || l->peek == 'U' || l->peek == 'u' || l->peek == 'D'
-        || l->peek == 'd') {
-        lexer_advance(l);
-        _push(l, l->cur);
+    int look[C_LONGEST_INT_SUFFIX] = {l->peek, l->peek2, l->peek3};
+    char window[C_LONGEST_INT_SUFFIX + 1] = {0};
+
+    for (size_t i = 0; i < C_LONGEST_INT_SUFFIX && look[i] != EOF; ++i) {
+        window[i] = (char)look[i];
     }
 
-    return count_dot;
+    for (size_t suffix_len = C_LONGEST_INT_SUFFIX; suffix_len > 0;
+         --suffix_len) {
+        char tmp_buf[C_LONGEST_INT_SUFFIX + 1] = {0};
+
+        for (size_t i = 0; i < suffix_len; ++i) {
+            tmp_buf[i] = window[i];
+        }
+
+        if (all_letters(tmp_buf, suffix_len) && !_is_suffix(tmp_buf)) {
+            for (size_t i = 0; i < suffix_len; ++i) {
+                lexer_advance(l);
+                _push(l, l->cur);
+            }
+
+            return INCORRECT_INTEGER_SUFFIX;
+        }
+
+        if (_is_suffix(tmp_buf)) {
+            for (size_t i = 0; i < suffix_len; ++i) {
+                lexer_advance(l);
+                _push(l, l->cur);
+                break;
+            }
+        }
+    }
+
+    // TODO: we could add this and the next
+    // token and put them together to make one
+    // right incorrect_integer_suffix
+    if (is_letter(l->peek)) {
+        return INCORRECT_INTEGER_SUFFIX;
+    }
+
+    if (count_dot > 1) {
+        return INCORRECT_FLOAT_NUMBER;
+    } else if (count_dot == 1) {
+        return FLOAT;
+    }
+
+    return INTEGER;
 }
 
 static void _handle_one_line_comment(Lexer *l) {
@@ -193,16 +257,30 @@ static void _scan_comment_or_op(Lexer *l) {
 }
 
 static void _scan_number(Lexer *l) {
-    TokenType type;
+    TokenType type = TOK_INVALID_NUMBER;
 
-    int dots = _handle_number(l);
+    HandleNumberStatus status = _handle_number(l);
 
-    if (dots == 0) {
-        type = TOK_INTEGER;
-    } else if (dots == 1) {
-        type = TOK_FLOAT;
-    } else {
-        type = TOK_INVALID_NUMBER;
+    switch (status) {
+        case INTEGER:
+            type = TOK_INTEGER;
+            break;
+
+        case FLOAT:
+            type = TOK_FLOAT;
+            break;
+
+        case INCORRECT_FLOAT_NUMBER:
+            type = TOK_INVALID_NUMBER;
+            break;
+
+        case INCORRECT_INTEGER_SUFFIX:
+            type = TOK_INVALID_SUFFIX;
+            break;
+
+        case WRONG_NUMBER:
+            type = TOK_INVALID_NUMBER;
+            break;
     }
 
     _emit_word(l, type);

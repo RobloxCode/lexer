@@ -15,6 +15,9 @@ typedef struct {
                            (INCREMENT, LPAREN, ...) */
     char *lexeme; /* < The elements that the expression has (++, ), ...) */
     TokenType tok_type; /* < Actuall token type*/
+
+    // TODO: add a category field, this could be keyword, delimeter, operator
+
 } TokenDef;
 
 /**
