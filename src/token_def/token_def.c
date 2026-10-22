@@ -1,5 +1,7 @@
 #include "token_def.h"
 
+#include "lexer/token.h"
+
 const TokenDef tok_definitions[] = {
     // delimiters
     [TOK_LPAREN] = {"LPAREN", "(", TOK_LPAREN},
@@ -124,6 +126,8 @@ const TokenDef tok_definitions[] = {
     [TOK_INVALID_STR] = {"INVALID_STR", NULL, TOK_INVALID_STR},
     [TOK_INVALID_CHAR] = {"INVALID_CHAR", NULL, TOK_INVALID_CHAR},
     [TOK_INVALID_SUFFIX] = {"INVALID_SUFFIX", NULL, TOK_INVALID_SUFFIX},
+    [TOK_UNTERMINATED_COMMENT] = {"UNTERMINATED_COMMENT", NULL,
+                                  TOK_UNTERMINATED_COMMENT},
 };
 
 const size_t tok_definitions_len =

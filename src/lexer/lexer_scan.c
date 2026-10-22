@@ -163,7 +163,7 @@ static void _handle_one_line_comment(Lexer *l) {
     }
 }
 
-static void _handle_multiline_comment(Lexer *l) {
+static int _handle_multiline_comment(Lexer *l) {
     lexer_advance(l);
     lexer_advance(l);
 
@@ -173,8 +173,14 @@ static void _handle_multiline_comment(Lexer *l) {
             break;
         }
 
+        if (l->peek == EOF) {
+            return 1;
+        }
+
         lexer_advance(l);
     }
+
+    return 0;
 }
 
 static void _handle_identifier(Lexer *l) {
@@ -249,7 +255,17 @@ static void _scan_comment_or_op(Lexer *l) {
     }
 
     if (l->peek == '*') {
-        _handle_multiline_comment(l);
+        if (_handle_multiline_comment(l) != 0) {
+            // TODO: add a strbuf_push_str function
+            strbuf_push(&l->cur_word, '/');
+            strbuf_push(&l->cur_word, '*');
+            strbuf_push(&l->cur_word, '*');
+            strbuf_push(&l->cur_word, '.');
+            strbuf_push(&l->cur_word, '.');
+            strbuf_push(&l->cur_word, '.');
+            _emit_word(l, TOK_UNTERMINATED_COMMENT);
+        }
+
         return;
     }
 
