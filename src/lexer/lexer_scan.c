@@ -256,13 +256,7 @@ static void _scan_comment_or_op(Lexer *l) {
 
     if (l->peek == '*') {
         if (_handle_multiline_comment(l) != 0) {
-            // TODO: add a strbuf_push_str function
-            strbuf_push(&l->cur_word, '/');
-            strbuf_push(&l->cur_word, '*');
-            strbuf_push(&l->cur_word, '*');
-            strbuf_push(&l->cur_word, '.');
-            strbuf_push(&l->cur_word, '.');
-            strbuf_push(&l->cur_word, '.');
+            strbuf_push_str(&l->cur_word, "/**...");
             _emit_word(l, TOK_UNTERMINATED_COMMENT);
         }
 
