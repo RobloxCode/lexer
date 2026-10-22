@@ -45,6 +45,12 @@ int strbuf_set(StrBuf *sb, const char c, const size_t i);
  */
 void strbuf_clear(StrBuf *sb);
 
+/**
+ * @brief Pushes every character of s into sb
+ *
+ * @param sb Pointer to StrBuf
+ *        s  C string
+ */
 int strbuf_push_str(StrBuf *sb, const char *s);
 
 #endif
