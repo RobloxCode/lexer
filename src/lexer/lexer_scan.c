@@ -306,11 +306,13 @@ static void _scan_invalid_char(Lexer *l) {
 
 static int _handle_char(Lexer *l) {
     lexer_advance(l);
+    size_t len = 0;
 
     while (l->cur != EOF && l->cur != '\'') {
         if (l->cur == '\\') {
             _push(l, l->cur);
             lexer_advance(l);
+            continue;
         }
 
         if (l->cur == EOF) {
@@ -319,9 +321,15 @@ static int _handle_char(Lexer *l) {
 
         _push(l, l->cur);
         lexer_advance(l);
+
+        len++;
     }
 
     if (l->cur == EOF) {
+        return 1;
+    }
+
+    if (len > 1) {
         return 1;
     }
 
