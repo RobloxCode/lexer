@@ -7,7 +7,7 @@ int main(void) {
 
     /* Long int: L */
     int n3 = 10l;
-    int n4 = 10L;
+    int n4 = 10LLuu;
 
     double f5 = 38.8lf;
 

@@ -144,6 +144,10 @@ static HandleNumberStatus _handle_number(Lexer *l) {
         }
     }
 
+    if (is_letter(l->peek)) {
+        return INCORRECT_INTEGER_SUFFIX;
+    }
+
     if (count_dot > 1) {
         return INCORRECT_FLOAT_NUMBER;
     } else if (count_dot == 1) {
