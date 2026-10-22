@@ -34,3 +34,15 @@ void strbuf_clear(StrBuf *sb) {
     memset(sb->items, 0, sizeof sb->items);
     sb->count = 0;
 }
+
+int strbuf_push_str(StrBuf *sb, const char *s) {
+    if (!sb || !s || strlen(s) > STR_BUF_MAX_CAP) {
+        return 1;
+    }
+
+    for (size_t i = 0; s[i] != '\0'; ++i) {
+        strbuf_push(sb, s[i]);
+    }
+
+    return 0;
+}
