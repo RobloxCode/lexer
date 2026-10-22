@@ -267,7 +267,6 @@ static void _scan_number(Lexer *l) {
             break;
 
         case INCORRECT_FLOAT_NUMBER:
-            // TODO: create token TO_MANY_DECIMAL_POINTS
             type = TOK_INVALID_NUMBER;
             break;
 
