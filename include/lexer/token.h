@@ -133,6 +133,7 @@ typedef enum {
     TOK_INVALID_STR,
     TOK_INVALID_CHAR,
     TOK_INVALID_SUFFIX,
+    TOK_UNTERMINATED_COMMENT,
 } TokenType;
 
 /**

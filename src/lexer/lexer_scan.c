@@ -163,7 +163,7 @@ static void _handle_one_line_comment(Lexer *l) {
     }
 }
 
-static void _handle_multiline_comment(Lexer *l) {
+static int _handle_multiline_comment(Lexer *l) {
     lexer_advance(l);
     lexer_advance(l);
 
@@ -173,8 +173,14 @@ static void _handle_multiline_comment(Lexer *l) {
             break;
         }
 
+        if (l->peek == EOF) {
+            return 1;
+        }
+
         lexer_advance(l);
     }
+
+    return 0;
 }
 
 static void _handle_identifier(Lexer *l) {
@@ -249,7 +255,11 @@ static void _scan_comment_or_op(Lexer *l) {
     }
 
     if (l->peek == '*') {
-        _handle_multiline_comment(l);
+        if (_handle_multiline_comment(l) != 0) {
+            strbuf_push_str(&l->cur_word, "/**...");
+            _emit_word(l, TOK_UNTERMINATED_COMMENT);
+        }
+
         return;
     }
 
@@ -306,11 +316,13 @@ static void _scan_invalid_char(Lexer *l) {
 
 static int _handle_char(Lexer *l) {
     lexer_advance(l);
+    size_t len = 0;
 
     while (l->cur != EOF && l->cur != '\'') {
         if (l->cur == '\\') {
             _push(l, l->cur);
             lexer_advance(l);
+            continue;
         }
 
         if (l->cur == EOF) {
@@ -319,9 +331,15 @@ static int _handle_char(Lexer *l) {
 
         _push(l, l->cur);
         lexer_advance(l);
+
+        len++;
     }
 
     if (l->cur == EOF) {
+        return 1;
+    }
+
+    if (len > 1) {
         return 1;
     }
 

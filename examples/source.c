@@ -11,7 +11,9 @@ int main(void) {
 
     double f5 = 38.8lf;
 
-    // TODO: this produces CHAR(etheue) fixt it
+    char c = 'h';
+    char c2 = '\n';
+
     char hello = 'ethue';
 
     return 0;
