@@ -18,8 +18,3 @@ int main(void) {
 
     return 0;
 }
-
-// TODO: this gets silently accepted fix it
-/*
- *
- *
