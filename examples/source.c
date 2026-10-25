@@ -21,3 +21,18 @@
 
 ();
 ->? #++ <<= ?
+#include <stdio.h>
+
+            int
+            main(void) {
+    int partial = 234LLU;
+
+    for (int integer = 0; i < 10; ++i) {
+        int *ptr = &partial;
+    }
+
+    return 0;
+}
+/**
+
+/**/

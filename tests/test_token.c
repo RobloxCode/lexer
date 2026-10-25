@@ -138,34 +138,6 @@ static void test_token_init_type(void) {
     ASSERT_EQ_INT(t.col, 9);
 }
 
-static void test_token_init_classifies_the_word(void) {
-    StrBuf word;
-    Token t;
-
-    strbuf_init(&word);
-    ASSERT_EQ_INT(strbuf_push(&word, '#'), 0);
-    token_init(&t, &word, 1, 1);
-    ASSERT_EQ_INT(t.type, TOK_HASH);
-
-    strbuf_clear(&word);
-    ASSERT_EQ_INT(strbuf_push(&word, '+'), 0);
-    ASSERT_EQ_INT(strbuf_push(&word, '='), 0);
-    token_init(&t, &word, 1, 1);
-    ASSERT_EQ_INT(t.type, TOK_ADD_ASSIGN);
-
-    strbuf_clear(&word);
-    ASSERT_EQ_INT(strbuf_push(&word, 'f'), 0);
-    ASSERT_EQ_INT(strbuf_push(&word, 'o'), 0);
-    ASSERT_EQ_INT(strbuf_push(&word, 'o'), 0);
-    token_init(&t, &word, 1, 1);
-    ASSERT_EQ_INT(t.type, TOK_IDENTIFIER);
-
-    strbuf_clear(&word);
-    ASSERT_EQ_INT(strbuf_push(&word, '@'), 0);
-    token_init(&t, &word, 1, 1);
-    ASSERT_EQ_INT(t.type, TOK_INVALID);
-}
-
 /*
  * tok_definitions is indexed by TokenType using designated initializers.
  * If someone adds an enum value and forgets the table entry (or the reverse),
@@ -196,7 +168,6 @@ int main(void) {
     RUN_TEST(test_is_operator);
     RUN_TEST(test_token_type_to_str);
     RUN_TEST(test_token_init_type);
-    RUN_TEST(test_token_init_classifies_the_word);
     RUN_TEST(test_definition_table_matches_the_enum);
 
     return test_summary();

@@ -84,57 +84,6 @@ bool all_letters(const char *items, const size_t len) {
     return true;
 }
 
-static bool _is_identifier(const char *s) {
-    if (s[0] == '\0') {
-        return false;
-    }
-
-    if (is_digit(s[0])) {
-        return false;
-    }
-
-    for (size_t i = 0; s[i] != '\0'; ++i) {
-        if (s[i] == '_') {
-            continue;
-        }
-
-        if (is_digit(s[i])) {
-            continue;
-        }
-
-        if (!is_letter(s[i])) {
-            return false;
-        }
-    }
-
-    return true;
-}
-
-void token_init(Token *t, const StrBuf *word, const int line, const int col) {
-    t->line = line;
-    t->col = col;
-
-    size_t found = 0;
-
-    if (strcmp(word->items, "#") == 0) {
-        t->type = TOK_HASH;
-    }
-
-    else if (is_operator(word->items, &found)) {
-        t->type = tok_definitions[found].tok_type;
-    }
-
-    else if (_is_identifier(word->items)) {
-        t->type = TOK_IDENTIFIER;
-    }
-
-    else {
-        t->type = TOK_INVALID;
-    }
-
-    strcpy(t->lexeme, word->items);
-}
-
 void token_init_type(Token *t, TokenType type, const StrBuf *word,
                      const int line, const int col) {
     t->type = type;
