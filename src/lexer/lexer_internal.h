@@ -16,7 +16,6 @@ struct Lexer {
     int cur;            /* < Current character in the file */
     int peek;           /* < Second character lookahead (after cur) */
     int peek2;          /* < Third character lookahead */
-    int peek3;          /* < Fourth character lookahead */
 
     int cur_line;       /* < Current line where 'cur' is at (1 based) */
     int cur_col;        /* < Current column where 'cur' is at (1 based) */
