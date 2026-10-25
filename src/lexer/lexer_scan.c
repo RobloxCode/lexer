@@ -73,19 +73,13 @@ static int _handle_str(Lexer *l) {
             if (l->cur == EOF || l->cur == '\n') {
                 return 1;
             }
-
-            continue;
         }
 
         _push(l, l->cur);
         lexer_advance(l);
     }
 
-    if (l->cur == EOF) {
-        return 1;
-    }
-
-    return 0;
+    return l->cur == '"' ? 0 : 1;
 }
 
 static bool _is_ident_char(int c) {
