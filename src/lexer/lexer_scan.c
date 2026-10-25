@@ -69,10 +69,12 @@ static int _handle_str(Lexer *l) {
         if (l->cur == '\\') {
             _push(l, l->cur);
             lexer_advance(l);
-        }
 
-        if (l->cur == EOF) {
-            return 1;
+            if (l->cur == EOF || l->cur == '\n') {
+                return 1;
+            }
+
+            continue;
         }
 
         _push(l, l->cur);
