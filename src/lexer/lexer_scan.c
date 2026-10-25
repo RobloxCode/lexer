@@ -15,20 +15,21 @@
 #define NUM_TOK_TYPE         "NUMBER"
 #define INVALID_NUM_TOK_TYPE "INVALID NUMBER"
 #define C_LONGEST_OP_LEN     3
-#define C_LONGEST_INT_SUFFIX 3
+#define SUFFIX_MAX_LEN       8
 
 typedef enum {
-    INTEGER,
-    FLOAT,
-    INCORRECT_FLOAT_NUMBER,
-    INCORRECT_INTEGER_SUFFIX,
-    WRONG_NUMBER,
+    HNS_INTEGER,
+    HNS_FLOAT,
+    HNS_INCORRECT_FLOAT_NUMBER,
+    HNS_INCORRECT_INTEGER_SUFFIX,
+    HNS_WRONG_NUMBER,
 } HandleNumberStatus;
 
-static const char *possible_suffixes[] = {
-    "U",   "u",   "L",   "l",   "UL",  "Ul",  "uL", "ul",
-    "LU",  "Lu",  "lU",  "ull", "lu",  "LL",  "ll", "ULL",
-    "uLL", "Ull", "LLU", "LLu", "llU", "llu", "f",  "F"};
+static const char *int_suffixes[] = {
+    "U",   "u",  "L",  "l",  "UL",  "Ul",  "uL",  "ul",  "LU",  "Lu",  "lU",
+    "ull", "lu", "LL", "ll", "ULL", "uLL", "Ull", "LLU", "LLu", "llU", "llu"};
+
+static const char *float_suffixes[] = {"f", "F", "l", "L"};
 
 static void _push(Lexer *l, int c) {
     if (strbuf_push(&l->cur_word, c) != 0) {
@@ -85,9 +86,13 @@ static int _handle_str(Lexer *l) {
     return 0;
 }
 
-static bool _is_suffix(const char *s) {
-    for (size_t i = 0; i < ARRAY_LENGTH(possible_suffixes); ++i) {
-        if (strcmp(s, possible_suffixes[i]) == 0) {
+static bool _is_ident_char(int c) {
+    return is_letter(c) || is_digit(c) || c == '_';
+}
+
+static bool _in_list(const char *s, const char **list, const size_t len) {
+    for (size_t i = 0; i < len; ++i) {
+        if (strcmp(s, list[i]) == 0) {
             return true;
         }
     }
@@ -96,65 +101,56 @@ static bool _is_suffix(const char *s) {
 }
 
 static HandleNumberStatus _handle_number(Lexer *l) {
-    int count_dot = 0;
+    int dots = 0;
 
     while (is_digit(l->peek) || l->peek == '.') {
         lexer_advance(l);
 
         if (l->cur == '.') {
-            count_dot++;
+            dots++;
         }
 
         _push(l, l->cur);
     }
 
-    int look[C_LONGEST_INT_SUFFIX] = {l->peek, l->peek2, l->peek3};
-    char window[C_LONGEST_INT_SUFFIX + 1] = {0};
+    char suffix[SUFFIX_MAX_LEN] = {0};
+    size_t suff_len = 0;
 
-    for (size_t i = 0; i < C_LONGEST_INT_SUFFIX && look[i] != EOF; ++i) {
-        window[i] = (char)look[i];
-    }
-
-    for (size_t suffix_len = C_LONGEST_INT_SUFFIX; suffix_len > 0;
-         --suffix_len) {
-        char tmp_buf[C_LONGEST_INT_SUFFIX + 1] = {0};
-
-        for (size_t i = 0; i < suffix_len; ++i) {
-            tmp_buf[i] = window[i];
-        }
-
-        if (all_letters(tmp_buf, suffix_len) && !_is_suffix(tmp_buf)) {
-            for (size_t i = 0; i < suffix_len; ++i) {
-                lexer_advance(l);
-                _push(l, l->cur);
-            }
-
-            return INCORRECT_INTEGER_SUFFIX;
-        }
-
-        if (_is_suffix(tmp_buf)) {
-            for (size_t i = 0; i < suffix_len; ++i) {
-                lexer_advance(l);
-                _push(l, l->cur);
-                break;
-            }
+    while (_is_ident_char(l->peek)) {
+        lexer_advance(l);
+        _push(l, l->cur);
+        if (suff_len < sizeof suffix - 1) {
+            suffix[suff_len++] = (char)l->cur;
         }
     }
 
-    // TODO: we could add this and the next
-    // token and put them together to make one
-    // right incorrect_integer_suffix
-    if (is_letter(l->peek)) {
-        return INCORRECT_INTEGER_SUFFIX;
+    if (dots > 1) {
+        return HNS_INCORRECT_FLOAT_NUMBER;
     }
 
-    if (count_dot > 1) {
-        return INCORRECT_FLOAT_NUMBER;
-    } else if (count_dot == 1) {
-        return FLOAT;
+    if (suff_len == 0) {
+        if (dots) {
+            return HNS_FLOAT;
+        } else {
+            return HNS_INTEGER;
+        }
     }
 
-    return INTEGER;
+    bool suffix_in_list = false;
+
+    if (dots == 0) {
+        suffix_in_list =
+            _in_list(suffix, int_suffixes, ARRAY_LENGTH(int_suffixes));
+    } else {
+        suffix_in_list =
+            _in_list(suffix, float_suffixes, ARRAY_LENGTH(float_suffixes));
+    }
+
+    if (!suffix_in_list) {
+        return HNS_INCORRECT_INTEGER_SUFFIX;
+    }
+
+    return dots ? HNS_FLOAT : HNS_INTEGER;
 }
 
 static void _handle_one_line_comment(Lexer *l) {
@@ -272,23 +268,23 @@ static void _scan_number(Lexer *l) {
     HandleNumberStatus status = _handle_number(l);
 
     switch (status) {
-        case INTEGER:
+        case HNS_INTEGER:
             type = TOK_INTEGER;
             break;
 
-        case FLOAT:
+        case HNS_FLOAT:
             type = TOK_FLOAT;
             break;
 
-        case INCORRECT_FLOAT_NUMBER:
+        case HNS_INCORRECT_FLOAT_NUMBER:
             type = TOK_INVALID_NUMBER;
             break;
 
-        case INCORRECT_INTEGER_SUFFIX:
+        case HNS_INCORRECT_INTEGER_SUFFIX:
             type = TOK_INVALID_SUFFIX;
             break;
 
-        case WRONG_NUMBER:
+        case HNS_WRONG_NUMBER:
             type = TOK_INVALID_NUMBER;
             break;
     }
