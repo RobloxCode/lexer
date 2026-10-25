@@ -65,7 +65,7 @@ static void _emit_word(Lexer *l, TokenType type) {
 static int _handle_str(Lexer *l) {
     lexer_advance(l);
 
-    while (l->cur != EOF && l->cur != '"') {
+    while (l->cur != EOF && l->cur != '"' && l->cur != '\n') {
         if (l->cur == '\\') {
             _push(l, l->cur);
             lexer_advance(l);
@@ -327,8 +327,6 @@ static int _handle_char(Lexer *l) {
             if (l->cur == EOF || l->cur == '\n') {
                 return 1;
             }
-
-            continue;
         }
 
         _push(l, l->cur);
@@ -340,11 +338,11 @@ static int _handle_char(Lexer *l) {
         return 1;
     }
 
-    if (len != 1) {
+    if (len == 1) {
+        return 0;
+    } else {
         return 1;
     }
-
-    return 0;
 }
 
 static void _scan_char(Lexer *l) {
