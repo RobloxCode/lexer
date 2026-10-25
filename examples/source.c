@@ -19,10 +19,5 @@
 //     return 0;
 // }
 
-10ull 10abcd 1.5f 10f 1.5ul 1.2.3 'a' '\'' '\\'
-'' "hi"
-    "abc
-    y 7
-    /* ok */ z
-    // line comment
-/* unterminated
+();
+->? #++ <<=

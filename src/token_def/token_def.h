@@ -11,9 +11,10 @@
  *        token type
  */
 typedef struct {
-    char *display_name; /* < word that will go alongside when printing
+    const char *display_name; /* < word that will go alongside when printing
                            (INCREMENT, LPAREN, ...) */
-    char *lexeme; /* < The elements that the expression has (++, ), ...) */
+    const char
+        *lexeme; /* < The elements that the expression has (++, ), ...) */
     TokenType tok_type; /* < Actuall token type*/
 
     // TODO: add a category field, this could be keyword, delimeter, operator
