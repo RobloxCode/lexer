@@ -67,6 +67,8 @@ typedef enum {
     TOK_INCREMENT,
     TOK_DECREMENT,
 
+    TOK_VARARGS,
+
     // literals
     TOK_IDENTIFIER,
     TOK_INTEGER,
@@ -164,6 +166,8 @@ typedef struct {
 
     /** Column of the first character of the token, counting from 1. */
     int col;
+
+    // TODO: we could add a error code or a const char *msg
 } Token;
 
 /**

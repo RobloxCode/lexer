@@ -238,7 +238,7 @@ static bool _try_scan_operator(Lexer *l) {
         }
     }
 
-    _emit_word(l, tok_definitions[idx].tok_type);
+    _emit_word(l, tok_definitions[idx].type);
 
     return true;
 }
@@ -298,7 +298,7 @@ static void _scan_identifier(Lexer *l) {
     TokenType type = TOK_IDENTIFIER;
 
     if (is_keyword(l->cur_word.items, &found)) {
-        type = tok_definitions[found].tok_type;
+        type = tok_definitions[found].type;
     }
 
     _emit_word(l, type);

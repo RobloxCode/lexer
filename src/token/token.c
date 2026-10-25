@@ -4,60 +4,31 @@
 #include "token_def/token_def.h"
 #include "token_internal.h"
 
+#include <assert.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
 
-// TODO: is_keyword, is_operator and is_delimeter are all the same
-bool is_keyword(const char *s, size_t *idx) {
+static bool _find(const char *s, TokenCategory cat, size_t *out) {
     for (size_t i = 0; i < tok_definitions_len; ++i) {
-        if (tok_definitions[i].lexeme == NULL) {
-            continue;
-        }
+        const TokenDef *d = &tok_definitions[i];
 
-        if (strcmp(s, tok_definitions[i].lexeme) == 0) {
-            if (idx) {
-                *idx = i;
+        if (d->lexeme && d->category == cat && strcmp(s, d->lexeme) == 0) {
+            if (out) {
+                *out = i;
             }
             return true;
         }
     }
-
     return false;
+}
+
+bool is_keyword(const char *s, size_t *idx) {
+    return _find(s, CAT_KEYWORD, idx);
 }
 
 bool is_operator(const char *s, size_t *idx) {
-    for (size_t i = 0; i < tok_definitions_len; ++i) {
-        if (tok_definitions[i].lexeme == NULL) {
-            continue;
-        }
-
-        if (strcmp(s, tok_definitions[i].lexeme) == 0) {
-            if (idx) {
-                *idx = i;
-            }
-            return true;
-        }
-    }
-
-    return false;
-}
-
-static bool _is_delimiter(const char *s, size_t *idx) {
-    for (size_t i = 0; i < tok_definitions_len; ++i) {
-        if (tok_definitions[i].lexeme == NULL) {
-            continue;
-        }
-
-        if (strcmp(s, tok_definitions[i].lexeme) == 0) {
-            if (idx) {
-                *idx = i;
-            }
-            return true;
-        }
-    }
-
-    return false;
+    return _find(s, CAT_OPERATOR, idx) || _find(s, CAT_DELIMITER, idx);
 }
 
 bool is_digit(const int c) {
@@ -116,64 +87,10 @@ bool all_letters(const char *items, const size_t len) {
     return true;
 }
 
-static bool _is_identifier(const char *s) {
-    if (s[0] == '\0') {
-        return false;
-    }
-
-    if (is_digit(s[0])) {
-        return false;
-    }
-
-    for (size_t i = 0; s[i] != '\0'; ++i) {
-        if (s[i] == '_') {
-            continue;
-        }
-
-        if (is_digit(s[i])) {
-            continue;
-        }
-
-        if (!is_letter(s[i])) {
-            return false;
-        }
-    }
-
-    return true;
-}
-
-void token_init(Token *t, const StrBuf *word, const int line, const int col) {
-    t->line = line;
-    t->col = col;
-
-    size_t found = 0;
-
-    if (strcmp(word->items, "#") == 0) {
-        t->type = TOK_HASH;
-    }
-
-    else if (is_operator(word->items, &found)) {
-        t->type = tok_definitions[found].tok_type;
-    }
-
-    else if (_is_identifier(word->items)) {
-        t->type = TOK_IDENTIFIER;
-    }
-
-    else if (_is_delimiter(word->items, &found)) {
-        t->type = tok_definitions[found].tok_type;
-    }
-
-    else {
-        t->type = TOK_INVALID;
-    }
-
-    strcpy(t->lexeme, word->items);
-}
-
 void token_init_type(Token *t, TokenType type, const StrBuf *word,
                      const int line, const int col) {
     t->type = type;
+    assert(STR_BUF_MAX_CAP <= TOKEN_BUF_MAX_CAP);
     strcpy(t->lexeme, word->items);
     t->line = line;
     t->col = col;
@@ -188,7 +105,7 @@ const char *token_type_to_str(TokenType type) {
     return tok_definitions[type].display_name;
 }
 
-inline void token_println(const Token *t) {
+void token_println(const Token *t) {
     printf("[ %d:%d ]    %s(%s)\n", t->line, t->col, token_type_to_str(t->type),
            t->lexeme);
 }

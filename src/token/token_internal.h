@@ -7,7 +7,6 @@
 #include <stdbool.h>
 #include <stddef.h>
 
-void token_init(Token *t, const StrBuf *word, const int line, const int col);
 void token_init_type(Token *t, TokenType type, const StrBuf *word,
                      const int line, const int col);
 
