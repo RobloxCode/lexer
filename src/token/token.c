@@ -9,38 +9,24 @@
 #include <string.h>
 
 // TODO: is_keyword, is_operator and is_delimeter are all the same
-bool is_keyword(const char *s, size_t *idx) {
+static bool _find(const char *s, TokenCategory cat, size_t *out) {
     for (size_t i = 0; i < tok_definitions_len; ++i) {
-        if (tok_definitions[i].lexeme == NULL) {
-            continue;
-        }
+        const TokenDef *d = &tok_definitions[i];
 
-        if (strcmp(s, tok_definitions[i].lexeme) == 0) {
-            if (idx) {
-                *idx = i;
-            }
+        if (d->lexeme && d->category == cat && strcmp(s, d->lexeme) == 0) {
+            *out = i;
             return true;
         }
     }
-
     return false;
 }
 
+bool is_keyword(const char *s, size_t *idx) {
+    return _find(s, CAT_KEYWORD, idx);
+}
+
 bool is_operator(const char *s, size_t *idx) {
-    for (size_t i = 0; i < tok_definitions_len; ++i) {
-        if (tok_definitions[i].lexeme == NULL) {
-            continue;
-        }
-
-        if (strcmp(s, tok_definitions[i].lexeme) == 0) {
-            if (idx) {
-                *idx = i;
-            }
-            return true;
-        }
-    }
-
-    return false;
+    return _find(s, CAT_OPERATOR, idx) || _find(s, CAT_DELIMITER, idx);
 }
 
 static bool _is_delimiter(const char *s, size_t *idx) {

@@ -6,11 +6,11 @@
 #include <stddef.h>
 
 typedef enum {
-    CAT_DELIMETER,
-    CAT_OPERATOR,
-    CAT_KEYWORD,
-    CAT_LITERAL,
-    CAT_SPECIAL,
+    CAT_DELIMITER = 1 << 0,
+    CAT_OPERATOR = 1 << 1,
+    CAT_KEYWORD = 1 << 2,
+    CAT_LITERAL = 1 << 3,
+    CAT_SPECIAL = 1 << 4,
 } TokenCategory;
 
 /**
