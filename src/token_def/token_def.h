@@ -27,7 +27,7 @@ typedef struct {
     const char *lexeme;
 
     /* < Actuall token type*/
-    TokenType tok_type;
+    TokenType type;
 
     TokenCategory category;
 } TokenDef;
