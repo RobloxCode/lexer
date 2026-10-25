@@ -163,20 +163,23 @@ static int _handle_multiline_comment(Lexer *l) {
     lexer_advance(l);
     lexer_advance(l);
 
+    bool closed = false;
+
     while (l->cur != EOF) {
         if (l->cur == '*' && l->peek == '/') {
             lexer_advance(l);
+            closed = true;
             break;
-        }
-
-        if (l->peek == EOF) {
-            return 1;
         }
 
         lexer_advance(l);
     }
 
-    return 0;
+    if (closed) {
+        return 0;
+    } else {
+        return 1;
+    }
 }
 
 static void _handle_identifier(Lexer *l) {
