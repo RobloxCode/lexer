@@ -314,28 +314,28 @@ static int _handle_char(Lexer *l) {
     lexer_advance(l);
     size_t len = 0;
 
-    while (l->cur != EOF && l->cur != '\'') {
+    while (l->cur != EOF && l->cur != '\'' && l->cur != '\n') {
         if (l->cur == '\\') {
             _push(l, l->cur);
             lexer_advance(l);
-            continue;
-        }
 
-        if (l->cur == EOF) {
-            return 1;
+            if (l->cur == EOF || l->cur == '\n') {
+                return 1;
+            }
+
+            continue;
         }
 
         _push(l, l->cur);
         lexer_advance(l);
-
         len++;
     }
 
-    if (l->cur == EOF) {
+    if (l->cur != '\'') {
         return 1;
     }
 
-    if (len > 1) {
+    if (len != 1) {
         return 1;
     }
 
