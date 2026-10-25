@@ -13,7 +13,9 @@ static bool _find(const char *s, TokenCategory cat, size_t *out) {
         const TokenDef *d = &tok_definitions[i];
 
         if (d->lexeme && d->category == cat && strcmp(s, d->lexeme) == 0) {
-            *out = i;
+            if (out) {
+                *out = i;
+            }
             return true;
         }
     }
