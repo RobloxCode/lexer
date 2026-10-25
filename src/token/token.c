@@ -105,7 +105,7 @@ const char *token_type_to_str(TokenType type) {
     return tok_definitions[type].display_name;
 }
 
-inline void token_println(const Token *t) {
+void token_println(const Token *t) {
     printf("[ %d:%d ]    %s(%s)\n", t->line, t->col, token_type_to_str(t->type),
            t->lexeme);
 }
