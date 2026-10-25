@@ -146,7 +146,7 @@ typedef struct {
     TokenType type;
 
     /**
-     * Text of the token as written in the source, always NUL-terminated.
+     * Text of the token as written in the source, always NULL-terminated.
      *
      * - Quotes are not included: the string "hi" is stored as hi, and the
      *   character 'a' is stored as a.
