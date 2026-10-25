@@ -8,7 +8,6 @@
 #include <stdio.h>
 #include <string.h>
 
-// TODO: is_keyword, is_operator and is_delimeter are all the same
 static bool _find(const char *s, TokenCategory cat, size_t *out) {
     for (size_t i = 0; i < tok_definitions_len; ++i) {
         const TokenDef *d = &tok_definitions[i];
@@ -27,23 +26,6 @@ bool is_keyword(const char *s, size_t *idx) {
 
 bool is_operator(const char *s, size_t *idx) {
     return _find(s, CAT_OPERATOR, idx) || _find(s, CAT_DELIMITER, idx);
-}
-
-static bool _is_delimiter(const char *s, size_t *idx) {
-    for (size_t i = 0; i < tok_definitions_len; ++i) {
-        if (tok_definitions[i].lexeme == NULL) {
-            continue;
-        }
-
-        if (strcmp(s, tok_definitions[i].lexeme) == 0) {
-            if (idx) {
-                *idx = i;
-            }
-            return true;
-        }
-    }
-
-    return false;
 }
 
 bool is_digit(const int c) {
@@ -144,10 +126,6 @@ void token_init(Token *t, const StrBuf *word, const int line, const int col) {
 
     else if (_is_identifier(word->items)) {
         t->type = TOK_IDENTIFIER;
-    }
-
-    else if (_is_delimiter(word->items, &found)) {
-        t->type = tok_definitions[found].tok_type;
     }
 
     else {
