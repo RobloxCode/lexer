@@ -4,6 +4,7 @@
 #include "token_def/token_def.h"
 #include "token_internal.h"
 
+#include <assert.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
@@ -89,6 +90,7 @@ bool all_letters(const char *items, const size_t len) {
 void token_init_type(Token *t, TokenType type, const StrBuf *word,
                      const int line, const int col) {
     t->type = type;
+    assert(STR_BUF_MAX_CAP <= TOKEN_BUF_MAX_CAP);
     strcpy(t->lexeme, word->items);
     t->line = line;
     t->col = col;

@@ -66,6 +66,7 @@ const TokenDef tok_definitions[] = {
 
     [TOK_ARROW] = {"ARROW", "->", TOK_ARROW, CAT_OPERATOR},
     [TOK_HASH] = {"HASH", "#", TOK_HASH, CAT_OPERATOR},
+    [TOK_VARARGS] = {"VARARGS", "##", TOK_VARARGS, CAT_OPERATOR},
     [TOK_CONDITIONAL] = {"CONDITIONAL", "?", TOK_CONDITIONAL, CAT_OPERATOR},
 
     // literals
