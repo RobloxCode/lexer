@@ -7,6 +7,7 @@
 #include <assert.h>
 #include <stdbool.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 static bool _find(const char *s, TokenCategory cat, size_t *out) {
@@ -90,7 +91,13 @@ bool all_letters(const char *items, const size_t len) {
 void token_init_type(Token *t, TokenType type, const StrBuf *word,
                      const int line, const int col) {
     t->type = type;
-    assert(STR_BUF_MAX_CAP <= TOKEN_BUF_MAX_CAP);
+
+    if (strlen(word->items) >= TOKEN_LEXEME_MAX_CAP) {
+        fprintf(stderr, "word too long!!\ncould not tokenize: %s\n",
+                word->items);
+        exit(1);
+    }
+
     strcpy(t->lexeme, word->items);
     t->line = line;
     t->col = col;
