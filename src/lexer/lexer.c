@@ -9,6 +9,54 @@
 #include <stdlib.h>
 #include <string.h>
 
+char *read_file(FILE *fp) {
+    if (fp == NULL) {
+        return NULL;
+    }
+
+    long start = ftell(fp);
+    if (start < 0) {
+        return NULL;
+    }
+
+    if (fseek(fp, 0, SEEK_END) != 0) {
+        return NULL;
+    }
+
+    long size = ftell(fp);
+    if (size < 0) {
+        return NULL;
+    }
+
+    long length = size - start;
+
+    if (fseek(fp, start, SEEK_SET) != 0) {
+        return NULL;
+    }
+
+    char *data = malloc((size_t)length + 1);
+    if (data == NULL) {
+        /* restore position before bailing */
+        fseek(fp, start, SEEK_SET);
+        return NULL;
+    }
+
+    size_t nread = fread(data, 1, (size_t)length, fp);
+    int read_error = ferror(fp);
+
+    /* Restore position and clear EOF/error indicators */
+    fseek(fp, start, SEEK_SET);
+    clearerr(fp);
+
+    if (nread != (size_t)length && read_error) {
+        free(data);
+        return NULL;
+    }
+
+    data[nread] = '\0';
+    return data;
+}
+
 void lexer_advance(Lexer *l) {
     l->cur = l->peek;
     l->peek = l->peek2;
