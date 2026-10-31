@@ -36,7 +36,6 @@ char *read_file(FILE *fp) {
 
     char *data = malloc((size_t)length + 1);
     if (data == NULL) {
-        /* restore position before bailing */
         fseek(fp, start, SEEK_SET);
         return NULL;
     }
@@ -44,7 +43,6 @@ char *read_file(FILE *fp) {
     size_t nread = fread(data, 1, (size_t)length, fp);
     int read_error = ferror(fp);
 
-    /* Restore position and clear EOF/error indicators */
     fseek(fp, start, SEEK_SET);
     clearerr(fp);
 
