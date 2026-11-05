@@ -1,6 +1,8 @@
 #ifndef LEXER_TOKEN_H
 #define LEXER_TOKEN_H
 
+#include <stdio.h>
+
 #define TOKEN_LEXEME_MAX_CAP 35
 
 #ifdef __cplusplus
@@ -160,6 +162,8 @@ typedef struct {
     // TODO: change this to char *lexeme
     // and also could add a size_t len
     char lexeme[TOKEN_LEXEME_MAX_CAP];
+    char *lexeme2test;
+    size_t lexeme_len;
 
     /** Line where the token starts, counting from 1. */
     int line;
