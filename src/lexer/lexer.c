@@ -9,7 +9,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-char *read_file(FILE *fp) {
+char *_read_file(FILE *fp) {
     if (fp == NULL) {
         return NULL;
     }
@@ -75,6 +75,11 @@ static Lexer *_lexer_init(const char *path) {
     if (!l->file) {
         free(l);
         return NULL;
+    }
+
+    l->file_data = _read_file(l->file);
+    if (!l->file_data) {
+        fclose(l->file);
     }
 
     l->tokens = token_arr_init(INIT_TOKEN_CAP);

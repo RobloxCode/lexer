@@ -27,6 +27,8 @@ struct Lexer {
     bool overflow;      /* < true if 'cur_word' hit STR_BUF_MAX_CAP */
 
     TokenArr *tokens;   /* < Tokens produced so far */
+
+    char *file_data;
 };
 
 /**
