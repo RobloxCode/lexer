@@ -29,6 +29,7 @@ struct Lexer {
     TokenArr *tokens;   /* < Tokens produced so far */
 
     char *file_data;
+    char *cur_char_file_data;
 };
 
 /**

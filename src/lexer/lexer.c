@@ -66,6 +66,8 @@ void lexer_advance(Lexer *l) {
     } else {
         l->cur_col++;
     }
+
+    l->cur_char_file_data++;
 }
 
 static Lexer *_lexer_init(const char *path) {
@@ -101,6 +103,8 @@ static Lexer *_lexer_init(const char *path) {
     l->overflow = false;
 
     strbuf_init(&l->cur_word);
+
+    l->cur_char_file_data = l->file_data;
 
     return l;
 }
