@@ -10,6 +10,7 @@
 void token_init_type(Token *t, TokenType type, const StrBuf *word,
                      const int line, const int col);
 
+// TODO: use the is_alpha() and is_digit() functions from ctype.h instead of these custom ones
 bool is_number(const char *s);
 bool is_digit(const int c);
 bool is_letter(const int c);
