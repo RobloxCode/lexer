@@ -48,13 +48,13 @@ static void test_is_letter(void) {
 
 static void test_is_number(void) {
     static const NumberCase cases[] = {
-        {"12345", true},      {"+12345", true},  {"-12345", true},
-        {"1.2345", true},     {"0", true},       {"007", true},
-        {"  12345  ", false}, {"u12345", false}, {"1.2.3.4.5", false},
-        {"12345;", false},    {"", false},       {" ", false},
-        {"+", false},         {"-", false},      {"3.", false},
-        {".", false},         {".3", false},     {"1..2", false},
-        {"--1", false},       {"1-", false},
+        {"12345", true},     {"+12345", true},  {"-12345", true},
+        {"1.2345", true},    {"0", true},       {"007", true},
+        {"  12345  ", true}, {"u12345", false}, {"1.2.3.4.5", false},
+        {"12345;", false},   {"", false},       {" ", false},
+        {"+", false},        {"-", false},      {"3.", true},
+        {".", false},        {".3", true},      {"1..2", false},
+        {"--1", false},      {"1-", false},
     };
 
     for (size_t i = 0; i < sizeof cases / sizeof cases[0]; ++i) {
@@ -75,13 +75,13 @@ static void test_is_keyword(void) {
     size_t idx = 0;
 
     ASSERT_TRUE(is_keyword("int", &idx));
-    ASSERT_EQ_INT(tok_definitions[idx].tok_type, TOK_KW_INT);
+    ASSERT_EQ_INT(tok_definitions[idx].type, TOK_KW_INT);
 
     ASSERT_TRUE(is_keyword("while", &idx));
-    ASSERT_EQ_INT(tok_definitions[idx].tok_type, TOK_KW_WHILE);
+    ASSERT_EQ_INT(tok_definitions[idx].type, TOK_KW_WHILE);
 
     ASSERT_TRUE(is_keyword("_Bool", &idx));
-    ASSERT_EQ_INT(tok_definitions[idx].tok_type, TOK_KW_BOOL);
+    ASSERT_EQ_INT(tok_definitions[idx].type, TOK_KW_BOOL);
 
     /* The index output is optional. */
     ASSERT_TRUE(is_keyword("return", NULL));
@@ -98,13 +98,13 @@ static void test_is_operator(void) {
     size_t idx = 0;
 
     ASSERT_TRUE(is_operator("+", &idx));
-    ASSERT_EQ_INT(tok_definitions[idx].tok_type, TOK_PLUS);
+    ASSERT_EQ_INT(tok_definitions[idx].type, TOK_PLUS);
 
     ASSERT_TRUE(is_operator("<<=", &idx));
-    ASSERT_EQ_INT(tok_definitions[idx].tok_type, TOK_LSHIFT_ASSIGN);
+    ASSERT_EQ_INT(tok_definitions[idx].type, TOK_LSHIFT_ASSIGN);
 
     ASSERT_TRUE(is_operator("->", &idx));
-    ASSERT_EQ_INT(tok_definitions[idx].tok_type, TOK_ARROW);
+    ASSERT_EQ_INT(tok_definitions[idx].type, TOK_ARROW);
 
     ASSERT_TRUE(is_operator("&&", NULL));
 
@@ -152,9 +152,9 @@ static void test_definition_table_matches_the_enum(void) {
 
         if (tok_definitions[i].display_name == NULL) {
             TEST_FAIL("tok_definitions[%zu] has no display name (hole)", i);
-        } else if ((size_t)tok_definitions[i].tok_type != i) {
+        } else if ((size_t)tok_definitions[i].type != i) {
             TEST_FAIL("tok_definitions[%zu] is mapped to type %d", i,
-                      (int)tok_definitions[i].tok_type);
+                      (int)tok_definitions[i].type);
         } else {
             TEST_PASS(tok_definitions[i].display_name);
         }
