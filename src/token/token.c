@@ -5,6 +5,8 @@
 #include "token_internal.h"
 
 #include <assert.h>
+#include <ctype.h>
+#include <errno.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -37,41 +39,27 @@ bool is_digit(const int c) {
 }
 
 bool is_number(const char *s) {
-    size_t i = 0;
-    int dots_counter = 0;
-
-    if (!strlen(s)) {
+    if (s == NULL || *s == '\0') {
         return false;
     }
 
-    if (s[0] == '.' || s[strlen(s) - 1] == '.') {
+    char *end;
+    errno = 0;
+    strtod(s, &end);
+
+    if (end == s) {
         return false;
     }
 
-    if (s[0] == '+' || s[0] == '-') {
-        i = 1;
-
-        if (s[i] == '\0') {
-            return false;
-        }
-    }
-
-    for (; s[i] != '\0'; ++i) {
-        if (s[i] == '.') {
-            dots_counter++;
-            continue;
-        }
-
-        if (!is_digit(s[i])) {
-            return false;
-        }
-    }
-
-    if (dots_counter > 1) {
+    if (errno == ERANGE) {
         return false;
     }
 
-    return true;
+    while (isspace((unsigned char)*end)) {
+        end++;
+    }
+
+    return *end == '\0';
 }
 
 bool is_letter(const int c) {
