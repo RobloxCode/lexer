@@ -48,13 +48,13 @@ static void test_is_letter(void) {
 
 static void test_is_number(void) {
     static const NumberCase cases[] = {
-        {"12345", true},      {"+12345", true},  {"-12345", true},
-        {"1.2345", true},     {"0", true},       {"007", true},
-        {"  12345  ", false}, {"u12345", false}, {"1.2.3.4.5", false},
-        {"12345;", false},    {"", false},       {" ", false},
-        {"+", false},         {"-", false},      {"3.", false},
-        {".", false},         {".3", false},     {"1..2", false},
-        {"--1", false},       {"1-", false},
+        {"12345", true},     {"+12345", true},  {"-12345", true},
+        {"1.2345", true},    {"0", true},       {"007", true},
+        {"  12345  ", true}, {"u12345", false}, {"1.2.3.4.5", false},
+        {"12345;", false},   {"", false},       {" ", false},
+        {"+", false},        {"-", false},      {"3.", true},
+        {".", false},        {".3", true},      {"1..2", false},
+        {"--1", false},      {"1-", false},
     };
 
     for (size_t i = 0; i < sizeof cases / sizeof cases[0]; ++i) {
