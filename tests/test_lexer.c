@@ -268,7 +268,7 @@ static void test_positions(void) {
 }
 
 static void test_overlong_token_is_invalid(void) {
-    char source[TOKEN_BUF_MAX_CAP + 50];
+    char source[TOKEN_LEXEME_MAX_CAP + 50];
 
     memset(source, 'a', sizeof source - 1);
     source[sizeof source - 1] = '\0';
